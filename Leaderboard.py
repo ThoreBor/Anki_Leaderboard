@@ -2,6 +2,8 @@ from aqt.qt import *
 from aqt import mw
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .Stats import Stats
+from aqt.utils import tooltip, showInfo
+from os.path import dirname, join, realpath
 import datetime
 import requests
 config = mw.addonManager.getConfig(__name__)
@@ -9,14 +11,17 @@ config = mw.addonManager.getConfig(__name__)
 class Ui_dialog(object):
 	def setupUi(self, dialog):
 		dialog.setObjectName("dialog")
-		dialog.resize(310, 578)
-		self.widget = QtWidgets.QWidget(dialog)
-		self.widget.setGeometry(QtCore.QRect(10, 10, 291, 561))
-		self.widget.setObjectName("widget")
-		self.gridLayout = QtWidgets.QGridLayout(self.widget)
+		dialog.resize(315, 579)
+		dialog.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+		dialog.setWindowIcon(QtGui.QIcon(join(dirname(realpath(__file__)), 'krone.png')))
+		#<div>Icons erstellt von <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
+		self.layoutWidget = QtWidgets.QWidget(dialog)
+		self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 291, 561))
+		self.layoutWidget.setObjectName("layoutWidget")
+		self.gridLayout = QtWidgets.QGridLayout(self.layoutWidget)
 		self.gridLayout.setContentsMargins(0, 0, 0, 0)
 		self.gridLayout.setObjectName("gridLayout")
-		self.Tab = QtWidgets.QTabWidget(self.widget)
+		self.Tab = QtWidgets.QTabWidget(self.layoutWidget)
 		self.Tab.setObjectName("Tab")
 		self.tab1 = QtWidgets.QWidget()
 		self.tab1.setObjectName("tab1")
@@ -64,32 +69,75 @@ class Ui_dialog(object):
 		data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now()}
 		x = requests.post(url, data = data)
 
-		url = 'https://ankileaderboard.pythonanywhere.com/getdata/'
+		url = 'https://ankileaderboard.pythonanywhere.com/getstreaks/'
 		x = requests.post(url)
+		counter = 0
 		data = x.text
 		data = data.split("<br>")
 		for i in data:
 			data_list = i.split(",")
-			if len(data_list) > 1:
+			try:
+				counter = counter + 1
 				username = data_list[0]
 				streak = data_list[1]
 				cards = data_list[2]
 				time = data_list[3]
 
-				self.Streak_Leaderboard.addItem(str(username + "\t" + streak + " days"))
-				self.Reviews_Leaderboard.addItem(str(username + "\t" + cards + " cards"))
-				self.Time_Leaderboard.addItem(str(username + "\t" + time + " minutes"))
+				self.Streak_Leaderboard.addItem(str(counter)+ ". "+ str(username + "\t" + streak + " days"))
+			except:
+				pass
+		self.Streak_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+		self.Streak_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+		self.Streak_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
+
+		url = 'https://ankileaderboard.pythonanywhere.com/getreviews/'
+		x = requests.post(url)
+		counter = 0
+		data = x.text
+		data = data.split("<br>")
+		for i in data:
+			data_list = i.split(",")
+			try:
+				counter = counter + 1
+				username = data_list[0]
+				streak = data_list[1]
+				cards = data_list[2]
+				time = data_list[3]
+			
+				self.Reviews_Leaderboard.addItem(str(counter)+ ". "+ str(username + "\t" + cards + " cards"))
+			except:
+				pass
+		self.Reviews_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+		self.Reviews_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+		self.Reviews_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
 		
+		url = 'https://ankileaderboard.pythonanywhere.com/gettime/'
+		x = requests.post(url)
+		counter = 0
+		data = x.text
+		data = data.split("<br>")
+		for i in data:
+			data_list = i.split(",")
+			try:
+				counter = counter + 1
+				username = data_list[0]
+				streak = data_list[1]
+				cards = data_list[2]
+				time = data_list[3]
 
-
-
+				self.Time_Leaderboard.addItem(str(counter)+ ". "+ str(username + "\t" + time + " minutes"))
+			except:
+				pass
+		self.Time_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+		self.Time_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+		self.Time_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
 	def retranslateUi(self, dialog):
 		_translate = QtCore.QCoreApplication.translate
 		dialog.setWindowTitle(_translate("dialog", "Leaderboard"))
 		self.Tab.setTabText(self.Tab.indexOf(self.tab1), _translate("dialog", "Streak"))
 		self.Tab.setTabText(self.Tab.indexOf(self.tab_3), _translate("dialog", "Reviews today"))
-		self.Tab.setTabText(self.Tab.indexOf(self.tab_2), _translate("dialog", "Time"))
-
+		self.Tab.setTabText(self.Tab.indexOf(self.tab_2), _translate("dialog", "Time")
+)
 
 class start_main(QDialog):
 	def __init__(self, parent=None):

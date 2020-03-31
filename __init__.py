@@ -2,11 +2,11 @@ from aqt import mw
 from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
 from aqt.utils import showInfo
-import time
 from os.path import dirname, join, realpath
-from datetime import date, timedelta
 from .Leaderboard import start_main
 from .Setup import start_setup
+import webbrowser
+
 
 def Main():
 	config = mw.addonManager.getConfig(__name__)
@@ -21,7 +21,7 @@ def Main():
 			pass
 		
 def github():
-	pass
+	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
 def about():
 	pass
@@ -39,6 +39,6 @@ def add_menu(Name, Button, exe, *sc):
 	for i in sc:
 		action.setShortcut(QKeySequence(i))
 
-add_menu('Leaderboard',"Leaderboard", Main, 'Shift+S')
+add_menu('Leaderboard',"Leaderboard", Main, 'Shift+L')
 add_menu('Leaderboard',"Make a feature request or report a bug", github)
 add_menu('Leaderboard',"About", about)

@@ -2,6 +2,7 @@ from aqt.qt import *
 from aqt import mw
 from PyQt5 import QtCore, QtGui, QtWidgets
 import requests
+from os.path import dirname, join, realpath
 from aqt.utils import tooltip
 from datetime import date
 from .Stats import Stats
@@ -10,6 +11,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(280, 159)
+        Dialog.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        Dialog.setWindowIcon(QtGui.QIcon(join(dirname(realpath(__file__)), 'person.png')))
+        #<div>Icons erstellt von <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
         self.widget = QtWidgets.QWidget(Dialog)
         self.widget.setGeometry(QtCore.QRect(10, 10, 261, 141))
         self.widget.setObjectName("widget")
