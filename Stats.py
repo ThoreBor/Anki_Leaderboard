@@ -1,6 +1,7 @@
 import time
 from datetime import date, timedelta
 from aqt import mw
+from aqt.utils import showInfo, tooltip
 def Stats():
 	###STREAK####
 
@@ -23,16 +24,12 @@ def Stats():
 
 	###REVIEWS TODAY####
 
-	studied_today = mw.col.findNotes('rated:1')
+	studied_today = mw.col.findCards('rated:1')
 
 	###TIME SPEND TODAY###
 	
-	card_id_list = []
 	time_today = 0
 	for i in studied_today:
-		card_id = mw.col.db.scalar("SELECT id FROM cards WHERE nid = (?)",(i))
-		card_id_list.append(card_id)
-	for i in card_id_list:
 		value = mw.col.db.scalar("SELECT time FROM revlog WHERE cid = (?) ORDER BY id DESC",(i))
 		time_today = time_today + value
 	time_today = round(time_today/60000, 1)

@@ -11,34 +11,43 @@ from .Leaderboard import start_main
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(280, 159)
+        Dialog.resize(276, 203)
         Dialog.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         Dialog.setWindowIcon(QtGui.QIcon(join(dirname(realpath(__file__)), 'person.png')))
-        self.widget = QtWidgets.QWidget(Dialog)
-        self.widget.setGeometry(QtCore.QRect(10, 10, 261, 141))
-        self.widget.setObjectName("widget")
-        self.gridLayout = QtWidgets.QGridLayout(self.widget)
+        self.layoutWidget = QtWidgets.QWidget(Dialog)
+        self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 261, 184))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.gridLayout = QtWidgets.QGridLayout(self.layoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
-        self.setup_info = QtWidgets.QLabel(self.widget)
+        self.setup_info = QtWidgets.QLabel(self.layoutWidget)
         self.setup_info.setObjectName("setup_info")
         self.gridLayout.addWidget(self.setup_info, 0, 0, 1, 2)
-        self.Username = QtWidgets.QLineEdit(self.widget)
+        self.Setup_Button = QtWidgets.QPushButton(self.layoutWidget)
+        self.Setup_Button.setObjectName("Setup_Button")
+        self.gridLayout.addWidget(self.Setup_Button, 1, 1, 1, 1)
+        self.Username = QtWidgets.QLineEdit(self.layoutWidget)
         self.Username.setObjectName("Username")
         self.gridLayout.addWidget(self.Username, 1, 0, 1, 1)
-        self.Setup_Button = QtWidgets.QPushButton(self.widget)
-        self.Setup_Button.setObjectName("Setup_Button")
-        self.Setup_Button.clicked.connect(self.create_account)
-        self.gridLayout.addWidget(self.Setup_Button, 1, 1, 1, 1)
+        self.Login = QtWidgets.QPushButton(self.layoutWidget)
+        self.Login.setObjectName("Login")
+        self.gridLayout.addWidget(self.Login, 2, 1, 1, 1)
+        self.Username__Login = QtWidgets.QLineEdit(self.layoutWidget)
+        self.Username__Login.setObjectName("Username__Login")
+        self.gridLayout.addWidget(self.Username__Login, 2, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        self.Setup_Button.clicked.connect(self.create_account)
+        self.Login.clicked.connect(self.login)
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Setup"))
-        self.setup_info.setText(_translate("Dialog", "<html><head/><body><p>Enter a username to create an account. <br/>Creating an account will allow other users <br/>of the add-on to see your username, <br/>your streak, how many cards you studied<br/>today and for how long.</p></body></html>"))
+        self.setup_info.setText(_translate("Dialog", "<html><head/><body><p>Enter a username to create an account. <br/>Creating an account will allow other users <br/>of the add-on to see your username, <br/>your streak, how many cards you studied<br/>today and for how long.<br/>If you already have an account, enter<br/>your username to login.</p></body></html>"))
         self.Setup_Button.setText(_translate("Dialog", "Create account"))
+        self.Login.setText(_translate("Dialog", "Login"))
 
     def create_account(self):
         username = self.Username.text()
@@ -54,6 +63,17 @@ class Ui_Dialog(object):
             config = {"new_user": "False","username": username}
             mw.addonManager.writeConfig(__name__, config)
             tooltip("Successfully created account. Close setup and restart the add-on.")
+
+    def login(self):
+        username = self.Username__Login.text()
+        url = 'https://ankileaderboard.pythonanywhere.com/users/'
+        x = requests.post(url)
+        if username in eval(x.text):
+            config = {"new_user": "False","username": username}
+            mw.addonManager.writeConfig(__name__, config)
+            tooltip("Successfully logged in. Close setup and restart the add-on.")
+        else:
+            tooltip("Account doesn't exist.")
 
 
 
