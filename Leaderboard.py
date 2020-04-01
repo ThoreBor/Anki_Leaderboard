@@ -14,7 +14,6 @@ class Ui_dialog(object):
 		dialog.resize(315, 579)
 		dialog.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 		dialog.setWindowIcon(QtGui.QIcon(join(dirname(realpath(__file__)), 'krone.png')))
-		#<div>Icons erstellt von <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 		self.layoutWidget = QtWidgets.QWidget(dialog)
 		self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 291, 561))
 		self.layoutWidget.setObjectName("layoutWidget")
@@ -29,7 +28,7 @@ class Ui_dialog(object):
 		self.Streak_Leaderboard.setGeometry(QtCore.QRect(10, 10, 271, 511))
 		font = QtGui.QFont()
 		font.setFamily("Arial")
-		font.setPointSize(12)
+		font.setPointSize(11)
 		self.Streak_Leaderboard.setFont(font)
 		self.Streak_Leaderboard.setStyleSheet("QListWidget {border: none}")
 		self.Streak_Leaderboard.setObjectName("Streak_Leaderboard")
@@ -40,7 +39,7 @@ class Ui_dialog(object):
 		self.Reviews_Leaderboard.setGeometry(QtCore.QRect(10, 10, 271, 511))
 		font = QtGui.QFont()
 		font.setFamily("Arial")
-		font.setPointSize(12)
+		font.setPointSize(11)
 		self.Reviews_Leaderboard.setFont(font)
 		self.Reviews_Leaderboard.setStyleSheet("QListWidget {border: none}")
 		self.Reviews_Leaderboard.setObjectName("Reviews_Leaderboard")
@@ -51,7 +50,7 @@ class Ui_dialog(object):
 		self.Time_Leaderboard.setGeometry(QtCore.QRect(10, 10, 271, 511))
 		font = QtGui.QFont()
 		font.setFamily("Arial")
-		font.setPointSize(12)
+		font.setPointSize(11)
 		self.Time_Leaderboard.setFont(font)
 		self.Time_Leaderboard.setStyleSheet("QListWidget {border: none}")
 		self.Time_Leaderboard.setObjectName("Time_Leaderboard")
@@ -69,6 +68,7 @@ class Ui_dialog(object):
 		data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now()}
 		x = requests.post(url, data = data)
 
+		#get data#
 		url = 'https://ankileaderboard.pythonanywhere.com/getstreaks/'
 		x = requests.post(url)
 		counter = 0
@@ -80,15 +80,19 @@ class Ui_dialog(object):
 				counter = counter + 1
 				username = data_list[0]
 				streak = data_list[1]
-				cards = data_list[2]
-				time = data_list[3]
 
-				self.Streak_Leaderboard.addItem(str(counter)+ ". "+ str(username + "\t" + streak + " days"))
+				self.Streak_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(streak) + " days")
+
+				if username == config['username']:
+					 self.Streak_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
 			except:
 				pass
-		self.Streak_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
-		self.Streak_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
-		self.Streak_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
+		try:
+			self.Streak_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+			self.Streak_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+			self.Streak_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
+		except:
+			pass
 
 		url = 'https://ankileaderboard.pythonanywhere.com/getreviews/'
 		x = requests.post(url)
@@ -100,17 +104,21 @@ class Ui_dialog(object):
 			try:
 				counter = counter + 1
 				username = data_list[0]
-				streak = data_list[1]
 				cards = data_list[2]
-				time = data_list[3]
 			
-				self.Reviews_Leaderboard.addItem(str(counter)+ ". "+ str(username + "\t" + cards + " cards"))
+				self.Reviews_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(cards) + " cards")
+
+				if username == config['username']:
+					 self.Reviews_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
 			except:
 				pass
-		self.Reviews_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
-		self.Reviews_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
-		self.Reviews_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
-		
+		try:
+			self.Reviews_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+			self.Reviews_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+			self.Reviews_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
+		except:
+			pass
+
 		url = 'https://ankileaderboard.pythonanywhere.com/gettime/'
 		x = requests.post(url)
 		counter = 0
@@ -121,23 +129,27 @@ class Ui_dialog(object):
 			try:
 				counter = counter + 1
 				username = data_list[0]
-				streak = data_list[1]
-				cards = data_list[2]
 				time = data_list[3]
 
-				self.Time_Leaderboard.addItem(str(counter)+ ". "+ str(username + "\t" + time + " minutes"))
+				self.Time_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(time) + " minutes")
+				if username == config['username']:
+					 self.Time_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
 			except:
 				pass
-		self.Time_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
-		self.Time_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
-		self.Time_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
+		try:
+			self.Time_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+			self.Time_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+			self.Time_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
+		except:
+			pass
+
 	def retranslateUi(self, dialog):
 		_translate = QtCore.QCoreApplication.translate
 		dialog.setWindowTitle(_translate("dialog", "Leaderboard"))
 		self.Tab.setTabText(self.Tab.indexOf(self.tab1), _translate("dialog", "Streak"))
 		self.Tab.setTabText(self.Tab.indexOf(self.tab_3), _translate("dialog", "Reviews today"))
 		self.Tab.setTabText(self.Tab.indexOf(self.tab_2), _translate("dialog", "Time")
-)
+)	
 
 class start_main(QDialog):
 	def __init__(self, parent=None):

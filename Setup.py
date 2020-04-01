@@ -6,6 +6,7 @@ from os.path import dirname, join, realpath
 from aqt.utils import tooltip
 from datetime import date
 from .Stats import Stats
+from .Leaderboard import start_main
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -13,7 +14,6 @@ class Ui_Dialog(object):
         Dialog.resize(280, 159)
         Dialog.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         Dialog.setWindowIcon(QtGui.QIcon(join(dirname(realpath(__file__)), 'person.png')))
-        #<div>Icons erstellt von <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
         self.widget = QtWidgets.QWidget(Dialog)
         self.widget.setGeometry(QtCore.QRect(10, 10, 261, 141))
         self.widget.setObjectName("widget")
@@ -53,7 +53,8 @@ class Ui_Dialog(object):
             x = requests.post(url, data = data)
             config = {"new_user": "False","username": username}
             mw.addonManager.writeConfig(__name__, config)
-            tooltip("Successfully created account")
+            tooltip("Successfully created account. Close setup and restart the add-on.")
+
 
 
 class start_setup(QDialog):
