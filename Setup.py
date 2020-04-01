@@ -14,6 +14,7 @@ class Ui_Dialog(object):
         Dialog.resize(276, 203)
         Dialog.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         Dialog.setWindowIcon(QtGui.QIcon(join(dirname(realpath(__file__)), 'person.png')))
+        Dialog.setFixedSize(Dialog.size())
         self.layoutWidget = QtWidgets.QWidget(Dialog)
         self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 261, 184))
         self.layoutWidget.setObjectName("layoutWidget")
@@ -27,6 +28,7 @@ class Ui_Dialog(object):
         self.Setup_Button.setObjectName("Setup_Button")
         self.gridLayout.addWidget(self.Setup_Button, 1, 1, 1, 1)
         self.Username = QtWidgets.QLineEdit(self.layoutWidget)
+        self.Username.setMaxLength(10)
         self.Username.setObjectName("Username")
         self.gridLayout.addWidget(self.Username, 1, 0, 1, 1)
         self.Login = QtWidgets.QPushButton(self.layoutWidget)
@@ -50,30 +52,36 @@ class Ui_Dialog(object):
         self.Login.setText(_translate("Dialog", "Login"))
 
     def create_account(self):
-        username = self.Username.text()
-        url = 'https://ankileaderboard.pythonanywhere.com/users/'
-        x = requests.post(url)
-        if username in eval(x.text):
-            tooltip("Username already taken")
-        else:
-            url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-            streak, cards, time = Stats()
-            data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": date.today()}
-            x = requests.post(url, data = data)
-            config = {"new_user": "False","username": username}
-            mw.addonManager.writeConfig(__name__, config)
-            tooltip("Successfully created account. Close setup and restart the add-on.")
+        try:
+            username = self.Username.text()
+            url = 'https://ankileaderboard.pythonanywhere.com/users/'
+            x = requests.post(url)
+            if username in eval(x.text):
+                tooltip("Username already taken")
+            else:
+                url = 'https://ankileaderboard.pythonanywhere.com/sync/'
+                streak, cards, time = Stats()
+                data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": date.today()}
+                x = requests.post(url, data = data)
+                config = {"new_user": "False","username": username}
+                mw.addonManager.writeConfig(__name__, config)
+                tooltip("Successfully created account. Close setup and restart the add-on.")
+        except:
+            pass
 
     def login(self):
-        username = self.Username__Login.text()
-        url = 'https://ankileaderboard.pythonanywhere.com/users/'
-        x = requests.post(url)
-        if username in eval(x.text):
-            config = {"new_user": "False","username": username}
-            mw.addonManager.writeConfig(__name__, config)
-            tooltip("Successfully logged in. Close setup and restart the add-on.")
-        else:
-            tooltip("Account doesn't exist.")
+        try:
+            username = self.Username__Login.text()
+            url = 'https://ankileaderboard.pythonanywhere.com/users/'
+            x = requests.post(url)
+            if username in eval(x.text):
+                config = {"new_user": "False","username": username}
+                mw.addonManager.writeConfig(__name__, config)
+                tooltip("Successfully logged in. Close setup and restart the add-on.")
+            else:
+                tooltip("Account doesn't exist.")
+        except:
+            pass
 
 
 

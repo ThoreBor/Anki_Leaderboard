@@ -25,13 +25,31 @@ def Stats():
 	###REVIEWS TODAY####
 
 	studied_today = mw.col.findCards('rated:1')
+	total_cards = 0
+	for i in studied_today:
+		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i)).fetchall()
+		for i in value:
+			id_time = i[0]
+			id_time = time.strftime('%Y-%m-%d', time.gmtime(int(id_time)/1000.0))
+			if str(id_time) == str(date.today()):
+				total_cards += 1
+
+				
+
+
 
 	###TIME SPEND TODAY###
 	
 	time_today = 0
 	for i in studied_today:
-		value = mw.col.db.scalar("SELECT time FROM revlog WHERE cid = (?) ORDER BY id DESC",(i))
-		time_today = time_today + value
+		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i)).fetchall()
+		for i in value:
+			id_time = i[0]
+			id_time = time.strftime('%Y-%m-%d', time.gmtime(int(id_time)/1000.0))
+			# showInfo(str(id_time))
+			# showInfo(str(date.today()))
+			if str(id_time) == str(date.today()):
+				time_today = time_today + int(i[7])
 	time_today = round(time_today/60000, 1)
 
-	return(Streak, len(studied_today), time_today)
+	return(Streak, total_cards, time_today)

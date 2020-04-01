@@ -14,6 +14,7 @@ class Ui_dialog(object):
 		dialog.resize(315, 579)
 		dialog.setWindowFlags(QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 		dialog.setWindowIcon(QtGui.QIcon(join(dirname(realpath(__file__)), 'krone.png')))
+		dialog.setFixedSize(dialog.size())
 		self.layoutWidget = QtWidgets.QWidget(dialog)
 		self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 291, 561))
 		self.layoutWidget.setObjectName("layoutWidget")
@@ -62,84 +63,103 @@ class Ui_dialog(object):
 		QtCore.QMetaObject.connectSlotsByName(dialog)
 
 		#SYNC#
-		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-		username = config['username']
-		streak, cards, time = Stats()
-		data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now()}
-		x = requests.post(url, data = data)
+		try:
+			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
+			username = config['username']
+			streak, cards, time = Stats()
+			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now()}
+			x = requests.post(url, data = data)
 
-		#get data#
-		url = 'https://ankileaderboard.pythonanywhere.com/getstreaks/'
-		x = requests.post(url)
-		counter = 0
-		data = x.text
-		data = data.split("<br>")
-		for i in data:
-			data_list = i.split(",")
+			#get data#
+			url = 'https://ankileaderboard.pythonanywhere.com/getstreaks/'
+			x = requests.post(url)
+			counter = 0
+			data = x.text
+			data = data.split("<br>")
+			for i in data:
+				data_list = i.split(",")
+				try:
+					counter = counter + 1
+					username = data_list[0]
+					o_user = username
+					if len(username) > 10:
+						username = username[:10]
+					if len(username) < 10:
+						username += "‎  "*(10 - len(username))
+					streak = data_list[1]
+
+					self.Streak_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(streak) + " days")
+					self.Streak_Leaderboard.item(counter-1).setWhatsThis("Test")
+
+					if o_user == config['username']:
+						 self.Streak_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
+				except:
+					pass
 			try:
-				counter = counter + 1
-				username = data_list[0]
-				streak = data_list[1]
-
-				self.Streak_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(streak) + " days")
-
-				if username == config['username']:
-					 self.Streak_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
+				self.Streak_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+				self.Streak_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+				self.Streak_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
 			except:
 				pass
-		try:
-			self.Streak_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
-			self.Streak_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
-			self.Streak_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
-		except:
-			pass
 
-		url = 'https://ankileaderboard.pythonanywhere.com/getreviews/'
-		x = requests.post(url)
-		counter = 0
-		data = x.text
-		data = data.split("<br>")
-		for i in data:
-			data_list = i.split(",")
+			url = 'https://ankileaderboard.pythonanywhere.com/getreviews/'
+			x = requests.post(url)
+			counter = 0
+			data = x.text
+			data = data.split("<br>")
+			for i in data:
+				data_list = i.split(",")
+				try:
+					counter = counter + 1
+					username = data_list[0]
+					o_user = username
+					if len(username) > 10:
+						username = username[:10]
+					if len(username) < 10:
+						username += "‎  "*(10 - len(username))
+					cards = data_list[2]
+				
+					self.Reviews_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(cards) + " cards")
+
+					if o_user == config['username']:
+						 self.Reviews_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
+				except:
+					pass
 			try:
-				counter = counter + 1
-				username = data_list[0]
-				cards = data_list[2]
-			
-				self.Reviews_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(cards) + " cards")
-
-				if username == config['username']:
-					 self.Reviews_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
+				self.Reviews_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+				self.Reviews_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+				self.Reviews_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
 			except:
 				pass
-		try:
-			self.Reviews_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
-			self.Reviews_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
-			self.Reviews_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
-		except:
-			pass
 
-		url = 'https://ankileaderboard.pythonanywhere.com/gettime/'
-		x = requests.post(url)
-		counter = 0
-		data = x.text
-		data = data.split("<br>")
-		for i in data:
-			data_list = i.split(",")
+			url = 'https://ankileaderboard.pythonanywhere.com/gettime/'
+			x = requests.post(url)
+			counter = 0
+			data = x.text
+			data = data.split("<br>")
+			for i in data:
+				data_list = i.split(",")
+				try:
+					counter = counter + 1
+					username = data_list[0]
+					o_user = username
+					if len(username) > 10:
+						username = username[:10]
+					if len(username) < 10:
+						username += "‎  "*(10 - len(username))
+					time = data_list[3]
+
+					self.Time_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(time) + " min")
+					if o_user == config['username']:
+						 self.Time_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
+				except:
+					pass
 			try:
-				counter = counter + 1
-				username = data_list[0]
-				time = data_list[3]
-
-				self.Time_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(time) + " minutes")
-				if username == config['username']:
-					 self.Time_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
+				self.Time_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
+				self.Time_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
+				self.Time_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
 			except:
 				pass
-		try:
-			self.Time_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
-			self.Time_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
-			self.Time_Leaderboard.item(2).setBackground(QtGui.QColor("#bf8970"))
 		except:
 			pass
 
