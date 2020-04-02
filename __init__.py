@@ -6,7 +6,6 @@ from os.path import dirname, join, realpath
 from .Leaderboard import start_main
 from .Setup import start_setup
 import webbrowser
-from .delete import start_delete
 
 
 def Main():
@@ -21,8 +20,8 @@ def Main():
 		s = start_main()
 		if s.exec():
 			pass
-def delete():
-	s = start_delete()
+def setup():
+	s = start_setup()
 	if s.exec():
 		pass
 	
@@ -47,5 +46,5 @@ def add_menu(Name, Button, exe, *sc):
 
 add_menu('Leaderboard',"Leaderboard", Main, 'Shift+L')
 add_menu('Leaderboard',"Make a feature request or report a bug", github)
-add_menu('Leaderboard',"Delete Account", delete)
+add_menu('Leaderboard',"Config", setup)
 add_menu('Leaderboard',"About", about)
