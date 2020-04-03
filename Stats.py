@@ -6,16 +6,16 @@ from os.path import dirname, join, realpath
 from aqt.utils import showInfo, tooltip
 def Stats():
 	###STREAK####
-
+	config = mw.addonManager.getConfig(__name__)
+	newday = int(config['newday'])
 	reviews = mw.col.db.list("SELECT id FROM revlog")
 	date_list = []
-	hour_list =["00","01","02","03"]
 	Streak = 0
 	for i in reviews:
 		normal = time.strftime('%Y-%m-%d', time.gmtime(int(i)/1000.0))
 		i = time.strftime('%Y-%m-%d-%H', time.gmtime(int(i)/1000.0))
 		i = i.split("-")
-		if str(i[3]) in hour_list:
+		if int(i[3]) < newday:
 			old_date = datetime.date(int(i[0]), int(i[1]), int(i[2]))
 			one_day = datetime.timedelta(1)
 			new_date = old_date - one_day

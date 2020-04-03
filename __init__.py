@@ -1,7 +1,7 @@
 from aqt import mw
 from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
-from aqt.utils import showInfo, tooltip
+from aqt.utils import showInfo
 from os.path import dirname, join, realpath
 from .Leaderboard import start_main
 from .Setup import start_setup
@@ -16,10 +16,11 @@ def Main():
 		if s.exec():
 			pass
 	else:
-		#tooltip("Syncing...")
 		s = start_main()
 		if s.exec():
 			pass
+		
+
 def setup():
 	s = start_setup()
 	if s.exec():
@@ -29,7 +30,7 @@ def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
 def about():
-	showInfo('<h3>Anki Leaderboard v1.2</h3><br>The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><br>© Thore Tyborski 2020')
+	showInfo('<h3>Anki Leaderboard v1.3</h3><br>The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><br>© Thore Tyborski 2020')
 	
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)

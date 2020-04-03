@@ -2,10 +2,10 @@ from aqt.qt import *
 from aqt import mw
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .Stats import Stats
-from aqt.utils import tooltip, showInfo
+from aqt.utils import tooltip, showInfo, showWarning
 from os.path import dirname, join, realpath
+from datetime import date, timedelta, time, datetime
 import datetime
-from datetime import date
 import requests
 
 class Ui_dialog(object):
@@ -110,7 +110,10 @@ class Ui_dialog(object):
 		username = config['username']
 		streak, cards, time = Stats()
 		data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now()}
-		x = requests.post(url, data = data)
+		try:
+			x = requests.post(url, data = data)
+		except:
+			showWarning("Make sure that you're connected to the internet.")
 
 		#get data#
 		url = 'https://ankileaderboard.pythonanywhere.com/getstreaks/'
@@ -119,6 +122,15 @@ class Ui_dialog(object):
 		friend_counter = 0
 		data = x.text
 		data = data.split("<br>")
+
+		config = mw.addonManager.getConfig(__name__)
+		new_day = datetime.time(int(config['newday']),0,0)
+		time_now = datetime.datetime.now().time()
+		if time_now < new_day:
+			start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
+		else:
+			start_day = datetime.datetime.combine(date.today(), new_day)
+
 		for i in data:
 			try:
 				data_list = i.split(",")			
@@ -131,21 +143,23 @@ class Ui_dialog(object):
 				streak = data_list[1]
 				
 				sync_date = data_list[4]
-				sync_date = sync_date[0:10]
-				if sync_date == str(date.today()):
+				sync_date = datetime.datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+
+				if sync_date > start_day:
 					counter = counter + 1
 					self.Streak_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(streak) + " days")
 
 					if o_user in config['friends']:
 						friend_counter = friend_counter + 1
 						self.Streak_Leaderboard_Friends.addItem(str(friend_counter)+ ". "+ str(username) + "\t" + str(streak) + " days")
+						self.Streak_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#2176ff"))
 
 					if o_user == config['username']:
 						self.Streak_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
 						self.Streak_Leaderboard_Friends.item(friend_counter-1).setBackground(QtGui.QColor("#51f564"))
 			except:
 				pass
-						
+
 		try:
 			self.Streak_Leaderboard.item(0).setBackground(QtGui.QColor("#ffd700"))
 			self.Streak_Leaderboard.item(1).setBackground(QtGui.QColor("#c0c0c0"))
@@ -174,14 +188,16 @@ class Ui_dialog(object):
 				cards = data_list[2]
 				
 				sync_date = data_list[4]
-				sync_date = sync_date[0:10]
-				if sync_date == str(date.today()):
+				sync_date = datetime.datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+
+				if sync_date > start_day:
 					counter = counter + 1
 					self.Reviews_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(cards) + " cards")
 
 					if o_user in config['friends']:
 						friend_counter = friend_counter + 1
 						self.Reviews_Leaderboard_Friends.addItem(str(friend_counter)+ ". "+ str(username) + "\t" + str(cards) + " cards")
+						self.Reviews_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#2176ff"))
 					if o_user == config['username']:
 						 self.Reviews_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
 						 self.Reviews_Leaderboard_Friends.item(friend_counter-1).setBackground(QtGui.QColor("#51f564"))
@@ -215,14 +231,16 @@ class Ui_dialog(object):
 				time = data_list[3]
 
 				sync_date = data_list[4]
-				sync_date = sync_date[0:10]
-				if sync_date == str(date.today()):
+				sync_date = datetime.datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+
+				if sync_date > start_day:
 					counter = counter + 1
 					self.Time_Leaderboard.addItem(str(counter)+ ". "+ str(username) + "\t" + str(time) + " min")
 
 					if o_user in config['friends']:
 						friend_counter = friend_counter + 1
 						self.Time_Leaderboard_Friends.addItem(str(friend_counter)+ ". "+ str(username) + "\t" + str(time) + " min")
+						self.Time_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#2176ff"))
 					if o_user == config['username']:
 						 self.Time_Leaderboard.item(counter-1).setBackground(QtGui.QColor("#51f564"))
 						 self.Time_Leaderboard_Friends.item(friend_counter-1).setBackground(QtGui.QColor("#51f564"))
