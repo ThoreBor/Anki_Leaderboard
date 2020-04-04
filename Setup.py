@@ -131,7 +131,7 @@ class Ui_Dialog(object):
 		self.remove_friend_info.setText(_translate("Dialog", "Remove Friend:"))
 		self.remove_friend_username.setPlaceholderText(_translate("Dialog", "Friend"))
 		self.remove_friend_button.setText(_translate("Dialog", "Remove Friend"))
-		self.next_day_info1.setText(_translate("Dialog", "Next day starts at"))
+		self.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
 		config = mw.addonManager.getConfig(__name__)
 		config4 = int(config['newday'])

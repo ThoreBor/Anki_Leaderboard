@@ -23,16 +23,24 @@ def Stats():
 		else:
 			date_list.append(normal)
 	
-	start_date = date.today()
+	time_now = datetime.datetime.now().time()
+	new_day = datetime.time(int(config['newday']),0,0)
+	
+	if time_now < new_day:
+		start_date = date.today() - timedelta(days=1)
+		start_date2 = date.today() - timedelta(days=1)
+	else:
+		start_date = date.today()
+		start_date2 = date.today()
+
 	end_date = date(2000, 1, 1)
 	delta = timedelta(days=1)
 	while start_date >= end_date:
-	    if start_date.strftime("%Y-%m-%d") in date_list:
-	    	Streak = Streak + 1
-	    else:
-	    	break
-	    start_date -= delta
-
+		if start_date.strftime("%Y-%m-%d") in date_list:
+			Streak = Streak + 1
+		else:
+			break
+		start_date -= delta
 	###REVIEWS TODAY####
 
 	studied_today = mw.col.findCards('rated:1')
@@ -42,7 +50,7 @@ def Stats():
 		for i in value:
 			id_time = i[0]
 			id_time = time.strftime('%Y-%m-%d', time.gmtime(int(id_time)/1000.0))
-			if str(id_time) == str(date.today()):
+			if str(id_time) == str(start_date2):
 				total_cards += 1
 
 	###TIME SPEND TODAY###
@@ -55,7 +63,7 @@ def Stats():
 			id_time = time.strftime('%Y-%m-%d', time.gmtime(int(id_time)/1000.0))
 			# showInfo(str(id_time))
 			# showInfo(str(date.today()))
-			if str(id_time) == str(date.today()):
+			if str(id_time) == str(start_date2):
 				time_today = time_today + int(i[7])
 	time_today = round(time_today/60000, 1)
 
