@@ -16,9 +16,8 @@ def Main():
 		if s.exec():
 			pass
 	else:
-		s = start_main()
-		if s.exec():
-			pass
+		mw.leaderboard = start_main()
+		mw.leaderboard.show()
 		
 
 def setup():
