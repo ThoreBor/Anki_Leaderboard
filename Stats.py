@@ -73,7 +73,6 @@ def Stats():
 	new_day = datetime.time(int(config['newday']),0,0)
 	time_now = datetime.datetime.now().time()
 	if time_now < new_day:
-		showInfo("")
 		start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
 	else:
 		start_day = datetime.datetime.combine(date.today(), new_day)
