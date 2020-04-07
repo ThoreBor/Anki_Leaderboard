@@ -45,7 +45,7 @@ def add_menu(Name, Button, exe, *sc):
 	for i in sc:
 		action.setShortcut(QKeySequence(i))
 
-add_menu('Leaderboard',"Leaderboard", Main, 'Shift+L')
-add_menu('Leaderboard',"Make a feature request or report a bug", github)
-add_menu('Leaderboard',"Config", setup)
-add_menu('Leaderboard',"About", about)
+add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
+add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
+add_menu('&Leaderboard',"&Config", setup)
+add_menu('&Leaderboard',"&About", about)
