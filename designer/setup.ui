@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Config</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/icons/person.png</normaloff>:/icons/person.png</iconset>
+  </property>
   <widget class="QGroupBox" name="Accout">
    <property name="geometry">
     <rect>
@@ -137,7 +141,7 @@
       <x>10</x>
       <y>20</y>
       <width>261</width>
-      <height>111</height>
+      <height>124</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -203,8 +207,8 @@
     <rect>
      <x>280</x>
      <y>150</y>
-     <width>281</width>
-     <height>81</height>
+     <width>282</width>
+     <height>110</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_4">
@@ -229,7 +233,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Medicin</string>
+        <string>Medicine</string>
        </property>
       </item>
       <item>
@@ -265,6 +269,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
