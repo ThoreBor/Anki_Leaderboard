@@ -46,7 +46,7 @@ def Stats():
 	studied_today = mw.col.findCards('rated:1')
 	total_cards = 0
 	for i in studied_today:
-		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i)).fetchall()
+		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i))
 		for i in value:
 			id_time = i[0]
 			id_time = time.strftime('%Y-%m-%d', time.localtime(int(id_time)/1000.0))
@@ -57,7 +57,7 @@ def Stats():
 	
 	time_today = 0
 	for i in studied_today:
-		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i)).fetchall()
+		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i))
 		for i in value:
 			id_time = i[0]
 			id_time = time.strftime('%Y-%m-%d', time.localtime(int(id_time)/1000.0))
