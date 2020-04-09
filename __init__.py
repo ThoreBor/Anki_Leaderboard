@@ -49,4 +49,4 @@ add_menu('Leaderboard',"Make a feature request or report a bug", github)
 add_menu('Leaderboard',"Config", invoke_setup)
 add_menu('Leaderboard',"About", about)
 
-mw.addonManager.setConfigAction(__name__, setup)
+mw.addonManager.setConfigAction(__name__, invoke_setup)
