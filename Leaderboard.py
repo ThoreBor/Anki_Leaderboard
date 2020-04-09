@@ -26,9 +26,7 @@ class start_main(QDialog):
 	def setupUI(self):
 		header = self.dialog.Global_Leaderboard.horizontalHeader()
 		header.sortIndicatorChanged.connect(self.change_colors)
-
 		config = mw.addonManager.getConfig(__name__)
-
 		tab_widget = self.dialog.Parent
 		country_tab = tab_widget.indexOf(self.dialog.tab_3)
 		subject_tab = tab_widget.indexOf(self.dialog.tab_4)
@@ -216,25 +214,47 @@ class start_main(QDialog):
 						self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#51f564"))
 					for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 						self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
-		# try:
-		# 	for j in range(self.dialog.Global_Leaderboard.columnCount()):
-		# 		self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-		# 		self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-		# 		self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
-		# except:
-		# 	pass
+		
+		global first_three
+		first_three = []
+		for i in range(3):
+			item = self.dialog.Global_Leaderboard.item(i, 0).text()
+			first_three.append(item)
+
+		try:
+			for j in range(self.dialog.Global_Leaderboard.columnCount()):
+				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
+				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
+				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+		except:
+			pass
 
 	def change_colors(self):
-		pass
-		# try:
-		# 	for j in range(self.dialog.Global_Leaderboard.columnCount()):
-		# 		self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-		# 		self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-		# 		self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
-		# except:
-		# 	pass
-		# for row in range(self.dialog.Global_Leaderboard.rowCount ()):
-		#    for column in range(self.dialog.Global_Leaderboard.columnCount ()):
-		#        item = self.dialog.Global_Leaderboard.item(row, column )
-		#        if item and item.data(Qt.DisplayRole) == "Thore":
-		#            showInfo(str(self.dialog.Global_Leaderboard.indexFromItem(item)))
+		config = mw.addonManager.getConfig(__name__)
+		global first_three
+		current_ranking_list = []
+
+		for i in range(self.dialog.Global_Leaderboard.rowCount()):
+			item = self.dialog.Global_Leaderboard.item(i, 0).text()
+			current_ranking_list.append(item)
+
+		for i in first_three:
+			for j in range(self.dialog.Global_Leaderboard.columnCount()):
+				self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+				if i == config['username']:
+					self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
+				if i in config['friends'] and i != config['username']:
+					self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
+
+		try:
+			for j in range(self.dialog.Global_Leaderboard.columnCount()):
+				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
+				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
+				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+		except:
+			pass
+
+		first_three = []
+		for i in range(3):
+			item = self.dialog.Global_Leaderboard.item(i, 0).text()
+			first_three.append(item)
