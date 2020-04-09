@@ -12,25 +12,24 @@ def Main():
 	config = mw.addonManager.getConfig(__name__)
 	setup = config['new_user']
 	if setup == "True":
-		s = start_setup()
-		if s.exec():
-			pass
+		invoke_setup()
 	else:
-		s = start_main()
-		if s.exec():
-			pass
-		
+		mw.leaderboard = start_main()
+		mw.leaderboard.show()
+		mw.leaderboard.raise_()
+		mw.leaderboard.activateWindow()
 
-def setup():
-	s = start_setup()
-	if s.exec():
-		pass
-	
+def invoke_setup():
+	mw.lb_setup = start_setup()
+	mw.lb_setup.show()
+	mw.lb_setup.raise_()
+	mw.lb_setup.activateWindow()
+
 def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
 def about():
-	showInfo('<h3>Anki Leaderboard v1.4</h3><br>The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><br>© Thore Tyborski 2020')
+	showInfo('<h3>Anki Leaderboard v1.4.1</h3><br>The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><br>© Thore Tyborski 2020<br>With contributions from khonkhortisan and zjosua.')
 	
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
@@ -47,5 +46,6 @@ def add_menu(Name, Button, exe, *sc):
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
-add_menu('&Leaderboard',"&Config", setup)
+add_menu('&Leaderboard',"&Config", invoke_setup)
 add_menu('&Leaderboard',"&About", about)
+mw.addonManager.setConfigAction(__name__, invoke_setup)
