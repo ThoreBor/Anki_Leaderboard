@@ -71,8 +71,8 @@ class start_main(QDialog):
 				sync_date = sync_date + "12:00:00"
 			sync_date = datetime.datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
 			month = data_list[5]
-			if month == "":
-				month = datetime.datetime.now().month
+			if month.isdigit():
+				month = int(month)
 			subject = data_list[6]
 			country = data_list[7]
 			if sync_date > start_day:
@@ -97,7 +97,7 @@ class start_main(QDialog):
 				self.dialog.Global_Leaderboard.setItem(rowPosition, 3, item)
 
 				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, int(month))
+				item.setData(QtCore.Qt.DisplayRole, month)
 				self.dialog.Global_Leaderboard.setItem(rowPosition, 4, item)
 			
 				self.dialog.Global_Leaderboard.resizeColumnsToContents()
