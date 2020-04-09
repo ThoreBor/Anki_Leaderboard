@@ -47,7 +47,7 @@
              <string/>
             </property>
             <property name="maxLength">
-             <number>10</number>
+             <number>15</number>
             </property>
             <property name="placeholderText">
              <string>Username</string>
@@ -73,9 +73,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="maxLength">
-             <number>10</number>
-            </property>
             <property name="placeholderText">
              <string>Username</string>
             </property>
@@ -99,9 +96,6 @@
            <widget class="QLineEdit" name="delete_username">
             <property name="text">
              <string/>
-            </property>
-            <property name="maxLength">
-             <number>10</number>
             </property>
             <property name="placeholderText">
              <string>Username</string>
@@ -157,9 +151,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="maxLength">
-             <number>10</number>
-            </property>
             <property name="placeholderText">
              <string>Friend</string>
             </property>
@@ -183,9 +174,6 @@
            <widget class="QLineEdit" name="remove_friend_username">
             <property name="text">
              <string/>
-            </property>
-            <property name="maxLength">
-             <number>10</number>
             </property>
             <property name="placeholderText">
              <string>Friend</string>

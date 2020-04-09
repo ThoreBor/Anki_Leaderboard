@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>536</width>
-    <height>529</height>
+    <width>570</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Time today</string>
+           <string>Minutes today</string>
           </property>
          </column>
          <column>
@@ -67,7 +67,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews monthly</string>
+           <string>Reviews past 30 days</string>
           </property>
          </column>
         </widget>
@@ -99,7 +99,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Time today</string>
+           <string>Minutes today</string>
           </property>
          </column>
          <column>
@@ -109,7 +109,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews monthly</string>
+           <string>Reviews past 30 days</string>
           </property>
          </column>
         </widget>
@@ -141,7 +141,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Time today</string>
+           <string>Minutes today</string>
           </property>
          </column>
          <column>
@@ -151,7 +151,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews monthly</string>
+           <string>Reviews past 30 days</string>
           </property>
          </column>
         </widget>
@@ -183,7 +183,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Time today</string>
+           <string>Minutes today</string>
           </property>
          </column>
          <column>
@@ -193,7 +193,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews monthly</string>
+           <string>Reviews past 30 days</string>
           </property>
          </column>
         </widget>
