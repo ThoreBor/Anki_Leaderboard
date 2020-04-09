@@ -37,7 +37,7 @@ class start_main(QDialog):
 		config5 = config['subject']
 		config6 = config['country']
 		streak, cards, time, cards_past_30_days = Stats()
-		data = {'Username': config1 , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), "month": cards_past_30_days, "Subject": config5, "Country": config6}
+		data = {'Username': config1 , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), "Month": cards_past_30_days, "Subject": config5, "Country": config6}
 		try:
 			x = requests.post(url, data = data)
 		except:
