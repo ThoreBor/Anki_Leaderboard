@@ -72,11 +72,12 @@ def Stats():
 	config = mw.addonManager.getConfig(__name__)
 	new_day = datetime.time(int(config['newday']),0,0)
 	time_now = datetime.datetime.now().time()
-	if time_now < new_day:
-		start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
-	else:
-		start_day = datetime.datetime.combine(date.today(), new_day)
-	end_day = datetime.datetime.combine(date.today() - timedelta(days=30), new_day)
+	start_day = datetime.datetime.now()
+	# if time_now < new_day:
+	# 	start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
+	# else:
+	# 	start_day = datetime.datetime.combine(date.today(), new_day)
+	end_day = datetime.datetime.combine(date.today() - timedelta(days=29), new_day)
 
 	reviews = mw.col.db.list("SELECT id FROM revlog")
 
@@ -86,6 +87,5 @@ def Stats():
 		i = datetime.datetime.fromtimestamp(i/1000.0)
 		if i >= end_day and i <= start_day:
 			cards_past_30_days = cards_past_30_days + 1
-	#showInfo(str(cards_past_30_days))
 
 	return(Streak, total_cards, time_today, cards_past_30_days)
