@@ -27,6 +27,14 @@ class start_main(QDialog):
 		header = self.dialog.Global_Leaderboard.horizontalHeader()
 		header.sortIndicatorChanged.connect(self.change_colors)
 
+		config = mw.addonManager.getConfig(__name__)
+
+		tab_widget = self.dialog.Parent
+		country_tab = tab_widget.indexOf(self.dialog.tab_3)
+		subject_tab = tab_widget.indexOf(self.dialog.tab_4)
+		tab_widget.setTabText(country_tab, config["country"])
+		tab_widget.setTabText(subject_tab, config["subject"])
+
 		self.sync()
 
 	def sync(self):
