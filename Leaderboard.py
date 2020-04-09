@@ -64,6 +64,8 @@ class start_main(QDialog):
 		x = requests.post(url)
 		counter = 0
 		friend_counter = 0
+		country_counter = 0
+		custom_counter = 0
 		data = x.text
 		data = data.split("<br>")
 		for i in data:
@@ -110,6 +112,70 @@ class start_main(QDialog):
 			
 				self.dialog.Global_Leaderboard.resizeColumnsToContents()
 
+				if country == config6 and country != "":
+					country_counter = country_counter + 1
+
+					rowPosition = self.dialog.Country_Leaderboard.rowCount()
+					self.dialog.Country_Leaderboard.setColumnCount(5)
+					self.dialog.Country_Leaderboard.insertRow(rowPosition)
+
+					self.dialog.Country_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
+			
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, int(cards))
+					self.dialog.Country_Leaderboard.setItem(rowPosition, 1, item)
+
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, float(time))
+					self.dialog.Country_Leaderboard.setItem(rowPosition, 2, item)
+
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, int(streak))
+					self.dialog.Country_Leaderboard.setItem(rowPosition, 3, item)
+				
+
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, int(month))
+					self.dialog.Country_Leaderboard.setItem(rowPosition, 4, item)
+
+					self.dialog.Country_Leaderboard.resizeColumnsToContents()
+
+					if username in config['friends']:
+						for j in range(self.dialog.Country_Leaderboard.columnCount()):
+							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#2176ff"))
+
+				if subject == config5 and subject != "Custom":
+					custom_counter = custom_counter + 1
+
+					rowPosition = self.dialog.Custom_Leaderboard.rowCount()
+					self.dialog.Custom_Leaderboard.setColumnCount(5)
+					self.dialog.Custom_Leaderboard.insertRow(rowPosition)
+
+					self.dialog.Custom_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
+			
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, int(cards))
+					self.dialog.Custom_Leaderboard.setItem(rowPosition, 1, item)
+
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, float(time))
+					self.dialog.Custom_Leaderboard.setItem(rowPosition, 2, item)
+
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, int(streak))
+					self.dialog.Custom_Leaderboard.setItem(rowPosition, 3, item)
+				
+
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, int(month))
+					self.dialog.Custom_Leaderboard.setItem(rowPosition, 4, item)
+
+					self.dialog.Custom_Leaderboard.resizeColumnsToContents()
+
+					if username in config['friends']:
+						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
+							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#2176ff"))
+
 				if username in config['friends']:
 					friend_counter = friend_counter + 1
 
@@ -140,63 +206,16 @@ class start_main(QDialog):
 				
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#2176ff"))
-
+				
 				if username == config['username']:
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#51f564"))
-			
-				if country == config6 and country != "":
-					rowPosition = self.dialog.Country_Leaderboard.rowCount()
-					self.dialog.Country_Leaderboard.setColumnCount(5)
-					self.dialog.Country_Leaderboard.insertRow(rowPosition)
-
-					self.dialog.Country_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(cards))
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 1, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, float(time))
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 2, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(streak))
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 3, item)
-				
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(month))
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 4, item)
-
-					self.dialog.Country_Leaderboard.resizeColumnsToContents()
-			
-				if subject == config5 and subject != "Custom":
-					rowPosition = self.dialog.Custom_Leaderboard.rowCount()
-					self.dialog.Custom_Leaderboard.setColumnCount(5)
-					self.dialog.Custom_Leaderboard.insertRow(rowPosition)
-
-					self.dialog.Custom_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(cards))
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 1, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, float(time))
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 2, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(streak))
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 3, item)
-				
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(month))
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 4, item)
-
-					self.dialog.Custom_Leaderboard.resizeColumnsToContents()
-
+					for j in range(self.dialog.Friends_Leaderboard.columnCount()):
+						self.dialog.Friends_Leaderboard.item(friend_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+					for j in range(self.dialog.Country_Leaderboard.columnCount()):
+						self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+					for j in range(self.dialog.Custom_Leaderboard.columnCount()):
+						self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
 		# try:
 		# 	for j in range(self.dialog.Global_Leaderboard.columnCount()):
 		# 		self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
