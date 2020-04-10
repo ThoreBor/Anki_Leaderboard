@@ -73,11 +73,8 @@ def Stats():
 	new_day = datetime.time(int(config['newday']),0,0)
 	time_now = datetime.datetime.now().time()
 	start_day = datetime.datetime.now()
-	# if time_now < new_day:
-	# 	start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
-	# else:
-	# 	start_day = datetime.datetime.combine(date.today(), new_day)
-	end_day = datetime.datetime.combine(date.today() - timedelta(days=29), new_day)
+
+	end_day = datetime.datetime.combine(date.today() - timedelta(days=30), new_day)
 
 	reviews = mw.col.db.list("SELECT id FROM revlog")
 
