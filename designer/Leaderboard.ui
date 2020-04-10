@@ -67,7 +67,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 30 days</string>
+           <string>Reviews past 31 days</string>
           </property>
          </column>
         </widget>
@@ -109,7 +109,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 30 days</string>
+           <string>Reviews past 31 days</string>
           </property>
          </column>
         </widget>
@@ -151,7 +151,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 30 days</string>
+           <string>Reviews past 31 days</string>
           </property>
          </column>
         </widget>
@@ -193,7 +193,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 30 days</string>
+           <string>Reviews past 31 days</string>
           </property>
          </column>
         </widget>

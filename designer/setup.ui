@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>417</width>
-    <height>434</height>
+    <height>403</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -59,7 +59,7 @@
           <widget class="QComboBox" name="subject">
            <item>
             <property name="text">
-             <string>What are you studying?</string>
+             <string>Join a group</string>
             </property>
            </item>
            <item>
@@ -69,7 +69,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Medicine</string>
+             <string>Medical School Anki</string>
             </property>
            </item>
            <item>
@@ -117,9 +117,6 @@
            <property name="text">
             <string/>
            </property>
-           <property name="maxLength">
-            <number>10</number>
-           </property>
            <property name="placeholderText">
             <string>Username</string>
            </property>
@@ -157,7 +154,7 @@
             <string/>
            </property>
            <property name="maxLength">
-            <number>10</number>
+            <number>15</number>
            </property>
            <property name="placeholderText">
             <string>Username</string>
@@ -189,9 +186,6 @@
           <widget class="QLineEdit" name="login_username">
            <property name="text">
             <string/>
-           </property>
-           <property name="maxLength">
-            <number>10</number>
            </property>
            <property name="placeholderText">
             <string>Username</string>
