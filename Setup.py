@@ -26,10 +26,12 @@ class start_setup(QDialog):
 		config4 = int(config['newday'])
 		config5 = config["subject"]
 		config6 = config["country"]
+		config7 = config["scroll"]
 
 		self.update_login_info(config["username"])
 		self.dialog.newday.setValue(config4)
 		self.dialog.subject.setCurrentText(config5)
+		self.dialog.scroll.setChecked(bool(config7))
 		self.update_friends_list(config["friends"])
 
 		for i in range(1, 255):
@@ -307,6 +309,7 @@ class start_setup(QDialog):
 		self.dialog.newday.valueChanged.connect(self.set_time)
 		self.dialog.subject.currentTextChanged.connect(self.set_subject)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
+		self.dialog.scroll.stateChanged.connect(self.set_scroll)
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
@@ -315,7 +318,7 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.4.1</h3><br>
+<h3>Anki Leaderboard v1.4.2</h3><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
@@ -328,29 +331,25 @@ With contributions from khonkhortisan and zjosua.
 		self.dialog.about_text.setHtml(about_text)
 
 	def create_account(self):
-		try:
-			username = self.dialog.create_username.text()
-			config = mw.addonManager.getConfig(__name__)
-			config3 = config['friends']
-			config4 = config['newday']
-			config5 = config['subject']
-			config6 = config['country']
-			url = 'https://ankileaderboard.pythonanywhere.com/users/'
-			x = requests.post(url)
-			if username in eval(x.text):
-				tooltip("Username already taken")
-			else:
-				url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-				streak, cards, time, cards_past_30_days = Stats()
-				data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), "Month": cards_past_30_days, "Subject": config5, "Country": config6}
-				x = requests.post(url, data = data)
-				config = {"new_user": "False","username": username, "friends": config3, "newday": config4, "country": config6, "subject": config5}
-				mw.addonManager.writeConfig(__name__, config)
-				tooltip("Successfully created account.")
-				self.dialog.create_username.setText("")
-				self.update_login_info(username)
-		except:
-			pass
+		username = self.dialog.create_username.text()
+		config = mw.addonManager.getConfig(__name__)
+		url = 'https://ankileaderboard.pythonanywhere.com/users/'
+		x = requests.post(url)
+		if username in eval(x.text):
+			tooltip("Username already taken")
+		else:
+			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
+			streak, cards, time, cards_past_30_days = Stats()
+			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), "Month": cards_past_30_days, 
+			"Subject": config["subject"], "Country": config["country"]}
+			x = requests.post(url, data = data)
+
+			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			mw.addonManager.writeConfig(__name__, config)
+			tooltip("Successfully created account.")
+			self.dialog.create_username.setText("")
+			self.update_login_info(username)
 
 	def update_login_info(self, username):
 		login_info = self.dialog.login_info_2
@@ -366,46 +365,36 @@ With contributions from khonkhortisan and zjosua.
 			friends_list.addItem(friend)
 
 	def login(self):
-		try:
-			username = self.dialog.login_username.text()
-			config = mw.addonManager.getConfig(__name__)
-			config3 = config['friends']
-			config4 = config['newday']
-			config5 = config['subject']
-			config6 = config['country']
-			url = 'https://ankileaderboard.pythonanywhere.com/users/'
-			x = requests.post(url)
-			if username in eval(x.text):
-				config = {"new_user": "False","username": username, "friends": config3, "newday": config4, "country": config6, "subject": config5}
-				mw.addonManager.writeConfig(__name__, config)
-				tooltip("Successfully logged in.")
-				self.dialog.login_username.setText("")
-				self.update_login_info(username)
-			else:
-				tooltip("Account doesn't exist.")
-		except:
-			pass
+		username = self.dialog.login_username.text()
+		config = mw.addonManager.getConfig(__name__)
+		url = 'https://ankileaderboard.pythonanywhere.com/users/'
+		x = requests.post(url)
+		if username in eval(x.text):
+			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			mw.addonManager.writeConfig(__name__, config)
+			tooltip("Successfully logged in.")
+			self.dialog.login_username.setText("")
+			self.update_login_info(username)
+		else:
+			tooltip("Account doesn't exist.")
+
 
 	def delete(self):
-		try:
-			username = self.dialog.delete_username.text()
-			config = mw.addonManager.getConfig(__name__)
-			config3 = config['friends']
-			config4 = config['newday']
-			config5 = config['subject']
-			config6 = config['country']
-			url = 'https://ankileaderboard.pythonanywhere.com/delete/'
-			data = {'Username': username}
-			x = requests.post(url, data = data)
-			if x.text == "Deleted":
-				config = {"new_user": "True","username": "", "friends": config3, "newday": config4, "country": config6, "subject": config5}
-				mw.addonManager.writeConfig(__name__, config)
-				tooltip("Successfully deleted account.")
-				self.dialog.delete_username.setText("")
-			else:
-				tooltip("Error")
-		except:
-			pass
+		username = self.dialog.delete_username.text()
+		config = mw.addonManager.getConfig(__name__)
+		url = 'https://ankileaderboard.pythonanywhere.com/delete/'
+		data = {'Username': username}
+		x = requests.post(url, data = data)
+		if x.text == "Deleted":
+			config = {"new_user": "True", "username": "", "friends": config['friends'], "newday": config["newday"], 
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			mw.addonManager.writeConfig(__name__, config)
+			tooltip("Successfully deleted account.")
+			self.dialog.delete_username.setText("")
+		else:
+			tooltip("Error")
+
 
 	def add_friend(self):
 		username = self.dialog.friend_username.text()
@@ -434,14 +423,10 @@ With contributions from khonkhortisan and zjosua.
 		for item in self.dialog.friends_list.selectedItems():
 			username = item.text()
 			config = mw.addonManager.getConfig(__name__)
-			config1 = config['new_user']
-			config2 = config['username']
 			config3 = config['friends']
-			config4 = config['newday']
-			config5 = config['subject']
-			config6 = config['country']
 			config3.remove(username)
-			config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "country": config6, "subject": config5}
+			config = {"new_user": config['new_user'], "username": config['username'], "friends": config3, "newday": config["newday"], 
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(f"{username} was removed from your friendlist")
 			self.update_friends_list(config["friends"])
@@ -449,34 +434,32 @@ With contributions from khonkhortisan and zjosua.
 	def set_time(self):
 		beginning_of_new_day = self.dialog.newday.value()
 		config = mw.addonManager.getConfig(__name__)
-		config1 = config['new_user']
-		config2 = config['username']
-		config3 = config['friends']
-		config5 = config['subject']
-		config6 = config['country']
-		config = {"new_user": config1,"username": config2, "friends": config3, "newday": str(beginning_of_new_day), "country": config6, "subject": config5}
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": str(beginning_of_new_day), 
+		"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_subject(self):
 		subject = self.dialog.subject.currentText()
 		config = mw.addonManager.getConfig(__name__)
-		config1 = config['new_user']
-		config2 = config['username']
-		config3 = config['friends']
-		config4 = config['newday']
-		config6 = config['country']
-		if subject == "What are you studying?":
+		if subject == "Join a group":
 			subject = "Custom"
-		config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "subject": subject, "country": config6}
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+		"subject": subject, "country": config['country'], "scroll": config['scroll']}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_country(self):
 		country = self.dialog.country.currentText()
 		config = mw.addonManager.getConfig(__name__)
-		config1 = config['new_user']
-		config2 = config['username']
-		config3 = config['friends']
-		config4 = config['newday']
-		config5 = config['subject']
-		config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "subject": config5 , "country": country}
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+		"subject": config['subject'], "country": country, "scroll": config['scroll']}
+		mw.addonManager.writeConfig(__name__, config)
+
+	def set_scroll(self):
+		config = mw.addonManager.getConfig(__name__)
+		if self.dialog.scroll.isChecked():
+			scroll = "True"
+		else:
+			scroll = ""
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+		"subject": config['subject'], "country": config['country'], "scroll": scroll}
 		mw.addonManager.writeConfig(__name__, config)
