@@ -2,7 +2,7 @@ import datetime
 import traceback
 from datetime import date, time, timedelta
 from os.path import dirname, join, realpath
-from time import sleep
+import threading
 
 import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -140,7 +140,7 @@ class start_main(QDialog):
 				
 
 					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(month))
+					item.setData(QtCore.Qt.DisplayRole, month)
 					self.dialog.Country_Leaderboard.setItem(rowPosition, 4, item)
 
 					self.dialog.Country_Leaderboard.resizeColumnsToContents()
@@ -172,7 +172,7 @@ class start_main(QDialog):
 				
 
 					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(month))
+					item.setData(QtCore.Qt.DisplayRole, month)
 					self.dialog.Custom_Leaderboard.setItem(rowPosition, 4, item)
 
 					self.dialog.Custom_Leaderboard.resizeColumnsToContents()
@@ -204,7 +204,7 @@ class start_main(QDialog):
 				
 
 					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(month))
+					item.setData(QtCore.Qt.DisplayRole, month)
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 4, item)
 				
 					self.dialog.Friends_Leaderboard.resizeColumnsToContents()
@@ -222,7 +222,7 @@ class start_main(QDialog):
 					for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 						self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
 		
-		### Highlight first three places ###
+		### Highlight first three places###
 
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			global first_three_global
@@ -272,6 +272,52 @@ class start_main(QDialog):
 				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
 				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
 
+		### SCROLL ###
+		
+		current_ranking_list = []
+		if config["scroll"] == "True":
+			for i in range(self.dialog.Global_Leaderboard.rowCount()):
+				item = self.dialog.Global_Leaderboard.item(i, 0).text()
+				current_ranking_list.append(item)
+				if item == config['username']:
+					userposition = self.dialog.Global_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Global_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+					self.dialog.Global_Leaderboard.selectRow(current_ranking_list.index(item))
+					self.dialog.Global_Leaderboard.clearSelection()
+
+		current_ranking_list = []
+		if config["scroll"] == "True":
+			for i in range(self.dialog.Friends_Leaderboard.rowCount()):
+				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
+				current_ranking_list.append(item)
+				if item == config['username']:
+					userposition = self.dialog.Friends_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Friends_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+					self.dialog.Friends_Leaderboard.selectRow(current_ranking_list.index(item))
+					self.dialog.Friends_Leaderboard.clearSelection()
+
+		current_ranking_list = []
+		if config["scroll"] == "True":
+			for i in range(self.dialog.Country_Leaderboard.rowCount()):
+				item = self.dialog.Country_Leaderboard.item(i, 0).text()
+				current_ranking_list.append(item)
+				if item == config['username']:
+					userposition = self.dialog.Country_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Country_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+					self.dialog.Country_Leaderboard.selectRow(current_ranking_list.index(item))
+					self.dialog.Country_Leaderboard.clearSelection()
+
+		current_ranking_list = []
+		if config["scroll"] == "True":
+			for i in range(self.dialog.Custom_Leaderboard.rowCount()):
+				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
+				current_ranking_list.append(item)
+				if item == config['username']:
+					userposition = self.dialog.Custom_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Custom_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+					self.dialog.Custom_Leaderboard.selectRow(current_ranking_list.index(item))
+					self.dialog.Custom_Leaderboard.clearSelection()
+
 	def change_colors_global(self):
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
@@ -281,6 +327,9 @@ class start_main(QDialog):
 			for i in range(self.dialog.Global_Leaderboard.rowCount()):
 				item = self.dialog.Global_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
+				if item == config['username'] and config["scroll"] == "True":
+					userposition = self.dialog.Global_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Global_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
 
 			for i in first_three_global:
 				for j in range(self.dialog.Global_Leaderboard.columnCount()):
@@ -309,6 +358,9 @@ class start_main(QDialog):
 			for i in range(self.dialog.Friends_Leaderboard.rowCount()):
 				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
+				if item == config['username'] and config["scroll"] == "True":
+					userposition = self.dialog.Friends_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Friends_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
 
 			for i in first_three_friends:
 				for j in range(self.dialog.Friends_Leaderboard.columnCount()):
@@ -337,6 +389,9 @@ class start_main(QDialog):
 			for i in range(self.dialog.Country_Leaderboard.rowCount()):
 				item = self.dialog.Country_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
+				if item == config['username'] and config["scroll"] == "True":
+					userposition = self.dialog.Country_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Country_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
 
 			for i in first_three_country:
 				for j in range(self.dialog.Country_Leaderboard.columnCount()):
@@ -365,6 +420,9 @@ class start_main(QDialog):
 			for i in range(self.dialog.Custom_Leaderboard.rowCount()):
 				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
+				if item == config['username'] and config["scroll"] == "True":
+					userposition = self.dialog.Custom_Leaderboard.item(current_ranking_list.index(item), 0)
+					self.dialog.Custom_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
 
 			for i in first_three_custom:
 				for j in range(self.dialog.Custom_Leaderboard.columnCount()):
