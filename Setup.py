@@ -22,20 +22,20 @@ class start_setup(QDialog):
 		self.setupUI()
 
 	def setupUI(self):
-		_translate = QtCore.QCoreApplication.translate
-
 		config = mw.addonManager.getConfig(__name__)
 		config4 = int(config['newday'])
 		config5 = config["subject"]
 		config6 = config["country"]
 
+		self.update_login_info(config["username"])
 		self.dialog.newday.setValue(config4)
-
 		self.dialog.subject.setCurrentText(config5)
+		self.update_friends_list(config["friends"])
 
 		for i in range(1, 255):
 			self.dialog.country.addItem("")
 
+		_translate = QtCore.QCoreApplication.translate
 		# item 0 is set by pyuic from the .ui file
 		self.dialog.country.setItemText(1, _translate("Dialog", "Afghanistan"))
 		self.dialog.country.setItemText(2, _translate("Dialog", "Åland Islands"))
@@ -295,9 +295,13 @@ class start_setup(QDialog):
 
 		self.dialog.country.setCurrentText(config6)
 
+		self.dialog.create_username.returnPressed.connect(self.create_account)
 		self.dialog.create_button.clicked.connect(self.create_account)
+		self.dialog.login_username.returnPressed.connect(self.login)
 		self.dialog.login_button.clicked.connect(self.login)
+		self.dialog.delete_username.returnPressed.connect(self.delete)
 		self.dialog.delete_button.clicked.connect(self.delete)
+		self.dialog.friend_username.returnPressed.connect(self.add_friend)
 		self.dialog.add_friends_button.clicked.connect(self.add_friend)
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
 		self.dialog.newday.valueChanged.connect(self.set_time)
@@ -306,6 +310,22 @@ class start_setup(QDialog):
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
+
+		for button in self.dialog.buttonBox.buttons():
+			button.setAutoDefault(False)
+
+		about_text = """
+<h3>Anki Leaderboard v1.4.1</h3><br>
+The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
+It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
+If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
+<div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
+<div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><br>
+© Thore Tyborski 2020<br>
+With contributions from khonkhortisan and zjosua.
+"""
+
+		self.dialog.about_text.setHtml(about_text)
 
 	def create_account(self):
 		try:
@@ -328,8 +348,22 @@ class start_setup(QDialog):
 				mw.addonManager.writeConfig(__name__, config)
 				tooltip("Successfully created account.")
 				self.dialog.create_username.setText("")
+				self.update_login_info(username)
 		except:
 			pass
+
+	def update_login_info(self, username):
+		login_info = self.dialog.login_info_2
+		if username:
+			login_info.setText(f"Logged in as {username}.")
+		else:
+			login_info.setText("You are not logged in.")
+
+	def update_friends_list(self, friends):
+		friends_list = self.dialog.friends_list
+		friends_list.clear()
+		for friend in friends:
+			friends_list.addItem(friend)
 
 	def login(self):
 		try:
@@ -346,6 +380,7 @@ class start_setup(QDialog):
 				mw.addonManager.writeConfig(__name__, config)
 				tooltip("Successfully logged in.")
 				self.dialog.login_username.setText("")
+				self.update_login_info(username)
 			else:
 				tooltip("Account doesn't exist.")
 		except:
@@ -383,7 +418,7 @@ class start_setup(QDialog):
 		config6 = config['country']
 		url = 'https://ankileaderboard.pythonanywhere.com/users/'
 		x = requests.post(url)
-		if config2 not in config3:
+		if config2 and config2 not in config3:
 			config3.append(config2)
 		if username in eval(x.text):
 			config3.append(username)
@@ -391,28 +426,25 @@ class start_setup(QDialog):
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(username + " is now your friend.")
 			self.dialog.friend_username.setText("")
+			self.update_friends_list(config["friends"])
 		else:
 			tooltip("Couldn't find friend")
 
 	def remove_friend(self):
-		username = self.dialog.remove_friend_username.text()
-		config = mw.addonManager.getConfig(__name__)
-		config1 = config['new_user']
-		config2 = config['username']
-		config3 = config['friends']
-		config4 = config['newday']
-		config5 = config['subject']
-		config6 = config['country']
-		url = 'https://ankileaderboard.pythonanywhere.com/users/'
-		x = requests.post(url)
-		if username in config3:
+		for item in self.dialog.friends_list.selectedItems():
+			username = item.text()
+			config = mw.addonManager.getConfig(__name__)
+			config1 = config['new_user']
+			config2 = config['username']
+			config3 = config['friends']
+			config4 = config['newday']
+			config5 = config['subject']
+			config6 = config['country']
 			config3.remove(username)
 			config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "country": config6, "subject": config5}
 			mw.addonManager.writeConfig(__name__, config)
-			tooltip(username + " was removed from your friendlist")
-			self.dialog.remove_friend_username.setText("")
-		else:
-			tooltip("Couldn't find friend")
+			tooltip(f"{username} was removed from your friendlist")
+			self.update_friends_list(config["friends"])
 
 	def set_time(self):
 		beginning_of_new_day = self.dialog.newday.value()
