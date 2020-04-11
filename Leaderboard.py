@@ -43,7 +43,16 @@ class start_main(QDialog):
 		self.sync()
 
 	def sync(self):
-		#SYNC#
+		#threading.Timer(30.0, self.sync).start()
+		### CLEAR TABLE ###
+
+		self.dialog.Global_Leaderboard.setRowCount(0)
+		self.dialog.Friends_Leaderboard.setRowCount(0)
+		self.dialog.Country_Leaderboard.setRowCount(0)
+		self.dialog.Custom_Leaderboard.setRowCount(0)
+
+		### SYNC ###
+
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 		config1 = config['username']
@@ -56,7 +65,7 @@ class start_main(QDialog):
 		except:
 			showWarning("Make sure that you're connected to the internet.")
 
-		#get data#
+		### GET DATA ###
 
 		new_day = datetime.time(int(config['newday']),0,0)
 		time_now = datetime.datetime.now().time()
@@ -273,7 +282,7 @@ class start_main(QDialog):
 				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
 
 		### SCROLL ###
-		
+
 		current_ranking_list = []
 		if config["scroll"] == "True":
 			for i in range(self.dialog.Global_Leaderboard.rowCount()):

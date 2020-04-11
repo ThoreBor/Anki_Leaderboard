@@ -4,6 +4,7 @@ import datetime
 from aqt import mw
 from os.path import dirname, join, realpath
 from aqt.utils import showInfo, tooltip
+
 def Stats():
 	###STREAK####
 	config = mw.addonManager.getConfig(__name__)
@@ -33,7 +34,7 @@ def Stats():
 		start_date = date.today()
 		start_date2 = date.today()
 
-	end_date = date(2000, 1, 1)
+	end_date = date(2006, 10, 15)
 	delta = timedelta(days=1)
 	while start_date >= end_date:
 		if start_date.strftime("%Y-%m-%d") in date_list:
@@ -41,6 +42,7 @@ def Stats():
 		else:
 			break
 		start_date -= delta
+	
 	###REVIEWS TODAY####
 
 	studied_today = mw.col.findCards('rated:1')
@@ -61,18 +63,20 @@ def Stats():
 		for i in value:
 			id_time = i[0]
 			id_time = time.strftime('%Y-%m-%d', time.localtime(int(id_time)/1000.0))
-			# showInfo(str(id_time))
-			# showInfo(str(date.today()))
 			if str(id_time) == str(start_date2):
 				time_today = time_today + int(i[7])
 	time_today = round(time_today/60000, 1)
 
-	###REVIEWS PAST 30 DAYS###
+	###REVIEWS PAST 31 DAYS###
 
 	config = mw.addonManager.getConfig(__name__)
 	new_day = datetime.time(int(config['newday']),0,0)
 	time_now = datetime.datetime.now().time()
-	start_day = datetime.datetime.now()
+	
+	if time_now < new_day:
+		start_day = datetime.datetime.combine(date.today(), new_day)
+	else:
+		start_day = datetime.datetime.combine(date.today() + timedelta(days=1), new_day)
 
 	end_day = datetime.datetime.combine(date.today() - timedelta(days=30), new_day)
 
