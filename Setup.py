@@ -32,7 +32,7 @@ class start_setup(QDialog):
 		self.dialog.newday.setValue(config4)
 		self.dialog.subject.setCurrentText(config5)
 		self.dialog.scroll.setChecked(bool(config7))
-		self.update_friends_list(config["friends"])
+		self.update_friends_list(sorted(config["friends"], key=str.lower))
 
 		for i in range(1, 255):
 			self.dialog.country.addItem("")
@@ -318,7 +318,7 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.4.2</h3><br>
+<h3>Anki Leaderboard v1.4.3</h3><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
@@ -415,7 +415,7 @@ With contributions from khonkhortisan and zjosua.
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(username + " is now your friend.")
 			self.dialog.friend_username.setText("")
-			self.update_friends_list(config["friends"])
+			self.update_friends_list(sorted(config["friends"], key=str.lower))
 		else:
 			tooltip("Couldn't find friend")
 

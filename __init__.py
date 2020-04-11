@@ -25,6 +25,11 @@ def invoke_setup():
 	mw.lb_setup.raise_()
 	mw.lb_setup.activateWindow()
 
+def config_setup():
+	s = start_setup()
+	if s.exec():
+		pass
+
 def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
@@ -45,4 +50,4 @@ add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 add_menu('&Leaderboard',"&Config", invoke_setup)
 
-mw.addonManager.setConfigAction(__name__, invoke_setup)
+mw.addonManager.setConfigAction(__name__, config_setup)

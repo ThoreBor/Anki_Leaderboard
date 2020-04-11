@@ -377,8 +377,6 @@ class start_main(QDialog):
 			for i in first_three_friends:
 				for j in range(self.dialog.Friends_Leaderboard.columnCount()):
 					self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
-					if i in config['friends']:
-						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
 					if i == config['username']:
 						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
 
