@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>417</width>
-    <height>403</height>
+    <height>422</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,8 +40,21 @@
        <string>Account</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="1" column="0">
+       <item row="2" column="0">
         <layout class="QGridLayout" name="gridLayout_4">
+         <item row="2" column="0">
+          <widget class="QLabel" name="next_day_info1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Next day starts</string>
+           </property>
+          </widget>
+         </item>
          <item row="2" column="1">
           <widget class="QSpinBox" name="newday">
            <property name="sizePolicy">
@@ -83,19 +96,6 @@
           <widget class="QLabel" name="next_day_info2">
            <property name="text">
             <string>hours past midnight</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="next_day_info1">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Next day starts</string>
            </property>
           </widget>
          </item>
@@ -211,6 +211,20 @@
          </item>
         </layout>
        </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="scroll">
+         <property name="text">
+          <string>Automatically scroll to yourself</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabFriends">
@@ -312,7 +326,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>0</height>
+       <height>40</height>
       </size>
      </property>
     </spacer>
