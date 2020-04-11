@@ -221,15 +221,18 @@ class start_main(QDialog):
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#2176ff"))
 				
-				if username == config['username']:
-					for j in range(self.dialog.Global_Leaderboard.columnCount()):
-						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#51f564"))
-					for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-						self.dialog.Friends_Leaderboard.item(friend_counter-1, j).setBackground(QtGui.QColor("#51f564"))
-					for j in range(self.dialog.Country_Leaderboard.columnCount()):
-						self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#51f564"))
-					for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-						self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+				try:
+					if username == config['username']:
+						for j in range(self.dialog.Global_Leaderboard.columnCount()):
+							self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#51f564"))
+						for j in range(self.dialog.Friends_Leaderboard.columnCount()):
+							self.dialog.Friends_Leaderboard.item(friend_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+						for j in range(self.dialog.Country_Leaderboard.columnCount()):
+							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
+							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+				except:
+					pass
 		
 		### Highlight first three places###
 
@@ -437,7 +440,7 @@ class start_main(QDialog):
 				for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 					self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
 					if i in config['friends']:
-						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
+						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
 					if i == config['username']:
 						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
 
