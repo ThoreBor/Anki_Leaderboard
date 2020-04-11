@@ -291,6 +291,16 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="import_friends">
+             <property name="text">
+              <string>Import</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
