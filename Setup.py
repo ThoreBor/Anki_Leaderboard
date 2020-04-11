@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from aqt import mw
 from aqt.qt import *
-from aqt.utils import tooltip
+from aqt.utils import tooltip, showInfo
 
 from .forms import setup
 from .Leaderboard import start_main
@@ -310,6 +310,7 @@ class start_setup(QDialog):
 		self.dialog.subject.currentTextChanged.connect(self.set_subject)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
 		self.dialog.scroll.stateChanged.connect(self.set_scroll)
+		self.dialog.import_friends.clicked.connect(self.import_list)
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
@@ -409,7 +410,7 @@ With contributions from khonkhortisan and zjosua.
 		x = requests.post(url)
 		if config2 and config2 not in config3:
 			config3.append(config2)
-		if username in eval(x.text):
+		if username in eval(x.text) and username not in config3:
 			config3.append(username)
 			config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "country": config6, "subject": config5}
 			mw.addonManager.writeConfig(__name__, config)
@@ -462,4 +463,26 @@ With contributions from khonkhortisan and zjosua.
 			scroll = ""
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
 		"subject": config['subject'], "country": config['country'], "scroll": scroll}
+		mw.addonManager.writeConfig(__name__, config)
+
+	def import_list(self):
+		showInfo("The text file must contain one name per line.")
+		config = mw.addonManager.getConfig(__name__)
+		fname = QFileDialog.getOpenFileName(self, 'Open file', "C:\\","Text files (*.txt)")
+		file = open(fname[0], "r", encoding= "utf-8")
+		friends_list = config["friends"]
+		url = 'https://ankileaderboard.pythonanywhere.com/users/'
+		x = requests.post(url)
+		
+		for name in file:
+			name = name.replace("\n", "")
+			if name in eval(x.text) and name not in config["friends"]:
+				friends_list.append(name)
+		
+		if config["username"] and config["username"] not in friends_list:
+			friends_list.append(config["username"])
+		
+		self.update_friends_list(sorted(friends_list, key=str.lower))
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": friends_list, "newday": config['newday'], 
+		"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
 		mw.addonManager.writeConfig(__name__, config)
