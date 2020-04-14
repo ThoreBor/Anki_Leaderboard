@@ -56,8 +56,8 @@ class start_main(QDialog):
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 		config1 = config['username']
-		config5 = config['subject']
-		config6 = config['country']
+		config5 = config['subject'].replace(" ", "")
+		config6 = config['country'].replace(" ", "")
 		streak, cards, time, cards_past_30_days = Stats()
 		data = {'Username': config1 , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), "Month": cards_past_30_days, "Subject": config5, "Country": config6}
 		try:
