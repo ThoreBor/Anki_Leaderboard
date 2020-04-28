@@ -263,8 +263,14 @@
            <property name="styleSheet">
             <string notr="true"/>
            </property>
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
            <property name="selectionMode">
             <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectItems</enum>
            </property>
           </widget>
          </item>
@@ -294,6 +300,16 @@
             <widget class="QPushButton" name="import_friends">
              <property name="text">
               <string>Import</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="export_friends">
+             <property name="text">
+              <string>Export</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -401,10 +417,14 @@
   <tabstop>subject</tabstop>
   <tabstop>country</tabstop>
   <tabstop>newday</tabstop>
+  <tabstop>scroll</tabstop>
   <tabstop>friend_username</tabstop>
   <tabstop>add_friends_button</tabstop>
-  <tabstop>friends_list</tabstop>
   <tabstop>remove_friend_button</tabstop>
+  <tabstop>import_friends</tabstop>
+  <tabstop>export_friends</tabstop>
+  <tabstop>friends_list</tabstop>
+  <tabstop>about_text</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>
