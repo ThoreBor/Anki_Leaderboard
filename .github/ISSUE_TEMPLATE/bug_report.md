@@ -10,16 +10,13 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
 **Info**
 - Anki version (Help>About; e.g. 2.1.22)
 - Leaderboard version (Leaderboard>About; e.g. v.1.3)
-- Start of new day (Leaderboard>Config; e.g. 4)
+- If relevant Add-on config info (start of new day, autoscrolling enabled etc.)
 - OS: (e.g. Windows)
 
 **Additional context**
