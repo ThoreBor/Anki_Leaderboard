@@ -40,16 +40,10 @@ class start_main(QDialog):
 		tab_widget.setTabText(country_tab, config["country"])
 		tab_widget.setTabText(subject_tab, config["subject"])
 
-		self.sync()
+		self.load_leaderboard()
 
-	def sync(self):
+	def load_leaderboard(self):
 		#threading.Timer(30.0, self.sync).start()
-		### CLEAR TABLE ###
-
-		self.dialog.Global_Leaderboard.setRowCount(0)
-		self.dialog.Friends_Leaderboard.setRowCount(0)
-		self.dialog.Country_Leaderboard.setRowCount(0)
-		self.dialog.Custom_Leaderboard.setRowCount(0)
 
 		### SYNC ###
 
@@ -64,6 +58,13 @@ class start_main(QDialog):
 			x = requests.post(url, data = data)
 		except:
 			showWarning("Make sure that you're connected to the internet.")
+
+		### CLEAR TABLE ###
+
+		self.dialog.Global_Leaderboard.setRowCount(0)
+		self.dialog.Friends_Leaderboard.setRowCount(0)
+		self.dialog.Country_Leaderboard.setRowCount(0)
+		self.dialog.Custom_Leaderboard.setRowCount(0)
 
 		### GET DATA ###
 

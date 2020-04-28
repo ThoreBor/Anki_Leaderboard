@@ -12,7 +12,6 @@ from .forms import setup
 from .Leaderboard import start_main
 from .Stats import Stats
 
-
 class start_setup(QDialog):
 	def __init__(self, parent=None):
 		self.parent = parent
@@ -311,6 +310,7 @@ class start_setup(QDialog):
 		self.dialog.country.currentTextChanged.connect(self.set_country)
 		self.dialog.scroll.stateChanged.connect(self.set_scroll)
 		self.dialog.import_friends.clicked.connect(self.import_list)
+		self.dialog.export_friends.clicked.connect(self.export_list)
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
@@ -319,7 +319,7 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.4.3</h3><br>
+<h3>Anki Leaderboard v1.4.4</h3><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
@@ -469,20 +469,32 @@ With contributions from khonkhortisan and zjosua.
 		showInfo("The text file must contain one name per line.")
 		config = mw.addonManager.getConfig(__name__)
 		fname = QFileDialog.getOpenFileName(self, 'Open file', "C:\\","Text files (*.txt)")
-		file = open(fname[0], "r", encoding= "utf-8")
+		try:
+			file = open(fname[0], "r", encoding= "utf-8")
+			friends_list = config["friends"]
+			url = 'https://ankileaderboard.pythonanywhere.com/users/'
+			x = requests.post(url)
+			
+			for name in file:
+				name = name.replace("\n", "")
+				if name in eval(x.text) and name not in config["friends"]:
+					friends_list.append(name)
+			
+			if config["username"] and config["username"] not in friends_list:
+				friends_list.append(config["username"])
+			
+			self.update_friends_list(sorted(friends_list, key=str.lower))
+			config = {"new_user": config['new_user'], "username": config['username'], "friends": friends_list, "newday": config['newday'], 
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			mw.addonManager.writeConfig(__name__, config)
+		except:
+			showInfo("Please pick a text file to import friends.")
+
+	def export_list(self):
+		config = mw.addonManager.getConfig(__name__)
 		friends_list = config["friends"]
-		url = 'https://ankileaderboard.pythonanywhere.com/users/'
-		x = requests.post(url)
-		
-		for name in file:
-			name = name.replace("\n", "")
-			if name in eval(x.text) and name not in config["friends"]:
-				friends_list.append(name)
-		
-		if config["username"] and config["username"] not in friends_list:
-			friends_list.append(config["username"])
-		
-		self.update_friends_list(sorted(friends_list, key=str.lower))
-		config = {"new_user": config['new_user'], "username": config['username'], "friends": friends_list, "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
-		mw.addonManager.writeConfig(__name__, config)
+		export_file = open(join(dirname(realpath(__file__)), "Friends.txt"), "w", encoding="utf-8" ) 
+		for i in friends_list:
+			export_file.write(i+"\n")
+		export_file.close()
+		tooltip("You can find the text file in the add-on folder.")
