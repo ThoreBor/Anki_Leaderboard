@@ -43,8 +43,6 @@ class start_main(QDialog):
 		self.load_leaderboard()
 
 	def load_leaderboard(self):
-		#threading.Timer(30.0, self.sync).start()
-
 		### SYNC ###
 
 		config = mw.addonManager.getConfig(__name__)
@@ -57,7 +55,7 @@ class start_main(QDialog):
 		try:
 			x = requests.post(url, data = data)
 		except:
-			showWarning("Make sure that you're connected to the internet.")
+			showWarning("Make sure you're connected to the internet.")
 
 		### CLEAR TABLE ###
 
@@ -76,7 +74,10 @@ class start_main(QDialog):
 			start_day = datetime.datetime.combine(date.today(), new_day)
 
 		url = 'https://ankileaderboard.pythonanywhere.com/getreviews/'
-		x = requests.post(url)
+		try:
+			x = requests.post(url)
+		except:
+			showWarning("Make sure you're connected to the internet.")
 		counter = 0
 		friend_counter = 0
 		country_counter = 0
@@ -330,6 +331,8 @@ class start_main(QDialog):
 					self.dialog.Custom_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
 					self.dialog.Custom_Leaderboard.selectRow(current_ranking_list.index(item))
 					self.dialog.Custom_Leaderboard.clearSelection()
+
+		threading.Timer(120.0, self.load_leaderboard).start()
 
 	def change_colors_global(self):
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:

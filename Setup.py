@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from aqt import mw
 from aqt.qt import *
-from aqt.utils import tooltip, showInfo
+from aqt.utils import tooltip, showInfo, showWarning
 
 from .forms import setup
 from .Leaderboard import start_main
@@ -33,7 +33,7 @@ class start_setup(QDialog):
 		self.dialog.scroll.setChecked(bool(config7))
 		self.update_friends_list(sorted(config["friends"], key=str.lower))
 
-		for i in range(1, 255):
+		for i in range(1, 256):
 			self.dialog.country.addItem("")
 
 		_translate = QtCore.QCoreApplication.translate
@@ -319,14 +319,21 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.4.4</h3><br>
+<h3>Anki Leaderboard v1.4.4</h3>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
-<div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div><br>
-© Thore Tyborski 2020<br>
-With contributions from khonkhortisan and zjosua.
+<div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
+<h3>Change Log:</h3>
+- When left open, the leaderboard automatically refreshes every two minutes<br>
+- Minor UI changes<br>
+- Friends can be exported to a text file<br>
+- Various bug fixes<br>
+- Added a few error messages<br>
+- Added change log to about tab<br><br>
+<b>© Thore Tyborski 2020<br>
+With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a> and  <a href="https://github.com/zjosua">zjosua.</a></b>
 """
 
 		self.dialog.about_text.setHtml(about_text)
@@ -335,7 +342,11 @@ With contributions from khonkhortisan and zjosua.
 		username = self.dialog.create_username.text()
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/users/'
-		x = requests.post(url)
+		try:
+			x = requests.post(url)
+		except:
+			showWarning("Make sure you're connected to the internet.")
+
 		if username in eval(x.text):
 			tooltip("Username already taken")
 		else:
@@ -369,7 +380,11 @@ With contributions from khonkhortisan and zjosua.
 		username = self.dialog.login_username.text()
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/users/'
-		x = requests.post(url)
+		try:
+			x = requests.post(url)
+		except:
+			showWarning("Make sure you're connected to the internet.")
+
 		if username in eval(x.text):
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
 			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
@@ -386,7 +401,11 @@ With contributions from khonkhortisan and zjosua.
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/delete/'
 		data = {'Username': username}
-		x = requests.post(url, data = data)
+		try:
+			x = requests.post(url, data = data)
+		except:
+			showWarning("Make sure you're connected to the internet.")
+
 		if x.text == "Deleted":
 			config = {"new_user": "True", "username": "", "friends": config['friends'], "newday": config["newday"], 
 			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
@@ -407,7 +426,11 @@ With contributions from khonkhortisan and zjosua.
 		config5 = config['subject']
 		config6 = config['country']
 		url = 'https://ankileaderboard.pythonanywhere.com/users/'
-		x = requests.post(url)
+		try:
+			x = requests.post(url)
+		except:
+			showWarning("Make sure you're connected to the internet.")
+
 		if config2 and config2 not in config3:
 			config3.append(config2)
 		if username in eval(x.text) and username not in config3:
@@ -473,7 +496,10 @@ With contributions from khonkhortisan and zjosua.
 			file = open(fname[0], "r", encoding= "utf-8")
 			friends_list = config["friends"]
 			url = 'https://ankileaderboard.pythonanywhere.com/users/'
-			x = requests.post(url)
+			try:
+				x = requests.post(url)
+			except:
+				showWarning("Make sure you're connected to the internet.")
 			
 			for name in file:
 				name = name.replace("\n", "")
