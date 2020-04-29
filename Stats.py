@@ -6,10 +6,14 @@ from os.path import dirname, join, realpath
 from aqt.utils import showInfo, tooltip
 
 def Stats():
-	###STREAK####
+	###STREAK, REVIEWS PAST 31 DAYS###
 	config = mw.addonManager.getConfig(__name__)
-	newday = int(config['newday'])
+	new_day = datetime.time(int(config['newday']),0,0)
+	time_now = datetime.datetime.now().time()
 	reviews = mw.col.db.list("SELECT id FROM revlog")
+	
+	###STREAK####
+	newday = int(config['newday'])
 	date_list = []
 	Streak = 0
 	for i in reviews:
@@ -23,9 +27,6 @@ def Stats():
 			date_list.append(str(new_date))
 		else:
 			date_list.append(normal)
-	
-	time_now = datetime.datetime.now().time()
-	new_day = datetime.time(int(config['newday']),0,0)
 	
 	if time_now < new_day:
 		start_date = date.today() - timedelta(days=1)
@@ -68,10 +69,6 @@ def Stats():
 	time_today = round(time_today/60000, 1)
 
 	###REVIEWS PAST 31 DAYS###
-
-	config = mw.addonManager.getConfig(__name__)
-	new_day = datetime.time(int(config['newday']),0,0)
-	time_now = datetime.datetime.now().time()
 	
 	if time_now < new_day:
 		start_day = datetime.datetime.combine(date.today(), new_day)
@@ -79,8 +76,6 @@ def Stats():
 		start_day = datetime.datetime.combine(date.today() + timedelta(days=1), new_day)
 
 	end_day = datetime.datetime.combine(date.today() - timedelta(days=30), new_day)
-
-	reviews = mw.col.db.list("SELECT id FROM revlog")
 
 	cards_past_30_days = 0
 

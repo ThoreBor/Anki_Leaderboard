@@ -6,7 +6,6 @@ from os.path import dirname, join, realpath
 from .Leaderboard import start_main
 from .Setup import start_setup
 import webbrowser
-import time
 
 def Main():
 	config = mw.addonManager.getConfig(__name__)
