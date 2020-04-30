@@ -333,7 +333,11 @@ class start_main(QDialog):
 					self.dialog.Custom_Leaderboard.selectRow(current_ranking_list.index(item))
 					self.dialog.Custom_Leaderboard.clearSelection()
 
-		threading.Timer(120.0, self.load_leaderboard).start()
+		#threading.Timer(120.0, self.load_leaderboard).start()
+		t = threading.Timer(120.0, self.load_leaderboard)
+		t.daemon = True
+		t.start()
+
 
 	def change_colors_global(self):
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
