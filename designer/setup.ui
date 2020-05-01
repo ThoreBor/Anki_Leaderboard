@@ -40,6 +40,13 @@
        <string>Account</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="scroll">
+         <property name="text">
+          <string>Automatically scroll to yourself</string>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="0">
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="2" column="0">
@@ -53,6 +60,22 @@
            <property name="text">
             <string>Next day starts</string>
            </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="next_day_info2">
+           <property name="text">
+            <string>hours past midnight</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="3">
+          <widget class="QComboBox" name="country">
+           <item>
+            <property name="text">
+             <string>Country</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item row="2" column="1">
@@ -92,23 +115,14 @@
            </item>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="next_day_info2">
-           <property name="text">
-            <string>hours past midnight</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="3">
-          <widget class="QComboBox" name="country">
-           <item>
-            <property name="text">
-             <string>Country</string>
-            </property>
-           </item>
-          </widget>
-         </item>
         </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </item>
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
@@ -235,17 +249,11 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="scroll">
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="refresh">
          <property name="text">
-          <string>Automatically scroll to yourself</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <string>Refresh the Leaderboard every two minuts (beta).
+Sorting will be disabled.</string>
          </property>
         </widget>
        </item>
