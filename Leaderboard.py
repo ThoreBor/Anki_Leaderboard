@@ -245,56 +245,53 @@ class start_main(QDialog):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
 							
 		### Highlight first three places###
-		try:
-			if self.dialog.Global_Leaderboard.rowCount() >= 3:
-				global first_three_global
-				first_three_global = []
-				for i in range(3):
-					item = self.dialog.Global_Leaderboard.item(i, 0).text()
-					first_three_global.append(item)
+		if self.dialog.Global_Leaderboard.rowCount() >= 3:
+			global first_three_global
+			first_three_global = []
+			for i in range(3):
+				item = self.dialog.Global_Leaderboard.item(i, 0).text()
+				first_three_global.append(item)
 
-				for j in range(self.dialog.Global_Leaderboard.columnCount()):
-					self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-					self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-					self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+			for j in range(self.dialog.Global_Leaderboard.columnCount()):
+				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
+				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
+				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
 
-			if self.dialog.Friends_Leaderboard.rowCount() >= 3:
-				global first_three_friends
-				first_three_friends = []
-				for i in range(3):
-					item = self.dialog.Friends_Leaderboard.item(i, 0).text()
-					first_three_friends.append(item)
+		if self.dialog.Friends_Leaderboard.rowCount() >= 3:
+			global first_three_friends
+			first_three_friends = []
+			for i in range(3):
+				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
+				first_three_friends.append(item)
 
-				for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-					self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-					self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-					self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+			for j in range(self.dialog.Friends_Leaderboard.columnCount()):
+				self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
+				self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
+				self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
 
-			if self.dialog.Country_Leaderboard.rowCount() >= 3:
-				global first_three_country
-				first_three_country = []
-				for i in range(3):
-					item = self.dialog.Country_Leaderboard.item(i, 0).text()
-					first_three_country.append(item)
+		if self.dialog.Country_Leaderboard.rowCount() >= 3:
+			global first_three_country
+			first_three_country = []
+			for i in range(3):
+				item = self.dialog.Country_Leaderboard.item(i, 0).text()
+				first_three_country.append(item)
 
-				for j in range(self.dialog.Country_Leaderboard.columnCount()):
-					self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-					self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-					self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+			for j in range(self.dialog.Country_Leaderboard.columnCount()):
+				self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
+				self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
+				self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
 
-			if self.dialog.Custom_Leaderboard.rowCount() >= 3:
-				global first_three_custom
-				first_three_custom = []
-				for i in range(3):
-					item = self.dialog.Custom_Leaderboard.item(i, 0).text()
-					first_three_custom.append(item)
+		if self.dialog.Custom_Leaderboard.rowCount() >= 3:
+			global first_three_custom
+			first_three_custom = []
+			for i in range(3):
+				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
+				first_three_custom.append(item)
 
-				for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-					self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-					self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-					self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
-		except:
-			pass
+			for j in range(self.dialog.Custom_Leaderboard.columnCount()):
+				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
+				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
+				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
 		### SCROLL ###
 
 		current_ranking_list = []
