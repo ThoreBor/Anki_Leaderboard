@@ -25,12 +25,12 @@ class start_setup(QDialog):
 		config4 = int(config['newday'])
 		config5 = config["subject"]
 		config6 = config["country"]
-		config7 = config["scroll"]
 
 		self.update_login_info(config["username"])
 		self.dialog.newday.setValue(config4)
 		self.dialog.subject.setCurrentText(config5)
-		self.dialog.scroll.setChecked(bool(config7))
+		self.dialog.scroll.setChecked(bool(config["scroll"]))
+		self.dialog.refresh.setChecked(bool(config["refresh"]))
 		self.update_friends_list(sorted(config["friends"], key=str.lower))
 
 		for i in range(1, 256):
@@ -309,6 +309,7 @@ class start_setup(QDialog):
 		self.dialog.subject.currentTextChanged.connect(self.set_subject)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
 		self.dialog.scroll.stateChanged.connect(self.set_scroll)
+		self.dialog.refresh.stateChanged.connect(self.set_refresh)
 		self.dialog.import_friends.clicked.connect(self.import_list)
 		self.dialog.export_friends.clicked.connect(self.export_list)
 
@@ -319,19 +320,15 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.4.4</h3>
+<h3>Anki Leaderboard v1.4.4.1</h3>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <h3>Change Log:</h3>
-- When left open, the leaderboard automatically refreshes every two minutes<br>
-- Minor UI changes<br>
-- Friends can be exported to a text file<br>
-- Various bug fixes<br>
-- Added a few error messages<br>
-- Added change log to about tab<br><br>
+- Patches for v.1.4.4<br>
+- Automatic refresh opt-in option<br><br>
 <b>© Thore Tyborski 2020<br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a> and  <a href="https://github.com/zjosua">zjosua.</a></b>
 """
@@ -357,7 +354,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			x = requests.post(url, data = data)
 
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip("Successfully created account.")
 			self.dialog.create_username.setText("")
@@ -387,7 +384,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 
 		if username in eval(x.text):
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip("Successfully logged in.")
 			self.dialog.login_username.setText("")
@@ -408,7 +405,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 
 		if x.text == "Deleted":
 			config = {"new_user": "True", "username": "", "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip("Successfully deleted account.")
 			self.dialog.delete_username.setText("")
@@ -435,7 +432,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			config3.append(config2)
 		if username in eval(x.text) and username not in config3:
 			config3.append(username)
-			config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "country": config6, "subject": config5}
+			config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "country": config6, "subject": config5, "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(username + " is now your friend.")
 			self.dialog.friend_username.setText("")
@@ -450,7 +447,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			config3 = config['friends']
 			config3.remove(username)
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": config3, "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(f"{username} was removed from your friendlist")
 			self.update_friends_list(config["friends"])
@@ -459,7 +456,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		beginning_of_new_day = self.dialog.newday.value()
 		config = mw.addonManager.getConfig(__name__)
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": str(beginning_of_new_day), 
-		"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_subject(self):
@@ -468,14 +465,14 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		if subject == "Join a group":
 			subject = "Custom"
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": subject, "country": config['country'], "scroll": config['scroll']}
+		"subject": subject, "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_country(self):
 		country = self.dialog.country.currentText()
 		config = mw.addonManager.getConfig(__name__)
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": country, "scroll": config['scroll']}
+		"subject": config['subject'], "country": country, "scroll": config['scroll'], "refresh": config["refresh"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_scroll(self):
@@ -485,8 +482,19 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		else:
 			scroll = ""
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": scroll}
+		"subject": config['subject'], "country": config['country'], "scroll": scroll, "refresh": config["refresh"]}
 		mw.addonManager.writeConfig(__name__, config)
+
+	def set_refresh(self):
+		config = mw.addonManager.getConfig(__name__)
+		if self.dialog.refresh.isChecked():
+			refresh = "True"
+		else:
+			refresh = ""
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+		"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": refresh}
+		mw.addonManager.writeConfig(__name__, config)
+
 
 	def import_list(self):
 		showInfo("The text file must contain one name per line.")
@@ -511,7 +519,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			
 			self.update_friends_list(sorted(friends_list, key=str.lower))
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": friends_list, "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
 		except:
 			showInfo("Please pick a text file to import friends.")
