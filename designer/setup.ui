@@ -252,7 +252,7 @@
        <item row="4" column="0">
         <widget class="QCheckBox" name="refresh">
          <property name="text">
-          <string>Refresh the Leaderboard every two minuts (beta).
+          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+).
 Sorting will be disabled.</string>
          </property>
         </widget>
