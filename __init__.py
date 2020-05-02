@@ -1,13 +1,18 @@
 from aqt import mw
 from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
-from aqt.utils import showInfo
+from aqt.utils import showInfo, showWarning
+
 from os.path import dirname, join, realpath
+import webbrowser
+import requests
+from bs4 import BeautifulSoup
+
 from .Leaderboard import start_main
 from .Setup import start_setup
-import webbrowser
 
 def Main():
+	check_info()
 	config = mw.addonManager.getConfig(__name__)
 	setup = config['new_user']
 	if setup == "True":
@@ -31,6 +36,20 @@ def config_setup():
 
 def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
+
+def check_info():
+	try:
+		url = 'https://ankileaderboardinfo.netlify.app'
+		headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 OPR/62.0.3331.116'}
+		page = requests.get(url, headers=headers)
+		soup = BeautifulSoup(page.content, 'html.parser')
+		if soup.find(id='show_message').get_text() == "True":
+			info = soup.find(id='Message').get_text()
+			showInfo(info, title="Leaderboard")
+		else:
+			pass
+	except:
+		showWarning("Make sure you're connected to the internet.")
 
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
