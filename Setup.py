@@ -320,15 +320,16 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.4.4.1</h3>
+<h3>Anki Leaderboard v1.4.5</h3>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <h3>Change Log:</h3>
-- Patches for v.1.4.4<br>
-- Automatic refresh opt-in option<br><br>
+- Stats bug fix<br>
+- Added info dialog for maintenance, downtime etc. notification<br>
+- Fixed typo<br><br>
 <b>© Thore Tyborski 2020<br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a> and  <a href="https://github.com/zjosua">zjosua.</a></b>
 """
