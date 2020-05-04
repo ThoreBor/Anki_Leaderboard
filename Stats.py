@@ -44,9 +44,6 @@ def Stats():
 			break
 		start_date -= delta
 
-	###RETENTION###
-
-
 	###REVIEWS PAST 31 DAYS###
 	
 	if time_now < new_day:
@@ -63,7 +60,7 @@ def Stats():
 		if i >= end_day and i <= start_day:
 			cards_past_30_days = cards_past_30_days + 1
 
-	#REVIEW TODAY###
+	#REVIEWS TODAY AND RETENTION###
 
 	if time_now < new_day:
 			start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
@@ -72,13 +69,22 @@ def Stats():
 
 	studied_today = mw.col.findCards('rated:1')
 	total_cards = 0
+	flunked_total = 0
 	for i in studied_today:
 		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i))
 		for i in value:
 			id_time = i[0]
+			flunked = i[3]
 			id_time = datetime.datetime.fromtimestamp(int(id_time)/1000.0)
 			if id_time > start_day:
 				total_cards += 1
+				###RETENTION###
+				if flunked == 1:
+					flunked_total += 1
+	try:
+		retention = round(100 - (100/total_cards*flunked_total), 1)
+	except:
+		retention = "N/A"
 
 	###TIME SPEND TODAY###
 	
