@@ -328,7 +328,7 @@ If you like this add-on, rate and review it on <a href="https://ankiweb.net/shar
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <h3>Change Log:</h3>
 - Stats bug fix<br>
-- Added info dialog for maintenance, downtime etc. notification<br>
+- Added notification for maintenance, downtime etc.<br>
 - Fixed typo<br><br>
 <b>© Thore Tyborski 2020<br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a> and  <a href="https://github.com/zjosua">zjosua.</a></b>
@@ -369,10 +369,12 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			login_info.setText("You are not logged in.")
 
 	def update_friends_list(self, friends):
+		config = mw.addonManager.getConfig(__name__)
 		friends_list = self.dialog.friends_list
 		friends_list.clear()
 		for friend in friends:
-			friends_list.addItem(friend)
+			if friend != config['username']:
+				friends_list.addItem(friend)
 
 	def login(self):
 		username = self.dialog.login_username.text()
