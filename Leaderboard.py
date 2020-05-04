@@ -50,6 +50,7 @@ class start_main(QDialog):
 		self.load_leaderboard()
 
 	def load_leaderboard(self):
+
 		### SYNC ###
 
 		config = mw.addonManager.getConfig(__name__)
@@ -57,8 +58,9 @@ class start_main(QDialog):
 		config1 = config['username']
 		config5 = config['subject'].replace(" ", "")
 		config6 = config['country'].replace(" ", "")
-		streak, cards, time, cards_past_30_days = Stats()
-		data = {'Username': config1 , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), "Month": cards_past_30_days, "Subject": config5, "Country": config6}
+		streak, cards, time, cards_past_30_days, retention = Stats()
+		data = {'Username': config1 , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
+		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
 		try:
 			x = requests.post(url, data = data)
 		except:
@@ -108,11 +110,16 @@ class start_main(QDialog):
 				month = int(month)
 			subject = data_list[6]
 			country = data_list[7]
+			retention = data_list[8]
+			try:
+				retention = float(retention)
+			except:
+				retention = "N/A"
 			if sync_date > start_day:
 				counter = counter + 1
 
 				rowPosition = self.dialog.Global_Leaderboard.rowCount()
-				self.dialog.Global_Leaderboard.setColumnCount(5)
+				self.dialog.Global_Leaderboard.setColumnCount(6)
 				self.dialog.Global_Leaderboard.insertRow(rowPosition)
 
 				self.dialog.Global_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
@@ -132,6 +139,10 @@ class start_main(QDialog):
 				item = QtWidgets.QTableWidgetItem()
 				item.setData(QtCore.Qt.DisplayRole, month)
 				self.dialog.Global_Leaderboard.setItem(rowPosition, 4, item)
+
+				item = QtWidgets.QTableWidgetItem()
+				item.setData(QtCore.Qt.DisplayRole, retention)
+				self.dialog.Global_Leaderboard.setItem(rowPosition, 5, item)
 			
 				self.dialog.Global_Leaderboard.resizeColumnsToContents()
 
@@ -139,7 +150,7 @@ class start_main(QDialog):
 					country_counter = country_counter + 1
 
 					rowPosition = self.dialog.Country_Leaderboard.rowCount()
-					self.dialog.Country_Leaderboard.setColumnCount(5)
+					self.dialog.Country_Leaderboard.setColumnCount(6)
 					self.dialog.Country_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Country_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
@@ -161,6 +172,10 @@ class start_main(QDialog):
 					item.setData(QtCore.Qt.DisplayRole, month)
 					self.dialog.Country_Leaderboard.setItem(rowPosition, 4, item)
 
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, retention)
+					self.dialog.Country_Leaderboard.setItem(rowPosition, 5, item)
+
 					self.dialog.Country_Leaderboard.resizeColumnsToContents()
 
 					if username in config['friends']:
@@ -171,7 +186,7 @@ class start_main(QDialog):
 					custom_counter = custom_counter + 1
 
 					rowPosition = self.dialog.Custom_Leaderboard.rowCount()
-					self.dialog.Custom_Leaderboard.setColumnCount(5)
+					self.dialog.Custom_Leaderboard.setColumnCount(6)
 					self.dialog.Custom_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Custom_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
@@ -193,6 +208,10 @@ class start_main(QDialog):
 					item.setData(QtCore.Qt.DisplayRole, month)
 					self.dialog.Custom_Leaderboard.setItem(rowPosition, 4, item)
 
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, retention)
+					self.dialog.Custom_Leaderboard.setItem(rowPosition, 5, item)
+
 					self.dialog.Custom_Leaderboard.resizeColumnsToContents()
 
 					if username in config['friends']:
@@ -203,7 +222,7 @@ class start_main(QDialog):
 					friend_counter = friend_counter + 1
 
 					rowPosition = self.dialog.Friends_Leaderboard.rowCount()
-					self.dialog.Friends_Leaderboard.setColumnCount(5)
+					self.dialog.Friends_Leaderboard.setColumnCount(6)
 					self.dialog.Friends_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Friends_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
@@ -224,6 +243,10 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, month)
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 4, item)
+
+					item = QtWidgets.QTableWidgetItem()
+					item.setData(QtCore.Qt.DisplayRole, retention)
+					self.dialog.Friends_Leaderboard.setItem(rowPosition, 5, item)
 				
 					self.dialog.Friends_Leaderboard.resizeColumnsToContents()
 				

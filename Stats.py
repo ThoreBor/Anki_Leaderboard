@@ -98,4 +98,4 @@ def Stats():
 				time_today = time_today + int(i[7])
 	time_today = round(time_today/60000, 1)
 
-	return(Streak, total_cards, time_today, cards_past_30_days)
+	return(Streak, total_cards, time_today, cards_past_30_days, retention)
