@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>565</width>
+    <width>647</width>
     <height>540</height>
    </rect>
   </property>
@@ -82,6 +82,11 @@
            <string>Reviews past 31 days</string>
           </property>
          </column>
+         <column>
+          <property name="text">
+           <string>Retention %</string>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>
@@ -131,6 +136,11 @@
          <column>
           <property name="text">
            <string>Reviews past 31 days</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Retention %</string>
           </property>
          </column>
         </widget>
@@ -184,6 +194,11 @@
            <string>Reviews past 31 days</string>
           </property>
          </column>
+         <column>
+          <property name="text">
+           <string>Retention %</string>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>
@@ -233,6 +248,11 @@
          <column>
           <property name="text">
            <string>Reviews past 31 days</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Retention %</string>
           </property>
          </column>
         </widget>
