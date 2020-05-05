@@ -326,6 +326,7 @@ It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/b
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
+<div>Award icon made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 <h3>Change Log:</h3>
 - Stats bug fix<br>
 - Added notification for maintenance, downtime etc.<br>
@@ -349,9 +350,9 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			tooltip("Username already taken")
 		else:
 			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-			streak, cards, time, cards_past_30_days = Stats()
+			streak, cards, time, cards_past_30_days, retention = Stats()
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), "Month": cards_past_30_days, 
-			"Subject": config["subject"], "Country": config["country"]}
+			"Subject": config["subject"], "Country": config["country"], "Retention": retention}
 			x = requests.post(url, data = data)
 
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
