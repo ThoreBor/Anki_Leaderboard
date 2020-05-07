@@ -1,8 +1,7 @@
 # Anki Leaderboard
 Leaderboard for Anki 2.1
 
-This add-on creates a leaderboard that ranks all of its users by current streak, number of cards reviewed today and time spend studying 
-today. You can also invite friends and just compete against them.
+This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, current streak, reviews in the past 31 days and retention. You can also invite friends, join a group and join a country leaderboard.
 
 ## Installing
 Download the newest stable release on [AnkiWeb](https://ankiweb.net/shared/info/41708974).
