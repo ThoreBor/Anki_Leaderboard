@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
+    <width>500</width>
     <height>436</height>
    </rect>
   </property>
@@ -252,8 +252,7 @@
        <item row="4" column="0">
         <widget class="QCheckBox" name="refresh">
          <property name="text">
-          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+).
-Sorting will be disabled.</string>
+          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+).</string>
          </property>
         </widget>
        </item>

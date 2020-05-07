@@ -25,12 +25,7 @@ class start_main(QDialog):
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
-		if config["refresh"] == "True":
-			self.dialog.Global_Leaderboard.setSortingEnabled(False)
-			self.dialog.Friends_Leaderboard.setSortingEnabled(False)
-			self.dialog.Country_Leaderboard.setSortingEnabled(False)
-			self.dialog.Custom_Leaderboard.setSortingEnabled(False)
-		else:
+		if config["refresh"] == "False":
 			header1 = self.dialog.Global_Leaderboard.horizontalHeader()
 			header1.sortIndicatorChanged.connect(self.change_colors_global)
 			header2 = self.dialog.Friends_Leaderboard.horizontalHeader()
@@ -93,6 +88,15 @@ class start_main(QDialog):
 		custom_counter = 0
 		data = x.text
 		data = data.split("<br>")
+
+		### DISABLE SORTING ###
+		### https://stackoverflow.com/a/8904287 ###
+
+		self.dialog.Global_Leaderboard.setSortingEnabled(False)
+		self.dialog.Friends_Leaderboard.setSortingEnabled(False)
+		self.dialog.Country_Leaderboard.setSortingEnabled(False)
+		self.dialog.Custom_Leaderboard.setSortingEnabled(False)
+
 		for i in data:
 			if not i:
 				continue
@@ -238,7 +242,6 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(streak))
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 3, item)
-				
 
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, month)
@@ -247,12 +250,11 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, retention)
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 5, item)
-				
+
 					self.dialog.Friends_Leaderboard.resizeColumnsToContents()
-				
+
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#2176ff"))
-				
 
 				if username == config['username']:
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
@@ -266,7 +268,14 @@ class start_main(QDialog):
 					if config["subject"] != "Custom":
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
-							
+
+		### ENABLE SORTING ###
+
+		self.dialog.Global_Leaderboard.setSortingEnabled(True)
+		self.dialog.Friends_Leaderboard.setSortingEnabled(True)
+		self.dialog.Country_Leaderboard.setSortingEnabled(True)
+		self.dialog.Custom_Leaderboard.setSortingEnabled(True)
+
 		### Highlight first three places###
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			global first_three_global
