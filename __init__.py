@@ -51,6 +51,18 @@ def check_info():
 	except:
 		showWarning("Make sure you're connected to the internet.")
 
+#Make sure own username is in friendlist
+
+def add_username_to_friendlist():
+	config = mw.addonManager.getConfig(__name__)
+	if config['username'] != "" and config['username'] not in config['friends']:
+		friends = config["friends"]
+		friends.append(config['username'])
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": friends, "newday": config["newday"], 
+		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+		mw.addonManager.writeConfig(__name__, config)
+
+
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
 	action.triggered.connect(exe)
@@ -69,3 +81,5 @@ add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 add_menu('&Leaderboard',"&Config", invoke_setup)
 
 mw.addonManager.setConfigAction(__name__, config_setup)
+
+add_username_to_friendlist()
