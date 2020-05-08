@@ -1,5 +1,4 @@
 import datetime
-import traceback
 from datetime import date, time, timedelta
 from os.path import dirname, join, realpath
 import threading
@@ -114,7 +113,7 @@ class start_main(QDialog):
 			try:
 				retention = float(retention)
 			except:
-				retention = "N/A"
+				retention = ""
 			if sync_date > start_day:
 				counter = counter + 1
 
