@@ -25,15 +25,14 @@ class start_main(QDialog):
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
-		if config["refresh"] == "False":
-			header1 = self.dialog.Global_Leaderboard.horizontalHeader()
-			header1.sortIndicatorChanged.connect(self.change_colors_global)
-			header2 = self.dialog.Friends_Leaderboard.horizontalHeader()
-			header2.sortIndicatorChanged.connect(self.change_colors_friends)
-			header3 = self.dialog.Country_Leaderboard.horizontalHeader()
-			header3.sortIndicatorChanged.connect(self.change_colors_country)
-			header4 = self.dialog.Custom_Leaderboard.horizontalHeader()
-			header4.sortIndicatorChanged.connect(self.change_colors_custom)
+		header1 = self.dialog.Global_Leaderboard.horizontalHeader()
+		header1.sortIndicatorChanged.connect(self.delayed_change_colors_global)
+		header2 = self.dialog.Friends_Leaderboard.horizontalHeader()
+		header2.sortIndicatorChanged.connect(self.delayed_change_colors_friends)
+		header3 = self.dialog.Country_Leaderboard.horizontalHeader()
+		header3.sortIndicatorChanged.connect(self.delayed_change_colors_country)
+		header4 = self.dialog.Custom_Leaderboard.horizontalHeader()
+		header4.sortIndicatorChanged.connect(self.delayed_change_colors_custom)
 
 		config = mw.addonManager.getConfig(__name__)
 		tab_widget = self.dialog.Parent
@@ -89,13 +88,9 @@ class start_main(QDialog):
 		data = x.text
 		data = data.split("<br>")
 
-		### DISABLE SORTING ###
+		### Disable sorting ###
 		### https://stackoverflow.com/a/8904287 ###
-
-		self.dialog.Global_Leaderboard.setSortingEnabled(False)
-		self.dialog.Friends_Leaderboard.setSortingEnabled(False)
-		self.dialog.Country_Leaderboard.setSortingEnabled(False)
-		self.dialog.Custom_Leaderboard.setSortingEnabled(False)
+		self.disable_sorting()
 
 		for i in data:
 			if not i:
@@ -147,7 +142,7 @@ class start_main(QDialog):
 				item = QtWidgets.QTableWidgetItem()
 				item.setData(QtCore.Qt.DisplayRole, retention)
 				self.dialog.Global_Leaderboard.setItem(rowPosition, 5, item)
-			
+
 				self.dialog.Global_Leaderboard.resizeColumnsToContents()
 
 				if country == config6 and country != "Country":
@@ -158,7 +153,7 @@ class start_main(QDialog):
 					self.dialog.Country_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Country_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
+
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(cards))
 					self.dialog.Country_Leaderboard.setItem(rowPosition, 1, item)
@@ -170,7 +165,6 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(streak))
 					self.dialog.Country_Leaderboard.setItem(rowPosition, 3, item)
-				
 
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, month)
@@ -194,7 +188,7 @@ class start_main(QDialog):
 					self.dialog.Custom_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Custom_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
+
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(cards))
 					self.dialog.Custom_Leaderboard.setItem(rowPosition, 1, item)
@@ -206,7 +200,6 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(streak))
 					self.dialog.Custom_Leaderboard.setItem(rowPosition, 3, item)
-				
 
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, month)
@@ -230,7 +223,7 @@ class start_main(QDialog):
 					self.dialog.Friends_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Friends_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
+
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(cards))
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 1, item)
@@ -269,12 +262,8 @@ class start_main(QDialog):
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
 
-		### ENABLE SORTING ###
-
-		self.dialog.Global_Leaderboard.setSortingEnabled(True)
-		self.dialog.Friends_Leaderboard.setSortingEnabled(True)
-		self.dialog.Country_Leaderboard.setSortingEnabled(True)
-		self.dialog.Custom_Leaderboard.setSortingEnabled(True)
+		### Enable sorting ###
+		self.enable_sorting()
 
 		### Highlight first three places###
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
@@ -324,6 +313,7 @@ class start_main(QDialog):
 				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
 				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
 				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+
 		### SCROLL ###
 
 		current_ranking_list = []
@@ -377,6 +367,11 @@ class start_main(QDialog):
 		else:
 			pass
 
+	def delayed_change_colors_global(self):
+		t = threading.Timer(0.2, self.change_colors_global)
+		t.daemon = True
+		t.start()
+
 	def change_colors_global(self):
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
@@ -408,6 +403,11 @@ class start_main(QDialog):
 				item = self.dialog.Global_Leaderboard.item(i, 0).text()
 				first_three_global.append(item)
 
+	def delayed_change_colors_friends(self):
+		t = threading.Timer(0.2, self.change_colors_friends)
+		t.daemon = True
+		t.start()
+
 	def change_colors_friends(self):
 		if self.dialog.Friends_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
@@ -436,6 +436,11 @@ class start_main(QDialog):
 			for i in range(3):
 				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
 				first_three_friends.append(item)
+
+	def delayed_change_colors_country(self):
+		t = threading.Timer(0.2, self.change_colors_country)
+		t.daemon = True
+		t.start()
 
 	def change_colors_country(self):
 		if self.dialog.Country_Leaderboard.rowCount() >= 3:
@@ -468,6 +473,11 @@ class start_main(QDialog):
 				item = self.dialog.Country_Leaderboard.item(i, 0).text()
 				first_three_country.append(item)
 
+	def delayed_change_colors_custom(self):
+		t = threading.Timer(0.2, self.change_colors_custom)
+		t.daemon = True
+		t.start()
+
 	def change_colors_custom(self):
 		if self.dialog.Custom_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
@@ -498,3 +508,15 @@ class start_main(QDialog):
 			for i in range(3):
 				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
 				first_three_custom.append(item)
+
+	def disable_sorting(self):
+		self.dialog.Global_Leaderboard.setSortingEnabled(False)
+		self.dialog.Friends_Leaderboard.setSortingEnabled(False)
+		self.dialog.Country_Leaderboard.setSortingEnabled(False)
+		self.dialog.Custom_Leaderboard.setSortingEnabled(False)
+
+	def enable_sorting(self):
+		self.dialog.Global_Leaderboard.setSortingEnabled(True)
+		self.dialog.Friends_Leaderboard.setSortingEnabled(True)
+		self.dialog.Country_Leaderboard.setSortingEnabled(True)
+		self.dialog.Custom_Leaderboard.setSortingEnabled(True)
