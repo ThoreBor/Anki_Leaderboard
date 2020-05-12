@@ -267,6 +267,7 @@ class start_main(QDialog):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
 							
 		### Highlight first three places###
+		
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			global first_three_global
 			first_three_global = []
@@ -314,6 +315,7 @@ class start_main(QDialog):
 				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
 				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
 				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+		
 		### SCROLL ###
 
 		current_ranking_list = []
@@ -382,7 +384,17 @@ class start_main(QDialog):
 
 			for i in first_three_global:
 				for j in range(self.dialog.Global_Leaderboard.columnCount()):
-					self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+					if mw.pm.night_mode() == False:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+						else:
+							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					else:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
+						else:
+							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+
 					if i in config['friends']:
 						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
 					if i == config['username']:
@@ -413,7 +425,17 @@ class start_main(QDialog):
 
 			for i in first_three_friends:
 				for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-					self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+					if mw.pm.night_mode() == False:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+						else:
+							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					else:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
+						else:
+							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+
 					if i == config['username']:
 						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
 
@@ -442,7 +464,17 @@ class start_main(QDialog):
 
 			for i in first_three_country:
 				for j in range(self.dialog.Country_Leaderboard.columnCount()):
-					self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+					if mw.pm.night_mode() == False:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+						else:
+							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					else:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
+						else:
+							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+
 					if i in config['friends']:
 						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
 					if i == config['username']:
@@ -473,7 +505,17 @@ class start_main(QDialog):
 
 			for i in first_three_custom:
 				for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-					self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+					if mw.pm.night_mode() == False:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
+						else:
+							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					else:
+						if current_ranking_list.index(i) % 2 == 0:
+							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
+						else:
+							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+
 					if i in config['friends']:
 						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
 					if i == config['username']:
