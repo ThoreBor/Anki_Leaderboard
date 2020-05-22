@@ -81,17 +81,15 @@ class start_main(QDialog):
 		else:
 			start_day = datetime.datetime.combine(date.today(), new_day)
 
-		url = 'https://ankileaderboard.pythonanywhere.com/getreviews/'
+		url = 'https://ankileaderboard.pythonanywhere.com/getdata/'
 		try:
-			x = requests.post(url)
+			data = requests.get(url).json()
 		except:
 			showWarning("Make sure you're connected to the internet.")
 		counter = 0
 		friend_counter = 0
 		country_counter = 0
 		custom_counter = 0
-		data = x.text
-		data = data.split("<br>")
 		for i in data:
 			if not i:
 				continue
