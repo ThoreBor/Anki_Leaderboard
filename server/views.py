@@ -60,6 +60,23 @@ def users(request):
 	return HttpResponse(str(Username_List))
 
 @csrf_exempt
+def allusers(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	Username_List = []
+	c.execute("SELECT Username FROM Leaderboard")
+	for i in c.fetchall():
+		data = str(i)
+		clean = ["(",")","'",",", "\\"]
+		for j in clean:
+		    data = data.replace(j, "")
+		Username_List.append(data)
+	data = ""
+	for i in Username_List:
+	    data = data + str(i) + "<br>"
+	return HttpResponse(str(data))
+
+@csrf_exempt
 def getreviews(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
