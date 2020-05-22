@@ -338,13 +338,13 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 	def create_account(self):
 		username = self.dialog.create_username.text()
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/users/'
+		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 		try:
-			x = requests.post(url)
+			username_list = requests.get(url).json()
 		except:
 			showWarning("Make sure you're connected to the internet.")
 
-		if username in eval(x.text):
+		if username in username_list:
 			tooltip("Username already taken")
 		else:
 			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
@@ -378,13 +378,13 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 	def login(self):
 		username = self.dialog.login_username.text()
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/users/'
+		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 		try:
-			x = requests.post(url)
+			username_list = requests.get(url).json()
 		except:
 			showWarning("Make sure you're connected to the internet.")
 
-		if username in eval(x.text):
+		if username in username_list:
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
 			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
@@ -418,23 +418,18 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 	def add_friend(self):
 		username = self.dialog.friend_username.text()
 		config = mw.addonManager.getConfig(__name__)
-		config1 = config['new_user']
-		config2 = config['username']
-		config3 = config['friends']
-		config4 = config['newday']
-		config5 = config['subject']
-		config6 = config['country']
-		url = 'https://ankileaderboard.pythonanywhere.com/users/'
+		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 		try:
-			x = requests.post(url)
+			username_list = requests.get(url).json()
 		except:
 			showWarning("Make sure you're connected to the internet.")
 
-		if config2 and config2 not in config3:
-			config3.append(config2)
-		if username in eval(x.text) and username not in config3:
-			config3.append(username)
-			config = {"new_user": config1,"username": config2, "friends": config3, "newday": config4, "country": config6, "subject": config5, "refresh": config["refresh"]}
+		if config['username'] and config['username'] not in config['friends']:
+			config['friends'].append(config['username'])
+		
+		if username in username_list and username not in config['friends']:
+			config['friends'].append(username)
+			config = {"new_user": config['new_user'],"username": config['username'], "friends": config['friends'], "newday": config['newday'], "country": config['country'], "subject": config['subject'], "refresh": config["refresh"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(username + " is now your friend.")
 			self.dialog.friend_username.setText("")
@@ -505,15 +500,15 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		try:
 			file = open(fname[0], "r", encoding= "utf-8")
 			friends_list = config["friends"]
-			url = 'https://ankileaderboard.pythonanywhere.com/users/'
+			url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 			try:
-				x = requests.post(url)
+				username_list = requests.get(url).json()
 			except:
 				showWarning("Make sure you're connected to the internet.")
 			
 			for name in file:
 				name = name.replace("\n", "")
-				if name in eval(x.text) and name not in config["friends"]:
+				if name in username_list and name not in config["friends"]:
 					friends_list.append(name)
 			
 			if config["username"] and config["username"] not in friends_list:
