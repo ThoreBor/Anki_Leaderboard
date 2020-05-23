@@ -1,0 +1,26 @@
+{% extends "header+footer.html" %}
+
+{% block nav %}
+<ul>
+  <li><a href="/">Reviews</a></li>
+  <li><a href="/time/">Time</a></li>
+  <li><a class="active" href="/streak/">Streak</a></li>
+  <li><a href="/retention/">Retention</a></li>
+</ul>
+{% endblock %}
+
+{% block table %}
+	<br>
+	<table>
+		<tr>
+		    <th>Username</th>
+		    <th>Streak</th>
+		 </tr>
+		{% for i in  data %}
+			<tr>
+				<td>{{i.username}}</td>
+				<td>{{i.value}}</td>
+			 </tr>
+		{% endfor %}
+	</table>
+{% endblock %}
