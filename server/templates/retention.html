@@ -13,11 +13,13 @@
 	<br>
 	<table>
 		<tr>
+		    <th>#</th>
 		    <th>Username</th>
 		    <th>Retention %</th>
 		 </tr>
 		{% for i in  data %}
 			<tr>
+			    <td>{{i.place}}</td>
 				<td>{{i.username}}</td>
 				<td>{{i.value}}</td>
 			 </tr>
