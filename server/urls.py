@@ -4,7 +4,10 @@ from django.urls import path
 app_name = "main"
 
 urlpatterns = [
-	path("", views.homepage, name="homepage"),
+	path("", views.reviews, name="reviews"),
+    path("time/", views.time, name="time"),
+    path("streak/", views.streak, name="streak"),
+    path("retention/", views.retention, name="retention"),
 	path('sync/', views.sync, name="sync"),
 	path('users/', views.users, name="users"),
 	path('getstreaks/', views.getstreaks, name="getstreaks"),
