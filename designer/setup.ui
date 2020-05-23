@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
-    <height>436</height>
+    <width>500</width>
+    <height>463</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -111,6 +111,11 @@
            <item>
             <property name="text">
              <string>Law</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>MCAT</string>
             </property>
            </item>
           </widget>
@@ -252,8 +257,8 @@
        <item row="4" column="0">
         <widget class="QCheckBox" name="refresh">
          <property name="text">
-          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+).
-Sorting will be disabled.</string>
+          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
+Sorting will be disabled</string>
          </property>
         </widget>
        </item>
