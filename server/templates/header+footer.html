@@ -10,6 +10,9 @@
 		  padding: 0;
 		  overflow: hidden;
 		  background-color: #275ae6;
+		  position: -webkit-sticky; /* Safari */
+          position: sticky;
+          top: 0;
 		}
 
 		li {
@@ -29,18 +32,23 @@
 		  background-color: #214dc4;
 		}
 
+		.active {
+          background-color: #214dc4;
+        }
+
 		footer {
+		  font-family: arial, sans-serif;
 		  text-align: center;
 		  padding: 3px;
 		  background-color: #275ae6;
 		  color: white;
 		}
-		
+
 		table {
 		  font-family: arial, sans-serif;
 		  border-collapse: collapse;
 		  width: 100%;
-		  margin-left:auto; 
+		  margin-left:auto;
     	  margin-right:auto;
 		}
 
@@ -49,13 +57,22 @@
 		}
 
 		td, th {
-		  border: 1px solid #dddddd;
+		  border: 1px solid #474642;
 		  text-align: left;
 		  padding: 8px;
 		}
 
 		tr:nth-child(even) {
 		  background-color: #dddddd;
+		}
+		tr:nth-child(2) {
+		  background-color: #FFDF00;
+		}
+		tr:nth-child(3) {
+		  background-color: #c0c0c0;
+		}
+		tr:nth-child(4) {
+		  background-color: #cd7f32;
 		}
 	</style>
 </head>
@@ -67,9 +84,9 @@
 
 {% block table %}
 {% endblock %}
-
+<br>
 <footer>
-  <p>© Thore Tyborski 2020 | 
+  <p>© Thore Tyborski 2020 |
   <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a> |<br>
   Download the add-on from <a href="https://ankiweb.net/shared/info/41708974">Anki Web</a></p>
 </footer>
