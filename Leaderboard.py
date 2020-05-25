@@ -361,6 +361,7 @@ class start_main(QDialog):
 					self.dialog.Custom_Leaderboard.clearSelection()
 
 		if config["refresh"] == "True":
+			global t
 			t = threading.Timer(120.0, self.load_leaderboard)
 			t.daemon = True
 			t.start()
@@ -528,3 +529,12 @@ class start_main(QDialog):
 			for i in range(3):
 				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
 				first_three_custom.append(item)
+
+	def closeEvent(self, event):
+		config = mw.addonManager.getConfig(__name__)
+		if config["refresh"] == "True":
+			global t
+			t.cancel()
+			event.accept()
+		else:
+			event.accept()
