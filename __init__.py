@@ -1,15 +1,18 @@
 from aqt import mw
 from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
-from aqt.utils import showInfo, showWarning
+from aqt.utils import showInfo, showWarning, tooltip
 
 from os.path import dirname, join, realpath
 import webbrowser
 import requests
 from bs4 import BeautifulSoup
+import datetime
+import threading
 
 from .Leaderboard import start_main
 from .Setup import start_setup
+from .Stats import Stats
 
 def Main():
 	check_info()
@@ -62,6 +65,19 @@ def add_username_to_friendlist():
 		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
 		mw.addonManager.writeConfig(__name__, config)
 
+def background_sync():
+	config = mw.addonManager.getConfig(__name__)
+	url = 'https://ankileaderboard.pythonanywhere.com/sync/'
+	config5 = config['subject'].replace(" ", "")
+	config6 = config['country'].replace(" ", "")
+	streak, cards, time, cards_past_30_days, retention = Stats()
+	data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
+	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
+	try:
+		x = requests.post(url, data = data)
+		tooltip("Synced data successfully.")
+	except:
+		showWarning("Make sure you're connected to the internet.")
 
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
@@ -77,8 +93,9 @@ def add_menu(Name, Button, exe, *sc):
 		action.setShortcut(QKeySequence(i))
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
-add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 add_menu('&Leaderboard',"&Config", invoke_setup)
+add_menu('&Leaderboard',"&Sync", background_sync, "Shift+S")
+add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 
 mw.addonManager.setConfigAction(__name__, config_setup)
 
