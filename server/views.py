@@ -147,9 +147,20 @@ def get_data(request):
 	c.execute("SELECT * FROM Leaderboard ORDER BY Cards DESC")
 	return HttpResponse(json.dumps(c.fetchall()))
 
+@csrf_exempt
+def delete(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	User = request.POST.get("Username", "")
+	try:
+		c.execute("DELETE FROM Leaderboard WHERE Username = (?)", (User,))
+		conn.commit()
+		print("Deleted account: " + str(User))
+		return HttpResponse("Deleted")
+	except:
+		return HttpResponse("Failed")
 
 ### OLD API ###
-
 
 @csrf_exempt
 def users(request):
@@ -177,19 +188,6 @@ def getreviews(request):
 	for i in clean:
 		data = data.replace(i, "")
 	return HttpResponse(str(data))
-
-@csrf_exempt
-def delete(request):
-	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
-	c = conn.cursor()
-	User = request.POST.get("Username", "")
-	try:
-		c.execute("DELETE FROM Leaderboard WHERE Username = (?)", (User,))
-		conn.commit()
-		print("Deleted account: " + str(User))
-		return HttpResponse("Deleted")
-	except:
-		return HttpResponse("Failed")
 
 @csrf_exempt
 def getstreaks(request):
