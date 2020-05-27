@@ -91,23 +91,22 @@ class start_main(QDialog):
 		country_counter = 0
 		custom_counter = 0
 		for i in data:
-			if not i:
-				continue
-			data_list = i.split(",")
-			username = data_list[0]
-			streak = data_list[1]
-			cards = data_list[2]
-			time = data_list[3]
-			sync_date = data_list[4]
+			username = i[0]
+			streak = i[1]
+			cards = i[2]
+			time = i[3]
+			sync_date = i[4]
+			sync_date = sync_date.replace(" ", "")
 			if len(sync_date) == 10:
 				sync_date = sync_date + "12:00:00"
 			sync_date = datetime.datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
-			month = data_list[5]
-			if month.isdigit():
-				month = int(month)
-			subject = data_list[6]
-			country = data_list[7]
-			retention = data_list[8]
+			try:
+				month = int(i[5])
+			except:
+				month = ""
+			subject = i[6]
+			country = i[7]
+			retention = i[8]
 			try:
 				retention = float(retention)
 			except:
