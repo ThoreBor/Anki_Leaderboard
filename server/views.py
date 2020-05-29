@@ -138,7 +138,7 @@ def sync(request):
 
 	try:
 		check_sync_date = Sync_Date.replace(" ", "")
-		check_sync_date = datetime(int(Sync_Date[0:4]),int(Sync_Date[5:7]), int(Sync_Date[8:10]), int(Sync_Date[10:12]), int(Sync_Date[13:15]), int(Sync_Date[16:18]))
+		check_sync_date = datetime(int(check_sync_date[0:4]),int(check_sync_date[5:7]), int(check_sync_date[8:10]), int(check_sync_date[10:12]), int(check_sync_date[13:15]), int(check_sync_date[16:18]))
 	except:
 		return HttpResponse("Error invalid timestamp")
 
