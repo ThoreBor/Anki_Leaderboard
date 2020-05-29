@@ -11,7 +11,7 @@ def reviews(request):
 	data = []
 	counter = 1
 	start_day = datetime.now() - timedelta(days=1)
-	conn = sqlite3.connect('Leaderboard.db')
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
 	c.execute("SELECT Username, Cards, Sync_Date FROM Leaderboard ORDER BY Cards DESC")
 
@@ -116,8 +116,41 @@ def sync(request):
 	Country = request.POST.get("Country","")
 	Retention = request.POST.get("Retention","")
 
+	### Filter ###
+
 	if len(User) > 15:
 		User = User[:15]
+
+	if User == "":
+		print("error")
+		return HttpResponse("Error - invalid username")
+
+	if not Streak.isdigit():
+		return HttpResponse("Error - invalid streak value") 
+
+	if not Cards.isdigit():
+		return HttpResponse("Error - invalid cards value")
+
+	try:
+		float(Time)
+	except:
+		return HttpResponse("Error - invalid time value")
+
+	try:
+		check_sync_date = Sync_Date.replace(" ", "")
+		check_sync_date = datetime(int(Sync_Date[0:4]),int(Sync_Date[5:7]), int(Sync_Date[8:10]), int(Sync_Date[10:12]), int(Sync_Date[13:15]), int(Sync_Date[16:18]))
+	except:
+		return HttpResponse("Error invalid timestamp")
+
+	if not Month.isdigit():
+		return HttpResponse("Error - invalid month value")
+
+	try:
+		float(Retention)
+	except:
+		return HttpResponse("Error - invalid retention value")
+
+	###
 
 	if User not in Username_List:
 		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Subject, Country, Retention))
