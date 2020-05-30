@@ -45,6 +45,7 @@ class start_main(QDialog):
 		subject_tab = tab_widget.indexOf(self.dialog.tab_4)
 		tab_widget.setTabText(country_tab, config["country"])
 		tab_widget.setTabText(subject_tab, config["subject"])
+		self.dialog.Parent.setCurrentIndex(config['tab'])
 
 		self.load_leaderboard()
 
@@ -54,16 +55,20 @@ class start_main(QDialog):
 
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-		config1 = config['username']
 		config5 = config['subject'].replace(" ", "")
 		config6 = config['country'].replace(" ", "")
 		streak, cards, time, cards_past_30_days, retention = Stats()
-		data = {'Username': config1 , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
+		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
 		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
 		try:
 			x = requests.post(url, data = data)
 		except:
 			showWarning("Make sure you're connected to the internet.")
+
+		if x.text == "Done!":
+			pass
+		else:
+			showWarning(str(x.text))
 
 		### CLEAR TABLE ###
 
@@ -97,8 +102,6 @@ class start_main(QDialog):
 			time = i[3]
 			sync_date = i[4]
 			sync_date = sync_date.replace(" ", "")
-			if len(sync_date) == 10:
-				sync_date = sync_date + "12:00:00"
 			sync_date = datetime.datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
 			try:
 				month = int(i[5])
