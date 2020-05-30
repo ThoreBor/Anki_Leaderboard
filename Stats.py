@@ -6,6 +6,7 @@ from os.path import dirname, join, realpath
 from aqt.utils import showInfo, tooltip
 
 def Stats():
+
 	###STREAK, REVIEWS PAST 31 DAYS###
 	config = mw.addonManager.getConfig(__name__)
 	new_day = datetime.time(int(config['newday']),0,0)
@@ -13,6 +14,7 @@ def Stats():
 	reviews = mw.col.db.list("SELECT id FROM revlog")
 	
 	###STREAK####
+	
 	newday = int(config['newday'])
 	date_list = []
 	Streak = 0
@@ -84,7 +86,7 @@ def Stats():
 	try:
 		retention = round(100 - (100/total_cards*flunked_total), 1)
 	except:
-		retention = "N/A"
+		retention = ""
 
 	###TIME SPEND TODAY###
 	

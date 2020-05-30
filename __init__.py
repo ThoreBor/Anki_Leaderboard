@@ -8,7 +8,6 @@ import webbrowser
 import requests
 from bs4 import BeautifulSoup
 import datetime
-import threading
 
 from .Leaderboard import start_main
 from .Setup import start_setup
@@ -75,9 +74,13 @@ def background_sync():
 	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
 	try:
 		x = requests.post(url, data = data)
-		tooltip("Synced data successfully.")
 	except:
 		showWarning("Make sure you're connected to the internet.")
+
+	if x.text == "Done!":
+		tooltip("Synced data successfully.")
+	else:
+		showWarning(str(x.text))
 
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
@@ -93,8 +96,8 @@ def add_menu(Name, Button, exe, *sc):
 		action.setShortcut(QKeySequence(i))
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
-add_menu('&Leaderboard',"&Config", invoke_setup)
 add_menu('&Leaderboard',"&Sync", background_sync, "Shift+S")
+add_menu('&Leaderboard',"&Config", invoke_setup)
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 
 mw.addonManager.setConfigAction(__name__, config_setup)
