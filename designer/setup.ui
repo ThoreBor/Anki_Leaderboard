@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>463</height>
+    <width>486</width>
+    <height>485</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,8 +23,8 @@
    <iconset resource="icons.qrc">
     <normaloff>:/icons/person.png</normaloff>:/icons/person.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -40,36 +40,77 @@
        <string>Account</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="scroll">
-         <property name="text">
-          <string>Automatically scroll to yourself</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="0">
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="2" column="0">
-          <widget class="QLabel" name="next_day_info1">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Next day starts</string>
-           </property>
-          </widget>
+        <layout class="QGridLayout" name="gl2">
+         <item row="2" column="0" colspan="2">
+          <layout class="QGridLayout" name="gl3">
+           <item row="0" column="0">
+            <widget class="QLabel" name="next_day_info1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Next day starts</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="newday">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximum">
+              <number>23</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="Defaul_Tab_Label">
+             <property name="text">
+              <string>Default Leaderboard:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="next_day_info2">
+             <property name="text">
+              <string>hours past midnight</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" colspan="2">
+            <widget class="QComboBox" name="Default_Tab">
+             <item>
+              <property name="text">
+               <string>Global</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Friends</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Country</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Group</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
          </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="next_day_info2">
-           <property name="text">
-            <string>hours past midnight</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="3">
+         <item row="1" column="0" colspan="2">
           <widget class="QComboBox" name="country">
            <item>
             <property name="text">
@@ -78,20 +119,7 @@
            </item>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QSpinBox" name="newday">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximum">
-            <number>23</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" colspan="3">
+         <item row="0" column="0" colspan="2">
           <widget class="QComboBox" name="subject">
            <item>
             <property name="text">
@@ -122,39 +150,16 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0">
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="refresh">
+         <property name="text">
+          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
+Sorting will be disabled</string>
          </property>
         </widget>
        </item>
        <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="3" column="0">
-          <widget class="QLineEdit" name="login_username">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string>Username</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="delete_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-             <underline>false</underline>
-            </font>
-           </property>
-           <property name="text">
-            <string>Delete Account:</string>
-           </property>
-          </widget>
-         </item>
+        <layout class="QGridLayout" name="gl1">
          <item row="6" column="1">
           <widget class="QPushButton" name="delete_button">
            <property name="text">
@@ -178,16 +183,17 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="login_info">
+         <item row="5" column="0">
+          <widget class="QLabel" name="delete_info">
            <property name="font">
             <font>
              <weight>75</weight>
              <bold>true</bold>
+             <underline>false</underline>
             </font>
            </property>
            <property name="text">
-            <string>Login:</string>
+            <string>Delete Account:</string>
            </property>
           </widget>
          </item>
@@ -204,36 +210,10 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="create_button">
-           <property name="text">
-            <string>Create Account</string>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-           <property name="default">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
          <item row="6" column="0">
           <widget class="QLineEdit" name="delete_username">
            <property name="text">
             <string/>
-           </property>
-           <property name="placeholderText">
-            <string>Username</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="create_username">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="maxLength">
-            <number>15</number>
            </property>
            <property name="placeholderText">
             <string>Username</string>
@@ -252,13 +232,68 @@
            </property>
           </widget>
          </item>
+         <item row="3" column="0">
+          <widget class="QLineEdit" name="login_username">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string>Username</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="create_button">
+           <property name="text">
+            <string>Create Account</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+           <property name="default">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="login_info">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Login:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="create_username">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="maxLength">
+            <number>15</number>
+           </property>
+           <property name="placeholderText">
+            <string>Username</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
-       <item row="4" column="0">
-        <widget class="QCheckBox" name="refresh">
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="scroll">
          <property name="text">
-          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
-Sorting will be disabled</string>
+          <string>Automatically scroll to yourself</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
@@ -270,7 +305,7 @@ Sorting will be disabled</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QGridLayout" name="gl4">
          <item row="3" column="0">
           <widget class="QListWidget" name="friends_list">
            <property name="styleSheet">
@@ -298,7 +333,7 @@ Sorting will be disabled</string>
           </widget>
          </item>
          <item row="3" column="1">
-          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <layout class="QVBoxLayout" name="vl1">
            <item>
             <widget class="QPushButton" name="remove_friend_button">
              <property name="text">
@@ -394,7 +429,17 @@ Sorting will be disabled</string>
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -406,16 +451,6 @@ Sorting will be disabled</string>
       </size>
      </property>
     </spacer>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
@@ -429,7 +464,6 @@ Sorting will be disabled</string>
   <tabstop>delete_button</tabstop>
   <tabstop>subject</tabstop>
   <tabstop>country</tabstop>
-  <tabstop>newday</tabstop>
   <tabstop>scroll</tabstop>
   <tabstop>friend_username</tabstop>
   <tabstop>add_friends_button</tabstop>
