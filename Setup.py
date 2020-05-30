@@ -29,6 +29,7 @@ class start_setup(QDialog):
 		self.update_login_info(config["username"])
 		self.dialog.newday.setValue(config4)
 		self.dialog.subject.setCurrentText(config5)
+		self.dialog.Default_Tab.setCurrentIndex(config['tab'])
 		self.dialog.scroll.setChecked(bool(config["scroll"]))
 		self.dialog.refresh.setChecked(bool(config["refresh"]))
 		self.update_friends_list(sorted(config["friends"], key=str.lower))
@@ -308,6 +309,7 @@ class start_setup(QDialog):
 		self.dialog.newday.valueChanged.connect(self.set_time)
 		self.dialog.subject.currentTextChanged.connect(self.set_subject)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
+		self.dialog.Default_Tab.currentTextChanged.connect(self.set_default_tab)
 		self.dialog.scroll.stateChanged.connect(self.set_scroll)
 		self.dialog.refresh.stateChanged.connect(self.set_refresh)
 		self.dialog.import_friends.clicked.connect(self.import_list)
@@ -320,17 +322,24 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.4.6</h3>
+<h3>Anki Leaderboard v1.5</h3>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <h3>Change Log:</h3>
-- Added retention to stats <br>
-- Bug fixes<br><br>
+- changed "N/A" to 0 in retention stats <br>
+- fixed nightmode highlight bug <br>
+- adjustions for new api <br>
+- added error messages when syncing fails <br>
+- threading timer stops when the leaderboard is closed <br>
+- added option to sync without opening the leaderboard (Shift+S) <br>
+- added MCAT to groups <br>
+- added option to choose default leaderboard<br>
+- the leaderboard can now also be viewed on this <a href="https://ankileaderboard.pythonanywhere.com/">Website</a> (past 24 hours)<br><br>
 <b>© Thore Tyborski 2020<br>
-With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a> and  <a href="https://github.com/zjosua">zjosua.</a></b>
+With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a> and <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a>.</b>
 """
 
 		self.dialog.about_text.setHtml(about_text)
@@ -354,9 +363,13 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			x = requests.post(url, data = data)
 
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 			mw.addonManager.writeConfig(__name__, config)
-			tooltip("Successfully created account.")
+
+			if x.text == "Done!":
+				tooltip("Successfully created account.")
+			else:
+				showWarning(str(x.text))
 			self.dialog.create_username.setText("")
 			self.update_login_info(username)
 
@@ -386,7 +399,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 
 		if username in username_list:
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip("Successfully logged in.")
 			self.dialog.login_username.setText("")
@@ -407,7 +420,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 
 		if x.text == "Deleted":
 			config = {"new_user": "True", "username": "", "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip("Successfully deleted account.")
 			self.dialog.delete_username.setText("")
@@ -429,7 +442,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		
 		if username in username_list and username not in config['friends']:
 			config['friends'].append(username)
-			config = {"new_user": config['new_user'],"username": config['username'], "friends": config['friends'], "newday": config['newday'], "country": config['country'], "subject": config['subject'], "refresh": config["refresh"]}
+			config = {"new_user": config['new_user'],"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+			"country": config['country'], "subject": config['subject'], "refresh": config["refresh"],"tab": config['tab']}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(username + " is now your friend.")
 			self.dialog.friend_username.setText("")
@@ -444,7 +458,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			config3 = config['friends']
 			config3.remove(username)
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": config3, "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(f"{username} was removed from your friendlist")
 			self.update_friends_list(config["friends"])
@@ -453,7 +467,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		beginning_of_new_day = self.dialog.newday.value()
 		config = mw.addonManager.getConfig(__name__)
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": str(beginning_of_new_day), 
-		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_subject(self):
@@ -462,14 +476,14 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		if subject == "Join a group":
 			subject = "Custom"
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": subject, "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+		"subject": subject, "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_country(self):
 		country = self.dialog.country.currentText()
 		config = mw.addonManager.getConfig(__name__)
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": country, "scroll": config['scroll'], "refresh": config["refresh"]}
+		"subject": config['subject'], "country": country, "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_scroll(self):
@@ -479,7 +493,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		else:
 			scroll = ""
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": scroll, "refresh": config["refresh"]}
+		"subject": config['subject'], "country": config['country'], "scroll": scroll, "refresh": config["refresh"],"tab": config['tab']}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_refresh(self):
@@ -489,7 +503,25 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		else:
 			refresh = ""
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": refresh}
+		"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": refresh,"tab": config['tab']}
+		mw.addonManager.writeConfig(__name__, config)
+
+	def set_default_tab(self):
+		tab = self.dialog.Default_Tab.currentText()
+		config = mw.addonManager.getConfig(__name__)
+		if tab == "Global":
+			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 0 }
+		if tab == "Friends":
+			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 1 }
+		if tab == "Country":
+			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 2 }
+		if tab == "Group":
+			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 3 }
+		
 		mw.addonManager.writeConfig(__name__, config)
 
 
@@ -516,7 +548,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			
 			self.update_friends_list(sorted(friends_list, key=str.lower))
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": friends_list, "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
 			mw.addonManager.writeConfig(__name__, config)
 		except:
 			showInfo("Please pick a text file to import friends.")
