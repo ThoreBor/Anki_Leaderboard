@@ -146,6 +146,11 @@
              <string>MCAT</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Concursos</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
