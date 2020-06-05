@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 import sqlite3
 from datetime import datetime, timedelta
 
@@ -13,8 +14,6 @@ def reviews(request):
 	for row in c.fetchall():
 		sync_date = row[2]
 		sync_date = sync_date.replace(" ", "")
-		if len(sync_date) == 10:
-			sync_date = sync_date + "12:00:00"
 		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
 
 		if sync_date > start_day:
@@ -34,8 +33,6 @@ def time(request):
 	for row in c.fetchall():
 		sync_date = row[2]
 		sync_date = sync_date.replace(" ", "")
-		if len(sync_date) == 10:
-			sync_date = sync_date + "12:00:00"
 		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
 
 		if sync_date > start_day:
@@ -55,8 +52,6 @@ def streak(request):
 	for row in c.fetchall():
 		sync_date = row[2]
 		sync_date = sync_date.replace(" ", "")
-		if len(sync_date) == 10:
-			sync_date = sync_date + "12:00:00"
 		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
 
 		if sync_date > start_day:
@@ -76,8 +71,6 @@ def retention(request):
 	for row in c.fetchall():
 		sync_date = row[2]
 		sync_date = sync_date.replace(" ", "")
-		if len(sync_date) == 10:
-			sync_date = sync_date + "12:00:00"
 		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
 
 		if sync_date > start_day and row[1] != "N/A" and row[1] != "":
@@ -85,3 +78,21 @@ def retention(request):
 			data.append(x)
 			counter += 1
 	return render(request, "retention.html", {"data": data})
+
+def user(request, username):
+    conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM Leaderboard WHERE Username = (?)",(username,))
+    user_data = c.fetchone()
+    if user_data[7] == "Country" or "":
+        country = "-"
+    else:
+        country = user_data[7]
+    if user_data[6] == "Custom" or "":
+        subject = "-"
+    else:
+        subject = user_data[6]
+    data = [{"username": username, "streak": user_data[1], "cards": user_data[2], "time": user_data[3], "sync": user_data[4][:19], "month": user_data[5],
+    "subject": subject, "country": country, "retention": user_data[8]}]
+
+    return render(request, "user.html", {"data": data})
