@@ -4,6 +4,32 @@
 	<title>Leaderboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
+	    a.user_link:link {
+          text-decoration: none;
+          color: black;
+        }
+        a.user_link:visited {
+          text-decoration: none;
+          color: black;
+        }
+	    table.user {
+		  font-family: arial, sans-serif;
+		  border-collapse: collapse;
+		  width: 100%;
+		  margin-left:auto;
+    	  margin-right:auto;
+		}
+
+		table.user td{
+		    white-space: nowrap;  /** added **/
+		}
+
+		table.user td, th {
+		  border: 1px solid #474642;
+		  text-align: left;
+		  padding: 8px;
+		}
+
 		ul {
 		  list-style-type: none;
 		  margin: 0;
@@ -42,9 +68,13 @@
 		  padding: 3px;
 		  background-color: #275ae6;
 		  color: white;
+		  position: fixed;
+		  left: 0;
+		  bottom: 0;
+		  width: 100%;
 		}
 
-		table {
+		table.lb {
 		  font-family: arial, sans-serif;
 		  border-collapse: collapse;
 		  width: 100%;
@@ -52,27 +82,30 @@
     	  margin-right:auto;
 		}
 
-		table td{
+		table.lb td{
 		    white-space: nowrap;  /** added **/
 		}
 
-		td, th {
+		table.lb td, th {
 		  border: 1px solid #474642;
 		  text-align: left;
 		  padding: 8px;
 		}
 
-		tr:nth-child(even) {
+		table.lb tr:nth-child(even) {
 		  background-color: #dddddd;
 		}
-		tr:nth-child(2) {
+		table.lb tr:nth-child(2) {
 		  background-color: #FFDF00;
+		  font-weight: bold;
 		}
-		tr:nth-child(3) {
+		table.lb tr:nth-child(3) {
 		  background-color: #c0c0c0;
+		  font-weight: bold;
 		}
-		tr:nth-child(4) {
+		table.lb tr:nth-child(4) {
 		  background-color: #cd7f32;
+		  font-weight: bold;
 		}
 	</style>
 </head>
@@ -84,7 +117,10 @@
 
 {% block table %}
 {% endblock %}
-<br>
+
+{% block user_info %}
+{% endblock %}
+<br><br><br><br><br>
 <footer>
   <p>© Thore Tyborski 2020 |
   <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a> |<br>

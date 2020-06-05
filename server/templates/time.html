@@ -11,16 +11,16 @@
 
 {% block table %}
 	<br>
-	<table>
+	<table class="lb">
 		<tr>
 		    <th>#</th>
 		    <th>Username</th>
-		    <th>Minutes today</th>
+		    <th>Minutes</th>
 		 </tr>
 		{% for i in  data %}
 			<tr>
 			    <td>{{i.place}}</td>
-				<td>{{i.username}}</td>
+				<td><a class="user_link" href="https://ankileaderboard.pythonanywhere.com/user/{{i.username}}" target="_blank">{{i.username}}</a></td>
 				<td>{{i.value}}</td>
 			 </tr>
 		{% endfor %}

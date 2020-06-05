@@ -1,0 +1,50 @@
+{% extends "header+footer.html" %}
+
+{% block nav %}
+<ul>
+  <li><a href="/">Reviews</a></li>
+  <li><a href="/time/">Time</a></li>
+  <li><a href="/streak/">Streak</a></li>
+  <li><a href="/retention/">Retention</a></li>
+</ul>
+{% endblock %}
+
+{% block user_info %}
+	{% for i in  data %}
+		<h1 style="font-family: arial, sans-serif">{{i.username}}</h1>
+		<table class="user">
+			<tr>
+			    <td><b>Reviews</b></td>
+				<td>{{i.cards}}</td>
+			</tr>
+			<tr>
+			    <td><b>Steak</b></td>
+				<td>{{i.streak}}</td>
+			</tr>
+			<tr>
+			    <td><b>Minutes</b></td>
+				<td>{{i.time}}</td>
+			</tr>
+			<tr>
+			    <td><b>Retention</b></td>
+				<td>{{i.retention}}%</td>
+			</tr>
+			<tr>
+			    <td><b>Reviews past 31 days</b></td>
+				<td>{{i.month}}</td>
+			</tr>
+			<tr>
+			    <td><b>Country</b</td>
+				<td>{{i.country}}</td>
+			</tr>
+			<tr>
+			    <td><b>Group</b></td>
+				<td>{{i.subject}}</td>
+			</tr>
+			<tr>
+			    <td><b>Last time synced</b></td>
+				<td>{{i.sync}}</td>
+			</tr>
+		</table>
+	{% endfor %}
+{% endblock %}
