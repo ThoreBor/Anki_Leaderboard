@@ -34,5 +34,6 @@ urlpatterns = [
 	path('allusers/', api.all_users, name="allusers"),
 	path('getdata/', api.get_data, name="get_data"),
 	path(r'user/<username>/', website.user, name="user"),
+	path('upload/', website.upload, name="upload"),
 
 ]
