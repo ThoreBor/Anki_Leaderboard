@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-168789064-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-168789064-1');
+    </script>
+
 	<title>Leaderboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
@@ -49,7 +59,7 @@
 		  display: block;
 		  color: white;
 		  text-align: center;
-		  padding: 14px 16px;
+		  padding: 12px 12px;
 		  text-decoration: none;
 		  font-family: Arial;
 		}
@@ -107,6 +117,26 @@
 		  background-color: #cd7f32;
 		  font-weight: bold;
 		}
+		.loader {
+			border: 16px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 16px solid #3498db;
+			width: 60px;
+			height: 60px;
+			-webkit-animation: spin 2s linear infinite; /* Safari */
+			animation: spin 2s linear infinite;
+		}
+
+		/* Safari */
+		@-webkit-keyframes spin {
+			0% { -webkit-transform: rotate(0deg); }
+			100% { -webkit-transform: rotate(360deg); }
+		}
+
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
 	</style>
 </head>
 
@@ -119,6 +149,9 @@
 {% endblock %}
 
 {% block user_info %}
+{% endblock %}
+
+{% block upload %}
 {% endblock %}
 <br><br><br><br><br>
 <footer>

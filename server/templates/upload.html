@@ -1,0 +1,40 @@
+{% extends "header+footer.html" %}
+
+{% block nav %}
+<ul>
+  <li><a href="/">Reviews</a></li>
+  <li><a href="/time/">Time</a></li>
+  <li><a href="/streak/">Streak</a></li>
+  <li><a href="/retention/">Retention</a></li>
+  <li><a class="active" href="/upload/">Sync</a></li>
+</ul>
+{% endblock %}
+
+
+{% block upload %}
+	<h1 style="font-family: arial, sans-serif">Mobile Sync (Beta)</h1>
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<input type="text" name="username" placeholder="Username" maxlength="15"><br><br>
+		<div style="font-family: arial, sans-serif">Start of next day (hours after midnight):</div>
+		<input type="number" name="newday" min="0" max="23" placeholder="4"><br><br>
+		<input type="file" name="database" accept=".anki2"><br><br>
+		<input type="hidden" id="time" name="offset" value= >
+		<div style="font-family: arial, sans-serif">
+			Upload your Anki database to update your stats. You'll find the 'collection.anki2' file in the AnkiDroid folder on your phone.<br><br>
+			This might take a while depending on the size of your collection and internet connection.<br><br>
+			After calculating the stats the file will be deleted from the server.
+		</div><br>
+		<button onclick="loader()"type="submit">Upload/Sync</button>
+	</form>
+	<br><br>
+	<div class="" id="loader"></div>
+	<script type="text/javascript">
+		var d = new Date();
+        var offset = d.getTimezoneOffset();
+		document.getElementById("time").value = offset;
+		function loader(){
+			document.getElementById('loader').className = "loader";
+		}
+	</script>
+{% endblock %}
