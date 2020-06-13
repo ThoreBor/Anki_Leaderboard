@@ -73,9 +73,9 @@ def background_sync():
 	data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
 	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
 	try:
-		x = requests.post(url, data = data)
+		x = requests.post(url, data = data, timeout=20)
 	except:
-		showWarning("Make sure you're connected to the internet.")
+		showWarning("Timeout error - No internet connection, or server response took too long.")
 
 	if x.text == "Done!":
 		tooltip("Synced data successfully.")

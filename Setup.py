@@ -349,9 +349,9 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 		try:
-			username_list = requests.get(url).json()
+			username_list = requests.get(url, timeout=20).json()
 		except:
-			showWarning("Make sure you're connected to the internet.")
+			showWarning("Timeout error - No internet connection, or server response took too long.")
 
 		if username in username_list:
 			tooltip("Username already taken")
@@ -393,9 +393,9 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 		try:
-			username_list = requests.get(url).json()
+			username_list = requests.get(url, timeout=20).json()
 		except:
-			showWarning("Make sure you're connected to the internet.")
+			showWarning("Timeout error - No internet connection, or server response took too long.")
 
 		if username in username_list:
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
@@ -414,9 +414,9 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		url = 'https://ankileaderboard.pythonanywhere.com/delete/'
 		data = {'Username': username}
 		try:
-			x = requests.post(url, data = data)
+			x = requests.post(url, data = data, timeout=20)
 		except:
-			showWarning("Make sure you're connected to the internet.")
+			showWarning("Timeout error - No internet connection, or server response took too long.")
 
 		if x.text == "Deleted":
 			config = {"new_user": "True", "username": "", "friends": config['friends'], "newday": config["newday"], 

@@ -61,9 +61,9 @@ class start_main(QDialog):
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
 		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
 		try:
-			x = requests.post(url, data = data)
+			x = requests.post(url, data = data, timeout=20)
 		except:
-			showWarning("Make sure you're connected to the internet.")
+			showWarning("Timeout error - No internet connection, or server response took too long.")
 
 		if x.text == "Done!":
 			pass
@@ -88,9 +88,9 @@ class start_main(QDialog):
 
 		url = 'https://ankileaderboard.pythonanywhere.com/getdata/'
 		try:
-			data = requests.get(url).json()
+			data = requests.get(url, timeout=20).json()
 		except:
-			showWarning("Make sure you're connected to the internet.")
+			showWarning("Timeout error - No internet connection, or server response took too long.")
 		counter = 0
 		friend_counter = 0
 		country_counter = 0
