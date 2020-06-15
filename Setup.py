@@ -359,7 +359,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 			streak, cards, time, cards_past_30_days, retention = Stats()
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), "Month": cards_past_30_days, 
-			"Subject": config["subject"], "Country": config["country"], "Retention": retention}
+			"Subject": config["subject"], "Country": config["country"], "Retention": retention,"Token": str(mw.col.conf.get('Leaderboard_Token'))}
 			x = requests.post(url, data = data)
 
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
@@ -412,7 +412,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		username = self.dialog.delete_username.text()
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/delete/'
-		data = {'Username': username}
+		data = {'Username': username, "Token": str(mw.col.conf.get('Leaderboard_Token'))}
 		try:
 			x = requests.post(url, data = data, timeout=20)
 		except:

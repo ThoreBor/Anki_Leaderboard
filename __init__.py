@@ -8,6 +8,7 @@ import webbrowser
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import hashlib
 
 from .Leaderboard import start_main
 from .Setup import start_setup
@@ -15,6 +16,7 @@ from .Stats import Stats
 
 def Main():
 	check_info()
+	create_token()
 	config = mw.addonManager.getConfig(__name__)
 	setup = config['new_user']
 	if setup == "True":
@@ -38,6 +40,16 @@ def config_setup():
 
 def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
+
+def create_token():
+	config = mw.addonManager.getConfig(__name__)
+	if "Leaderboard_Token" not in mw.col.conf:
+		ids = mw.col.db.list("SELECT id FROM revlog")
+		token = ""
+		for i in ids:
+			token = token + str(i)
+		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
+		mw.col.conf['Leaderboard_Token'] = token
 
 def check_info():
 	try:
@@ -71,7 +83,7 @@ def background_sync():
 	config6 = config['country'].replace(" ", "")
 	streak, cards, time, cards_past_30_days, retention = Stats()
 	data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
+	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token": str(mw.col.conf.get('Leaderboard_Token'))}
 	try:
 		x = requests.post(url, data = data, timeout=20)
 	except:

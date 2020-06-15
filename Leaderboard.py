@@ -2,7 +2,6 @@ import datetime
 from datetime import date, time, timedelta
 from os.path import dirname, join, realpath
 import threading
-
 import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -50,7 +49,7 @@ class start_main(QDialog):
 		self.load_leaderboard()
 
 	def load_leaderboard(self):
-
+		
 		### SYNC ###
 
 		config = mw.addonManager.getConfig(__name__)
@@ -59,7 +58,7 @@ class start_main(QDialog):
 		config6 = config['country'].replace(" ", "")
 		streak, cards, time, cards_past_30_days, retention = Stats()
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention}
+		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token": str(mw.col.conf.get('Leaderboard_Token'))}
 		try:
 			x = requests.post(url, data = data, timeout=20)
 		except:
