@@ -322,22 +322,18 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h3>Anki Leaderboard v1.5</h3>
+<h3>Anki Leaderboard v1.5.1</h3>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
-If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br>
+If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><br>
+You can also check the leaderboard (past 24 hours) and try mobile sync on this <a href="https://ankileaderboard.pythonanywhere.com/">website</a>.<br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <h3>Change Log:</h3>
-- changed "N/A" to 0 in retention stats <br>
-- fixed nightmode highlight bug <br>
-- adjustions for new api <br>
-- added error messages when syncing fails <br>
-- threading timer stops when the leaderboard is closed <br>
-- added option to sync without opening the leaderboard (Shift+S) <br>
-- added MCAT to groups <br>
-- added option to choose default leaderboard<br>
-- the leaderboard can now also be viewed on this <a href="https://ankileaderboard.pythonanywhere.com/">Website</a> (past 24 hours)<br><br>
+- store and sync SHA1 token to verify user<br>
+- added timeout for post/get requests + error message<br>
+- added UCFCOM and Concursos to groups
+<br><br>
 <b>© Thore Tyborski 2020<br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a> and <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a>.</b>
 """
