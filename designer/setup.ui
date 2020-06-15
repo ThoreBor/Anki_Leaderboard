@@ -151,6 +151,11 @@
              <string>Concursos</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>UCFCOM</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
