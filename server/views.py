@@ -1,9 +1,6 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import sqlite3
-import json
-from datetime import datetime, timedelta
 
 ### OLD API ###
 
@@ -25,7 +22,7 @@ def users(request):
 def getreviews(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT * FROM Leaderboard ORDER BY Cards DESC")
+	c.execute("SELECT Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention FROM Leaderboard ORDER BY Cards DESC")
 	data = ""
 	for row in c.fetchall():
 			data = data + str(row) + "<br>"
@@ -38,7 +35,7 @@ def getreviews(request):
 def getstreaks(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT * FROM Leaderboard ORDER BY Streak DESC")
+	c.execute("SELECT Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention FROM Leaderboard ORDER BY Streak DESC")
 	data = ""
 	for row in c.fetchall():
 		data = data + str(row) + "<br>"
@@ -51,7 +48,7 @@ def getstreaks(request):
 def gettime(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT * FROM Leaderboard ORDER BY Time_Spend DESC")
+	c.execute("SELECT Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention FROM Leaderboard ORDER BY Time_Spend DESC")
 	data = ""
 	for row in c.fetchall():
 			data = data + str(row) + "<br>"
