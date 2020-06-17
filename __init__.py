@@ -42,7 +42,6 @@ def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
 def create_token():
-	config = mw.addonManager.getConfig(__name__)
 	if "Leaderboard_Token" not in mw.col.conf:
 		ids = mw.col.db.list("SELECT id FROM revlog")
 		token = ""
@@ -65,9 +64,8 @@ def check_info():
 	except:
 		showWarning("Make sure you're connected to the internet.")
 
-#Make sure own username is in friendlist
-
 def add_username_to_friendlist():
+	#Make sure own username is in friendlist
 	config = mw.addonManager.getConfig(__name__)
 	if config['username'] != "" and config['username'] not in config['friends']:
 		friends = config["friends"]
@@ -77,6 +75,7 @@ def add_username_to_friendlist():
 		mw.addonManager.writeConfig(__name__, config)
 
 def background_sync():
+	create_token()
 	config = mw.addonManager.getConfig(__name__)
 	url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 	config5 = config['subject'].replace(" ", "")
