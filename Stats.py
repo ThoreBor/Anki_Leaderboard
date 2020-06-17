@@ -67,18 +67,20 @@ def Stats():
 	else:
 		start_day = datetime.datetime.combine(date.today(), new_day)
 
+	studied_today = mw.col.findCards('rated:1')
 	total_cards = 0
 	flunked_total = 0
-	data = mw.col.db.execute("SELECT * FROM revlog")
-	for i in data:
-		id_time = i[0]
-		flunked = i[3]
-		id_time = datetime.datetime.fromtimestamp(int(id_time)/1000.0)
-		if id_time > start_day:
-			total_cards += 1
-			###RETENTION###
-			if flunked == 1:
-				flunked_total += 1
+	for i in studied_today:
+		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i))
+		for i in value:
+			id_time = i[0]
+			flunked = i[3]
+			id_time = datetime.datetime.fromtimestamp(int(id_time)/1000.0)
+			if id_time > start_day:
+				total_cards += 1
+				###RETENTION###
+				if flunked == 1:
+					flunked_total += 1
 	try:
 		retention = round(100 - (100/total_cards*flunked_total), 1)
 	except:
@@ -87,11 +89,13 @@ def Stats():
 	###TIME SPEND TODAY###
 	
 	time_today = 0
-	for i in data:
-		id_time = i[0]
-		id_time = datetime.datetime.fromtimestamp(int(id_time)/1000.0)
-		if id_time > start_day:
-			time_today = time_today + int(i[7])
+	for i in studied_today:
+		value = mw.col.db.execute("SELECT * FROM revlog WHERE cid = (?) ORDER BY id DESC",(i))
+		for i in value:
+			id_time = i[0]
+			id_time = datetime.datetime.fromtimestamp(int(id_time)/1000.0)
+			if id_time > start_day:
+				time_today = time_today + int(i[7])
 	time_today = round(time_today/60000, 1)
 
 	return(Streak, total_cards, time_today, cards_past_30_days, retention)
