@@ -42,13 +42,14 @@ def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
 def create_token():
-	if "Leaderboard_Token" not in mw.col.conf:
-		ids = mw.col.db.list("SELECT id FROM revlog")
-		token = ""
-		for i in ids:
-			token = token + str(i)
+	try:
+		f = open("Leaderboard_Token.txt", "r")
+	except:
+		token = str(mw.col.db.list("SELECT id FROM revlog LIMIT 1"))
 		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
-		mw.col.conf['Leaderboard_Token'] = token
+		file = open("Leaderboard_Token.txt", "w")
+		file.write(token)
+		file.close()
 
 def check_info():
 	try:
@@ -65,7 +66,6 @@ def check_info():
 		showWarning("Make sure you're connected to the internet.")
 
 def add_username_to_friendlist():
-	#Make sure own username is in friendlist
 	config = mw.addonManager.getConfig(__name__)
 	if config['username'] != "" and config['username'] not in config['friends']:
 		friends = config["friends"]
@@ -76,13 +76,14 @@ def add_username_to_friendlist():
 
 def background_sync():
 	create_token()
+	token = open("Leaderboard_Token.txt", "r").read()
 	config = mw.addonManager.getConfig(__name__)
 	url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 	config5 = config['subject'].replace(" ", "")
 	config6 = config['country'].replace(" ", "")
 	streak, cards, time, cards_past_30_days, retention = Stats()
 	data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token": str(mw.col.conf.get('Leaderboard_Token'))}
+	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.3"}
 	try:
 		x = requests.post(url, data = data, timeout=20)
 	except:

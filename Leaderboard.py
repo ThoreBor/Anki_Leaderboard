@@ -56,9 +56,10 @@ class start_main(QDialog):
 		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 		config5 = config['subject'].replace(" ", "")
 		config6 = config['country'].replace(" ", "")
+		token = open("Leaderboard_Token.txt", "r").read()
 		streak, cards, time, cards_past_30_days, retention = Stats()
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token": str(mw.col.conf.get('Leaderboard_Token'))}
+		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.3"}
 		try:
 			x = requests.post(url, data = data, timeout=20)
 		except:
