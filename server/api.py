@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 import sqlite3
 import json
 from datetime import datetime
+import praw
 
 
 @csrf_exempt
@@ -19,7 +20,8 @@ def sync(request):
 	Subject = request.POST.get("Subject","")
 	Country = request.POST.get("Country","")
 	Retention = request.POST.get("Retention","")
-	Token = request.POST.get("Token", None)
+	Token = request.POST.get("Token_v2", None)
+	Version = request.POST.get("Version", None)
 
 	if Retention == "":
 		Retention = 0
@@ -62,13 +64,18 @@ def sync(request):
 
 	if c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (User,)).fetchone():
 		t = c.execute("SELECT Username, Token FROM Leaderboard WHERE Username = (?)", (User,)).fetchone()
-		if t[1] == Token or t[1] is None or t[1] == "":
-			c.execute("UPDATE Leaderboard SET Streak = (?), Cards = (?), Time_Spend = (?), Sync_Date = (?), Month = (?), Subject = (?), Country = (?), Retention = (?), Token = (?) WHERE Username = (?) ", (Streak, Cards, Time, Sync_Date, Month, Subject, Country, Retention, Token, User))
-			conn.commit()
-			print("Updated entry: " + str(User))
-			return HttpResponse("Done!")
+		if t[1] == Token or t[1] is None:
+		    c.execute("UPDATE Leaderboard SET Streak = (?), Cards = (?), Time_Spend = (?), Sync_Date = (?), Month = (?), Subject = (?), Country = (?), Retention = (?), Token = (?) WHERE Username = (?) ", (Streak, Cards, Time, Sync_Date, Month, Subject, Country, Retention, Token, User))
+		    conn.commit()
+		    print("Updated entry: " + str(User) + " (" + str(Version) + ")")
+		    return HttpResponse("Done!")
 		else:
-			return HttpResponse("Error - invalid token")
+		    with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
+		        data = json.load(json_file)
+		    r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
+		    r.redditor('Ttime5').message('Verification Error', "Username: " + str(User) + "\n" + "Token: " + str(Token) + "\n" + str(t[1]) + "\n" + "Version: " + str(Version))
+		    print("Verification error: " + str(User))
+		    return HttpResponse("Error - invalid token")
 	else:
 		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention, Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Subject, Country, Retention, Token))
 		conn.commit()
@@ -99,11 +106,11 @@ def delete(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
 	User = request.POST.get("Username", "")
-	Token = request.POST.get("Token", None)
+	Token = request.POST.get("Token_v2", None)
 
 	if c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (User,)).fetchone():
 		t = c.execute("SELECT Username, Token FROM Leaderboard WHERE Username = (?)", (User,)).fetchone()
-		if t[1] == Token or t[1] is None or t[1] == "":
+		if t[1] == Token or t[1] is None:
 			c.execute("DELETE FROM Leaderboard WHERE Username = (?)", (User,))
 			conn.commit()
 			print("Deleted account: " + str(User))
