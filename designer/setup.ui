@@ -128,12 +128,17 @@
            </item>
            <item>
             <property name="text">
-             <string>Languages</string>
+             <string>Concursos</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Medical School Anki</string>
+             <string>ENEM/Vestibular </string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Languages</string>
             </property>
            </item>
            <item>
@@ -148,7 +153,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Concursos</string>
+             <string>Medical School Anki</string>
             </property>
            </item>
            <item>
