@@ -330,7 +330,7 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <h3>Change Log:</h3>
-- verification issue fix<br>
+- fixed verification issue<br>
 - sync version number<br>
 - added ENEM/Vestibular to groups
 <br><br>
@@ -359,7 +359,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			x = requests.post(url, data = data)
 
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
+			"tab": config['tab'], "token": config["token"]}
 			mw.addonManager.writeConfig(__name__, config)
 
 			if x.text == "Done!":
@@ -395,7 +396,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 
 		if username in username_list:
 			config = {"new_user": "False", "username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
+			"tab": config['tab'], "token": config["token"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip("Successfully logged in.")
 			self.dialog.login_username.setText("")
@@ -416,7 +418,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 
 		if x.text == "Deleted":
 			config = {"new_user": "True", "username": "", "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
+			"tab": config['tab'], "token": config["token"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip("Successfully deleted account.")
 			self.dialog.delete_username.setText("")
@@ -439,7 +442,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		if username in username_list and username not in config['friends']:
 			config['friends'].append(username)
 			config = {"new_user": config['new_user'],"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"country": config['country'], "subject": config['subject'], "refresh": config["refresh"],"tab": config['tab']}
+			"country": config['country'], "subject": config['subject'], "refresh": config["refresh"],
+			"tab": config['tab'], "token": config["token"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(username + " is now your friend.")
 			self.dialog.friend_username.setText("")
@@ -454,7 +458,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			config3 = config['friends']
 			config3.remove(username)
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": config3, "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
+			"tab": config['tab'], "token": config["token"]}
 			mw.addonManager.writeConfig(__name__, config)
 			tooltip(f"{username} was removed from your friendlist")
 			self.update_friends_list(config["friends"])
@@ -463,7 +468,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		beginning_of_new_day = self.dialog.newday.value()
 		config = mw.addonManager.getConfig(__name__)
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": str(beginning_of_new_day), 
-		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
+		"tab": config['tab'], "token": config["token"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_subject(self):
@@ -472,14 +478,16 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		if subject == "Join a group":
 			subject = "Custom"
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": subject, "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+		"subject": subject, "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
+		"tab": config['tab'], "token": config["token"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_country(self):
 		country = self.dialog.country.currentText()
 		config = mw.addonManager.getConfig(__name__)
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": country, "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+		"subject": config['subject'], "country": country, "scroll": config['scroll'], "refresh": config["refresh"],
+		"tab": config['tab'], "token": config["token"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_scroll(self):
@@ -489,7 +497,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		else:
 			scroll = ""
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": scroll, "refresh": config["refresh"],"tab": config['tab']}
+		"subject": config['subject'], "country": config['country'], "scroll": scroll, "refresh": config["refresh"],
+		"tab": config['tab'], "token": config["token"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_refresh(self):
@@ -499,7 +508,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		else:
 			refresh = ""
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": refresh,"tab": config['tab']}
+		"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": refresh,
+		"tab": config['tab'], "token": config["token"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 	def set_default_tab(self):
@@ -507,16 +517,20 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		config = mw.addonManager.getConfig(__name__)
 		if tab == "Global":
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 0 }
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
+			"tab": 0, "token": config["token"] }
 		if tab == "Friends":
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 1 }
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
+			"tab": 1, "token": config["token"] }
 		if tab == "Country":
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 2 }
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
+			"tab": 2, "token": config["token"] }
 		if tab == "Group":
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],"tab": 3 }
+			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
+			"tab": 3, "token": config["token"]}
 		
 		mw.addonManager.writeConfig(__name__, config)
 
@@ -544,7 +558,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			
 			self.update_friends_list(sorted(friends_list, key=str.lower))
 			config = {"new_user": config['new_user'], "username": config['username'], "friends": friends_list, "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab']}
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
+			"tab": config['tab'], "token": config["token"]}
 			mw.addonManager.writeConfig(__name__, config)
 		except:
 			showInfo("Please pick a text file to import friends.")

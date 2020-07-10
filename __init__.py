@@ -13,6 +13,8 @@ import hashlib
 from .Leaderboard import start_main
 from .Setup import start_setup
 from .Stats import Stats
+from .Achievement import start_achievement
+
 
 def Main():
 	check_info()
@@ -22,6 +24,10 @@ def Main():
 	if setup == "True":
 		invoke_setup()
 	else:
+		# mw.Achievement = start_achievement()
+		# mw.Achievement.show()
+		# mw.Achievement.raise_()
+		# mw.Achievement.activateWindow()
 		mw.leaderboard = start_main()
 		mw.leaderboard.show()
 		mw.leaderboard.raise_()
@@ -42,14 +48,14 @@ def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
 def create_token():
-	try:
-		f = open("Leaderboard_Token.txt", "r")
-	except:
+	config = mw.addonManager.getConfig(__name__)
+	if config["token"] == "":
 		token = str(mw.col.db.list("SELECT id FROM revlog LIMIT 1"))
 		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
-		file = open("Leaderboard_Token.txt", "w")
-		file.write(token)
-		file.close()
+		config = {"new_user": config['new_user'], "username": config['username'], "friends": config["friends"], 
+		"newday": config['newday'], "subject": config['subject'], "country": config['country'], 
+		"scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab'], "token": token}
+		mw.addonManager.writeConfig(__name__, config)
 
 def check_info():
 	try:
@@ -71,13 +77,14 @@ def add_username_to_friendlist():
 		friends = config["friends"]
 		friends.append(config['username'])
 		config = {"new_user": config['new_user'], "username": config['username'], "friends": friends, "newday": config["newday"], 
-		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"]}
+		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
+		"tab": config['tab'], "token": config["token"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 def background_sync():
 	create_token()
-	token = open("Leaderboard_Token.txt", "r").read()
 	config = mw.addonManager.getConfig(__name__)
+	token = config["token"]
 	url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 	config5 = config['subject'].replace(" ", "")
 	config6 = config['country'].replace(" ", "")

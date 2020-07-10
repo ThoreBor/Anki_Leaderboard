@@ -56,7 +56,7 @@ class start_main(QDialog):
 		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 		config5 = config['subject'].replace(" ", "")
 		config6 = config['country'].replace(" ", "")
-		token = open("Leaderboard_Token.txt", "r").read()
+		token = config["token"]
 		streak, cards, time, cards_past_30_days, retention = Stats()
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
 		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.3"}
@@ -142,8 +142,6 @@ class start_main(QDialog):
 				item = QtWidgets.QTableWidgetItem()
 				item.setData(QtCore.Qt.DisplayRole, retention)
 				self.dialog.Global_Leaderboard.setItem(rowPosition, 5, item)
-			
-				self.dialog.Global_Leaderboard.resizeColumnsToContents()
 
 				if country == config6 and country != "Country":
 					country_counter = country_counter + 1
@@ -174,8 +172,6 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, retention)
 					self.dialog.Country_Leaderboard.setItem(rowPosition, 5, item)
-
-					self.dialog.Country_Leaderboard.resizeColumnsToContents()
 
 					if username in config['friends']:
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
@@ -211,8 +207,6 @@ class start_main(QDialog):
 					item.setData(QtCore.Qt.DisplayRole, retention)
 					self.dialog.Custom_Leaderboard.setItem(rowPosition, 5, item)
 
-					self.dialog.Custom_Leaderboard.resizeColumnsToContents()
-
 					if username in config['friends']:
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#2176ff"))
@@ -247,8 +241,6 @@ class start_main(QDialog):
 					item.setData(QtCore.Qt.DisplayRole, retention)
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 5, item)
 				
-					self.dialog.Friends_Leaderboard.resizeColumnsToContents()
-				
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#2176ff"))
 				
@@ -265,7 +257,12 @@ class start_main(QDialog):
 					if config["subject"] != "Custom":
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))
-							
+		
+		self.dialog.Global_Leaderboard.resizeColumnsToContents()
+		self.dialog.Country_Leaderboard.resizeColumnsToContents()
+		self.dialog.Custom_Leaderboard.resizeColumnsToContents()
+		self.dialog.Friends_Leaderboard.resizeColumnsToContents()	
+					
 		### Highlight first three places###
 		
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
