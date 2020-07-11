@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
 from aqt.utils import showInfo, showWarning, tooltip
 
-from os.path import dirname, join, realpath
 import webbrowser
 import requests
 from bs4 import BeautifulSoup
@@ -13,21 +12,14 @@ import hashlib
 from .Leaderboard import start_main
 from .Setup import start_setup
 from .Stats import Stats
-from .Achievement import start_achievement
-
 
 def Main():
 	check_info()
 	create_token()
 	config = mw.addonManager.getConfig(__name__)
-	setup = config['new_user']
-	if setup == "True":
+	if config["username"] == "":
 		invoke_setup()
 	else:
-		# mw.Achievement = start_achievement()
-		# mw.Achievement.show()
-		# mw.Achievement.raise_()
-		# mw.Achievement.activateWindow()
 		mw.leaderboard = start_main()
 		mw.leaderboard.show()
 		mw.leaderboard.raise_()
@@ -52,9 +44,9 @@ def create_token():
 	if config["token"] == "":
 		token = str(mw.col.db.list("SELECT id FROM revlog LIMIT 1"))
 		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
-		config = {"new_user": config['new_user'], "username": config['username'], "friends": config["friends"], 
+		config = {"username": config['username'], "friends": config["friends"], 
 		"newday": config['newday'], "subject": config['subject'], "country": config['country'], 
-		"scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab'], "token": token}
+		"scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab'], "token": token, "achievement": config["achievement"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 def check_info():
@@ -76,9 +68,9 @@ def add_username_to_friendlist():
 	if config['username'] != "" and config['username'] not in config['friends']:
 		friends = config["friends"]
 		friends.append(config['username'])
-		config = {"new_user": config['new_user'], "username": config['username'], "friends": friends, "newday": config["newday"], 
+		config = {"username": config['username'], "friends": friends, "newday": config["newday"], 
 		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
-		"tab": config['tab'], "token": config["token"]}
+		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 def background_sync():
@@ -90,7 +82,7 @@ def background_sync():
 	config6 = config['country'].replace(" ", "")
 	streak, cards, time, cards_past_30_days, retention = Stats()
 	data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.3"}
+	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.4"}
 	try:
 		x = requests.post(url, data = data, timeout=20)
 	except:
@@ -114,11 +106,16 @@ def add_menu(Name, Button, exe, *sc):
 	for i in sc:
 		action.setShortcut(QKeySequence(i))
 
+config = mw.addonManager.getConfig(__name__)
+config = {"username": config['username'], "friends": config["friends"], "newday": config["newday"], 
+"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
+"tab": config['tab'], "token": config["token"], "achievement": True}
+mw.addonManager.writeConfig(__name__, config)
+
+add_username_to_friendlist()
+
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Sync", background_sync, "Shift+S")
 add_menu('&Leaderboard',"&Config", invoke_setup)
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
-
 mw.addonManager.setConfigAction(__name__, config_setup)
-
-add_username_to_friendlist()

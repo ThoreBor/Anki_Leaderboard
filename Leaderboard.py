@@ -1,17 +1,16 @@
 import datetime
-from datetime import date, time, timedelta
-from os.path import dirname, join, realpath
+from datetime import date, timedelta
 import threading
 import requests
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from aqt import mw
 from aqt.qt import *
-from aqt.utils import showInfo, showWarning, tooltip
+from aqt.utils import showWarning
 
 from .forms import Leaderboard
 from .Stats import Stats
-
+from .Achievement import start_achievement
 
 class start_main(QDialog):
 	def __init__(self, parent=None):
@@ -23,7 +22,7 @@ class start_main(QDialog):
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
-		if config["refresh"] == "True":
+		if config["refresh"] == True:
 			self.dialog.Global_Leaderboard.setSortingEnabled(False)
 			self.dialog.Friends_Leaderboard.setSortingEnabled(False)
 			self.dialog.Country_Leaderboard.setSortingEnabled(False)
@@ -59,7 +58,7 @@ class start_main(QDialog):
 		token = config["token"]
 		streak, cards, time, cards_past_30_days, retention = Stats()
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.3"}
+		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.4"}
 		try:
 			x = requests.post(url, data = data, timeout=20)
 		except:
@@ -69,6 +68,19 @@ class start_main(QDialog):
 			pass
 		else:
 			showWarning(str(x.text))
+
+		### ACHIEVEMENT ###
+
+		achievement_list = [7, 31, 100, 365, 500, 1000, 1500, 2000, 3000, 4000, 849]
+		if config["achievement"] == True and streak in achievement_list:
+			s = start_achievement(streak)
+			if s.exec():
+				pass
+
+			config = {"username": config['username'], "friends": config["friends"], "newday": config["newday"], 
+			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
+			"tab": config['tab'], "token": config["token"], "achievement": False}
+			mw.addonManager.writeConfig(__name__, config)
 
 		### CLEAR TABLE ###
 
@@ -91,6 +103,9 @@ class start_main(QDialog):
 			data = requests.get(url, timeout=20).json()
 		except:
 			showWarning("Timeout error - No internet connection, or server response took too long.")
+
+		### BUILD LEADERBOARD ###
+
 		counter = 0
 		friend_counter = 0
 		country_counter = 0
@@ -316,7 +331,7 @@ class start_main(QDialog):
 		### SCROLL ###
 
 		current_ranking_list = []
-		if config["scroll"] == "True":
+		if config["scroll"] == True:
 			for i in range(self.dialog.Global_Leaderboard.rowCount()):
 				item = self.dialog.Global_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
@@ -327,7 +342,7 @@ class start_main(QDialog):
 					self.dialog.Global_Leaderboard.clearSelection()
 
 		current_ranking_list = []
-		if config["scroll"] == "True":
+		if config["scroll"] == True:
 			for i in range(self.dialog.Friends_Leaderboard.rowCount()):
 				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
@@ -338,7 +353,7 @@ class start_main(QDialog):
 					self.dialog.Friends_Leaderboard.clearSelection()
 
 		current_ranking_list = []
-		if config["scroll"] == "True":
+		if config["scroll"] == True:
 			for i in range(self.dialog.Country_Leaderboard.rowCount()):
 				item = self.dialog.Country_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
@@ -349,7 +364,7 @@ class start_main(QDialog):
 					self.dialog.Country_Leaderboard.clearSelection()
 
 		current_ranking_list = []
-		if config["scroll"] == "True":
+		if config["scroll"] == True:
 			for i in range(self.dialog.Custom_Leaderboard.rowCount()):
 				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
 				current_ranking_list.append(item)
@@ -359,7 +374,7 @@ class start_main(QDialog):
 					self.dialog.Custom_Leaderboard.selectRow(current_ranking_list.index(item))
 					self.dialog.Custom_Leaderboard.clearSelection()
 
-		if config["refresh"] == "True":
+		if config["refresh"] == True:
 			global t
 			t = threading.Timer(120.0, self.load_leaderboard)
 			t.daemon = True
@@ -531,7 +546,7 @@ class start_main(QDialog):
 
 	def closeEvent(self, event):
 		config = mw.addonManager.getConfig(__name__)
-		if config["refresh"] == "True":
+		if config["refresh"] == True:
 			global t
 			t.cancel()
 			event.accept()

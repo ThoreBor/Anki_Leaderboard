@@ -2,12 +2,11 @@ import time
 from datetime import date, timedelta
 import datetime
 from aqt import mw
-from os.path import dirname, join, realpath
-from aqt.utils import showInfo, tooltip
 
 def Stats():
 
 	###STREAK, REVIEWS PAST 31 DAYS###
+
 	config = mw.addonManager.getConfig(__name__)
 	new_day = datetime.time(int(config['newday']),0,0)
 	time_now = datetime.datetime.now().time()
