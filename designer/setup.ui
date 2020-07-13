@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>486</width>
-    <height>485</height>
+    <height>513</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,74 +42,6 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="2" column="0">
         <layout class="QGridLayout" name="gl2">
-         <item row="2" column="0" colspan="2">
-          <layout class="QGridLayout" name="gl3">
-           <item row="0" column="0">
-            <widget class="QLabel" name="next_day_info1">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Next day starts</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="newday">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximum">
-              <number>23</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="Defaul_Tab_Label">
-             <property name="text">
-              <string>Default Leaderboard:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="next_day_info2">
-             <property name="text">
-              <string>hours past midnight</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" colspan="2">
-            <widget class="QComboBox" name="Default_Tab">
-             <item>
-              <property name="text">
-               <string>Global</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Friends</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Country</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Group</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
          <item row="1" column="0" colspan="2">
           <widget class="QComboBox" name="country">
            <item>
@@ -163,13 +95,116 @@
            </item>
           </widget>
          </item>
+         <item row="2" column="0" colspan="2">
+          <layout class="QGridLayout" name="gl3">
+           <item row="0" column="2">
+            <widget class="QLabel" name="next_day_info2">
+             <property name="text">
+              <string>hours past midnight</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="Defaul_Tab_Label">
+             <property name="text">
+              <string>Default Leaderboard:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" colspan="2">
+            <widget class="QComboBox" name="Default_Tab">
+             <item>
+              <property name="text">
+               <string>Global</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Friends</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Country</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Group</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="next_day_info1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Next day starts</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="newday">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximum">
+              <number>23</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="sortby_label">
+             <property name="text">
+              <string>Sort by:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" colspan="2">
+            <widget class="QComboBox" name="sortby">
+             <item>
+              <property name="text">
+               <string>Reviews</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Streak</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Reviews past 30 days</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Retention</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
        </item>
-       <item row="4" column="0">
-        <widget class="QCheckBox" name="refresh">
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="scroll">
          <property name="text">
-          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
-Sorting will be disabled</string>
+          <string>Automatically scroll to yourself</string>
          </property>
         </widget>
        </item>
@@ -298,10 +333,11 @@ Sorting will be disabled</string>
          </item>
         </layout>
        </item>
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="scroll">
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="refresh">
          <property name="text">
-          <string>Automatically scroll to yourself</string>
+          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
+Sorting will be disabled</string>
          </property>
         </widget>
        </item>
