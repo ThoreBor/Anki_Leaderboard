@@ -11,6 +11,7 @@ from aqt.utils import showWarning
 from .forms import Leaderboard
 from .Stats import Stats
 from .Achievement import start_achievement
+from .config_manager import write_config
 
 class start_main(QDialog):
 	def __init__(self, parent=None):
@@ -71,16 +72,13 @@ class start_main(QDialog):
 
 		### ACHIEVEMENT ###
 
-		achievement_streak = [7, 31, 100, 365, 500, 1000, 1500, 2000, 3000, 4000, 851]
+		achievement_streak = [7, 31, 100, 365, 500, 1000, 1500, 2000, 3000, 4000]
 		if config["achievement"] == True and streak in achievement_streak:
 			s = start_achievement(streak)
 			if s.exec():
 				pass
 
-			config = {"username": config['username'], "friends": config["friends"], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
-			"tab": config['tab'], "token": config["token"], "achievement": False,"sortby": config["sortby"]}
-			mw.addonManager.writeConfig(__name__, config)
+			write_config("achievement", False)
 
 		### CLEAR TABLE ###
 

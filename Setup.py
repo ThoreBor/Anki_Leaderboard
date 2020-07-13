@@ -10,6 +10,7 @@ from aqt.utils import tooltip, showInfo, showWarning
 
 from .forms import setup
 from .Stats import Stats
+from .config_manager import write_config
 
 class start_setup(QDialog):
 	def __init__(self, parent=None):
@@ -366,10 +367,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			"Subject": config["subject"], "Country": config["country"], "Retention": retention}
 			x = requests.post(url, data = data)
 
-			config = {"username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
-			"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-			mw.addonManager.writeConfig(__name__, config)
+			write_config("username", username)
 
 			if x.text == "Done!":
 				tooltip("Successfully created account.")
@@ -403,10 +401,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			showWarning("Timeout error - No internet connection, or server response took too long.")
 
 		if username in username_list:
-			config = {"username": username, "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
-			"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-			mw.addonManager.writeConfig(__name__, config)
+			write_config("username", username)
 			tooltip("Successfully logged in.")
 			self.dialog.login_username.setText("")
 			self.update_login_info(username)
@@ -425,10 +420,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			showWarning("Timeout error - No internet connection, or server response took too long.")
 
 		if x.text == "Deleted":
-			config = {"username": "", "friends": config['friends'], "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
-			"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-			mw.addonManager.writeConfig(__name__, config)
+			write_config("username", "")
 			tooltip("Successfully deleted account.")
 			self.dialog.delete_username.setText("")
 		else:
@@ -449,10 +441,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		
 		if username in username_list and username not in config['friends']:
 			config['friends'].append(username)
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"country": config['country'], "subject": config['subject'], "scroll": config['scroll'], "refresh": config["refresh"],
-			"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-			mw.addonManager.writeConfig(__name__, config)
+			write_config("friends", config['friends'])
 			tooltip(username + " is now your friend.")
 			self.dialog.friend_username.setText("")
 			self.update_friends_list(sorted(config["friends"], key=str.lower))
@@ -463,110 +452,61 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		for item in self.dialog.friends_list.selectedItems():
 			username = item.text()
 			config = mw.addonManager.getConfig(__name__)
-			config3 = config['friends']
-			config3.remove(username)
-			config = {"username": config['username'], "friends": config3, "newday": config["newday"], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
-			"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-			mw.addonManager.writeConfig(__name__, config)
+			config['friends'].remove(username)
+			write_config("friends", config["friends"])
 			tooltip(f"{username} was removed from your friendlist")
 			self.update_friends_list(config["friends"])
 
 	def set_time(self):
 		beginning_of_new_day = self.dialog.newday.value()
-		config = mw.addonManager.getConfig(__name__)
-		config = {"username": config['username'], "friends": config['friends'], "newday": beginning_of_new_day, 
-		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
-		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-		mw.addonManager.writeConfig(__name__, config)
+		write_config("newday", beginning_of_new_day)
 
 	def set_subject(self):
 		subject = self.dialog.subject.currentText()
-		config = mw.addonManager.getConfig(__name__)
 		if subject == "Join a group":
 			subject = "Custom"
-		config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": subject, "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
-		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-		mw.addonManager.writeConfig(__name__, config)
+		write_config("subject", subject)
 
 	def set_country(self):
 		country = self.dialog.country.currentText()
-		config = mw.addonManager.getConfig(__name__)
-		config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": country, "scroll": config['scroll'], "refresh": config["refresh"],
-		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-		mw.addonManager.writeConfig(__name__, config)
+		write_config("country", country)
 
 	def set_scroll(self):
-		config = mw.addonManager.getConfig(__name__)
 		if self.dialog.scroll.isChecked():
 			scroll = True
 		else:
 			scroll = False
-		config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": scroll, "refresh": config["refresh"],
-		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-		mw.addonManager.writeConfig(__name__, config)
-
+		write_config("scroll", scroll)
 	def set_refresh(self):
-		config = mw.addonManager.getConfig(__name__)
 		if self.dialog.refresh.isChecked():
 			refresh = True
 		else:
 			refresh = False
-		config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-		"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": refresh,
-		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-		mw.addonManager.writeConfig(__name__, config)
-
+		write_config("refresh", refresh)
 	def set_default_tab(self):
 		tab = self.dialog.Default_Tab.currentText()
-		config = mw.addonManager.getConfig(__name__)
 		if tab == "Global":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": 0, "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
+			write_config("tab", 0)
 		if tab == "Friends":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": 1,"token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
+			write_config("tab", 1)
 		if tab == "Country":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": 2, "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
+			write_config("tab", 2)
 		if tab == "Group":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": 3, "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-		
-		mw.addonManager.writeConfig(__name__, config)
+			write_config("tab", 3)
 
 	def set_sortby(self):
 		sortby = self.dialog.sortby.currentText()
 		config = mw.addonManager.getConfig(__name__)
 		if sortby == "Reviews":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": config["tab"], "token": config["token"], "achievement": config["achievement"], "sortby": "Cards"}
+			write_config("sortby", "Cards")
 		if sortby == "Time":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": config["tab"], "token": config["token"], "achievement": config["achievement"], "sortby": "Time_Spend"}
+			write_config("sortby", "Time_Spend")
 		if sortby == "Streak":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": config["tab"], "token": config["token"], "achievement": config["achievement"], "sortby": sortby}
+			write_config("sortby", sortby)
 		if sortby == "Revies past 30 days":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": config["tab"], "token": config["token"], "achievement": config["achievement"], "sortby": "Month"}
+			write_config("sortby", "Month")
 		if sortby == "Retention":
-			config = {"username": config['username'], "friends": config['friends'], "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config["scroll"], "refresh": config['refresh'],
-			"tab": config["tab"], "token": config["token"], "achievement": config["achievement"], "sortby": sortby}
-
-		mw.addonManager.writeConfig(__name__, config)
+			write_config("sortby", sortby)
 
 
 	def import_list(self):
@@ -591,10 +531,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 				friends_list.append(config["username"])
 			
 			self.update_friends_list(sorted(friends_list, key=str.lower))
-			config = {"username": config['username'], "friends": friends_list, "newday": config['newday'], 
-			"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"],
-			"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-			mw.addonManager.writeConfig(__name__, config)
+			write_config("friends", friends_list)
 		except:
 			showInfo("Please pick a text file to import friends.")
 

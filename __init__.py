@@ -12,6 +12,7 @@ import hashlib
 from .Leaderboard import start_main
 from .Setup import start_setup
 from .Stats import Stats
+from .config_manager import write_config
 
 def Main():
 	check_info()
@@ -44,11 +45,7 @@ def create_token():
 	if config["token"] == None:
 		token = str(mw.col.db.list("SELECT id FROM revlog LIMIT 1"))
 		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
-		config = {"username": config['username'], "friends": config["friends"], 
-		"newday": config['newday'], "subject": config['subject'], "country": config['country'], 
-		"scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab'], 
-		"token": token, "achievement": config["achievement"], "sortby": config["sortby"]}
-		mw.addonManager.writeConfig(__name__, config)
+		write_config("token", token)
 
 def check_info():
 	try:
@@ -69,10 +66,7 @@ def add_username_to_friendlist():
 	if config['username'] != "" and config['username'] not in config['friends']:
 		friends = config["friends"]
 		friends.append(config['username'])
-		config = {"username": config['username'], "friends": friends, "newday": config["newday"], 
-		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
-		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
-		mw.addonManager.writeConfig(__name__, config)
+		write_config("friends", friends)
 
 def background_sync():
 	create_token()
@@ -107,12 +101,7 @@ def add_menu(Name, Button, exe, *sc):
 	for i in sc:
 		action.setShortcut(QKeySequence(i))
 
-config = mw.addonManager.getConfig(__name__)
-config = {"username": config['username'], "friends": config["friends"], "newday": config["newday"], 
-"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
-"tab": config['tab'], "token": config["token"], "achievement": True, "sortby": config["sortby"]}
-mw.addonManager.writeConfig(__name__, config)
-
+write_config("achievement", True)
 add_username_to_friendlist()
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
