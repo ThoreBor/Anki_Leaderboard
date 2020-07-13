@@ -1,4 +1,8 @@
 # Change Log
+## v1.5.4
+- store verification token in config.json
+- fixed delete account bug
+- added "sort by..." to config
 ## v1.5.3:
 - fixed verification issue
 - sync version number
