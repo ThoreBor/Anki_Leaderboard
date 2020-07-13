@@ -41,12 +41,13 @@ def github():
 
 def create_token():
 	config = mw.addonManager.getConfig(__name__)
-	if config["token"] == "":
+	if config["token"] == None:
 		token = str(mw.col.db.list("SELECT id FROM revlog LIMIT 1"))
 		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
 		config = {"username": config['username'], "friends": config["friends"], 
 		"newday": config['newday'], "subject": config['subject'], "country": config['country'], 
-		"scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab'], "token": token, "achievement": config["achievement"]}
+		"scroll": config['scroll'], "refresh": config["refresh"],"tab": config['tab'], 
+		"token": token, "achievement": config["achievement"], "sortby": config["sortby"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 def check_info():
@@ -70,7 +71,7 @@ def add_username_to_friendlist():
 		friends.append(config['username'])
 		config = {"username": config['username'], "friends": friends, "newday": config["newday"], 
 		"subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
-		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"]}
+		"tab": config['tab'], "token": config["token"], "achievement": config["achievement"], "sortby": config["sortby"]}
 		mw.addonManager.writeConfig(__name__, config)
 
 def background_sync():
@@ -82,7 +83,7 @@ def background_sync():
 	config6 = config['country'].replace(" ", "")
 	streak, cards, time, cards_past_30_days, retention = Stats()
 	data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v2": token, "Version": "v1.5.4"}
+	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v3": token, "Version": "v1.5.4"}
 	try:
 		x = requests.post(url, data = data, timeout=20)
 	except:
@@ -109,7 +110,7 @@ def add_menu(Name, Button, exe, *sc):
 config = mw.addonManager.getConfig(__name__)
 config = {"username": config['username'], "friends": config["friends"], "newday": config["newday"], 
 "subject": config['subject'], "country": config['country'], "scroll": config['scroll'], "refresh": config["refresh"], 
-"tab": config['tab'], "token": config["token"], "achievement": True}
+"tab": config['tab'], "token": config["token"], "achievement": True, "sortby": config["sortby"]}
 mw.addonManager.writeConfig(__name__, config)
 
 add_username_to_friendlist()
