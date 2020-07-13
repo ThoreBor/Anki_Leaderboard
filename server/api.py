@@ -20,7 +20,7 @@ def sync(request):
 	Subject = request.POST.get("Subject","")
 	Country = request.POST.get("Country","")
 	Retention = request.POST.get("Retention","")
-	Token = request.POST.get("Token_v2", None)
+	Token = request.POST.get("Token_v3", None)
 	Version = request.POST.get("Version", None)
 
 	if Retention == "":
@@ -75,7 +75,7 @@ def sync(request):
 		    r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
 		    r.redditor('Ttime5').message('Verification Error', "Username: " + str(User) + "\n" + "Token: " + str(Token) + "\n" + str(t[1]) + "\n" + "Version: " + str(Version))
 		    print("Verification error: " + str(User))
-		    return HttpResponse("Error - invalid token")
+		    return HttpResponse("<h3>Error - invalid token</h3>The verification token you send doesn't match the one in the database. Make sure that you're using the newest version. <br><br>If you recently changed devices, you need to copy your old meta.json file into the leaderboard add-on folder of your new device.<br><br>If you think that this error is a bug, please open a new issue on <a href='https://github.com/ThoreBor/Anki_Leaderboard/issues'>GitHub</a> or contact me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a>.")
 	else:
 		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention, Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Subject, Country, Retention, Token))
 		conn.commit()
@@ -96,10 +96,11 @@ def all_users(request):
 
 @csrf_exempt
 def get_data(request):
-	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
-	c = conn.cursor()
-	c.execute("SELECT Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention FROM Leaderboard ORDER BY Cards DESC")
-	return HttpResponse(json.dumps(c.fetchall()))
+    sortby = request.POST.get("sortby", "Cards")
+    conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+    c = conn.cursor()
+    c.execute("SELECT Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention FROM Leaderboard ORDER BY {} DESC".format(sortby))
+    return HttpResponse(json.dumps(c.fetchall()))
 
 @csrf_exempt
 def delete(request):
