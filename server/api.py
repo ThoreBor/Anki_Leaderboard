@@ -107,7 +107,7 @@ def delete(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
 	User = request.POST.get("Username", "")
-	Token = request.POST.get("Token_v2", None)
+	Token = request.POST.get("Token_v3", None)
 
 	if c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (User,)).fetchone():
 		t = c.execute("SELECT Username, Token FROM Leaderboard WHERE Username = (?)", (User,)).fetchone()
@@ -117,3 +117,26 @@ def delete(request):
 			print("Deleted account: " + str(User))
 			return HttpResponse("Deleted")
 		return HttpResponse("Failed")
+@csrf_exempt
+def create_group(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	Group_Name = request.POST.get("Group_Name", None)
+	if c.execute("SELECT Group_Name FROM Groups WHERE Group_Name = (?)", (Group_Name,)).fetchone():
+		pass
+	else:
+		if Group_Name:
+			c.execute('INSERT INTO Groups (Group_Name) VALUES(?)', (Group_Name,))
+			conn.commit()
+			print(f"Created new group {Group_Name}")
+			return HttpResponse("Done!")
+@csrf_exempt
+def groups(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	Group_List = []
+	c.execute("SELECT Group_Name FROM Groups")
+	for i in c.fetchall():
+		Group_Name = i[0]
+		Group_List.append(Group_Name)
+	return HttpResponse(json.dumps((sorted(Group_List, key=str.lower))))
