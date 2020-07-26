@@ -22,13 +22,9 @@ class start_setup(QDialog):
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
-		config4 = int(config['newday'])
-		config5 = config["subject"]
-		config6 = config["country"]
 
 		self.update_login_info(config["username"])
-		self.dialog.newday.setValue(config4)
-		self.dialog.subject.setCurrentText(config5)
+		self.dialog.newday.setValue(int(config['newday']))
 		self.dialog.Default_Tab.setCurrentIndex(config['tab'])
 		self.dialog.scroll.setChecked(bool(config["scroll"]))
 		self.dialog.refresh.setChecked(bool(config["refresh"]))
@@ -37,14 +33,16 @@ class start_setup(QDialog):
 		if config["sortby"] == "Time_Spend":
 			self.dialog.sortby.setCurrentText("Time")
 		if config["sortby"] == "Month":
-			self.dialog.sortby.setCurrentText("Revies past 30 days")
+			self.dialog.sortby.setCurrentText("Reviews past 30 days")
 		else:
 			self.dialog.sortby.setCurrentText(config["sortby"])
 
-		for i in range(1, 256):
-			self.dialog.country.addItem("")
+		load_Group(self)
 
 		_translate = QtCore.QCoreApplication.translate
+
+		for i in range(1, 256):
+			self.dialog.country.addItem("")
 		# item 0 is set by pyuic from the .ui file
 		self.dialog.country.setItemText(1, _translate("Dialog", "Afghanistan"))
 		self.dialog.country.setItemText(2, _translate("Dialog", "Åland Islands"))
@@ -302,7 +300,7 @@ class start_setup(QDialog):
 		self.dialog.country.setItemText(254, _translate("Dialog", "Zambia"))
 		self.dialog.country.setItemText(255, _translate("Dialog", "Zimbabwe"))
 
-		self.dialog.country.setCurrentText(config6)
+		self.dialog.country.setCurrentText(config["country"])
 
 		self.dialog.create_username.returnPressed.connect(self.create_account)
 		self.dialog.create_button.clicked.connect(self.create_account)
@@ -315,6 +313,7 @@ class start_setup(QDialog):
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
 		self.dialog.newday.valueChanged.connect(self.set_time)
 		self.dialog.subject.currentTextChanged.connect(self.set_subject)
+		self.dialog.add_newGroup.clicked.connect(self.create_new_group)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
 		self.dialog.Default_Tab.currentTextChanged.connect(self.set_default_tab)
 		self.dialog.sortby.currentTextChanged.connect(self.set_sortby)
@@ -543,3 +542,39 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			export_file.write(i+"\n")
 		export_file.close()
 		tooltip("You can find the text file in the add-on folder.")
+
+	def create_new_group(self):
+		Group_Name = self.dialog.newGroup.text()
+		url = 'https://ankileaderboard.pythonanywhere.com/create_group/'
+		data = {'Group_Name': Group_Name}
+		
+		try:
+			x = requests.post(url, data = data, timeout=20)
+		except:
+			showWarning("Timeout error - No internet connection, or server response took too long.")
+
+		if x.text == "Done!":
+			tooltip(f"Successfully created {Group_Name}")
+		else:
+			tooltip("Error")
+		load_Group(self)		
+
+def load_Group(self):
+	config = mw.addonManager.getConfig(__name__)
+	_translate = QtCore.QCoreApplication.translate
+	url = 'https://ankileaderboard.pythonanywhere.com/groups/'
+	try:
+		Group_List = requests.get(url, timeout=20).json()
+	except:
+		showWarning("Timeout error - No internet connection, or server response took too long.")
+	
+	# item 0 is set by pyuic from the .ui file
+	for i in range(1, len(Group_List) + 1):
+		self.dialog.subject.addItem("")
+
+	index = 1
+	for i in Group_List:
+		self.dialog.subject.setItemText(index, _translate("Dialog", i))
+		index += 1
+
+	self.dialog.subject.setCurrentText(config["subject"])
