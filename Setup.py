@@ -37,7 +37,7 @@ class start_setup(QDialog):
 		else:
 			self.dialog.sortby.setCurrentText(config["sortby"])
 
-		load_Group(self)
+		self.load_Group()
 
 		_translate = QtCore.QCoreApplication.translate
 
@@ -557,24 +557,24 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			tooltip(f"Successfully created {Group_Name}")
 		else:
 			tooltip("Error")
-		load_Group(self)		
+		self.load_Group()		
 
-def load_Group(self):
-	config = mw.addonManager.getConfig(__name__)
-	_translate = QtCore.QCoreApplication.translate
-	url = 'https://ankileaderboard.pythonanywhere.com/groups/'
-	try:
-		Group_List = requests.get(url, timeout=20).json()
-	except:
-		showWarning("Timeout error - No internet connection, or server response took too long.")
-	
-	# item 0 is set by pyuic from the .ui file
-	for i in range(1, len(Group_List) + 1):
-		self.dialog.subject.addItem("")
+	def load_Group(self):
+		config = mw.addonManager.getConfig(__name__)
+		_translate = QtCore.QCoreApplication.translate
+		url = 'https://ankileaderboard.pythonanywhere.com/groups/'
+		try:
+			Group_List = requests.get(url, timeout=20).json()
+		except:
+			showWarning("Timeout error - No internet connection, or server response took too long.")
+		
+		# item 0 is set by pyuic from the .ui file
+		for i in range(1, len(Group_List) + 1):
+			self.dialog.subject.addItem("")
 
-	index = 1
-	for i in Group_List:
-		self.dialog.subject.setItemText(index, _translate("Dialog", i))
-		index += 1
+		index = 1
+		for i in Group_List:
+			self.dialog.subject.setItemText(index, _translate("Dialog", i))
+			index += 1
 
-	self.dialog.subject.setCurrentText(config["subject"])
+		self.dialog.subject.setCurrentText(config["subject"])
