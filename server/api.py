@@ -140,3 +140,6 @@ def groups(request):
 		Group_Name = i[0]
 		Group_List.append(Group_Name)
 	return HttpResponse(json.dumps((sorted(Group_List, key=str.lower))))
+
+def season(request):
+    return HttpResponse(json.dumps([[2020,7,1,0,0,0],[2020,8,1,0,0,0]]))
