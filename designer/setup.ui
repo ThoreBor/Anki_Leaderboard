@@ -86,6 +86,11 @@
                <string>Group</string>
               </property>
              </item>
+             <item>
+              <property name="text">
+               <string>League</string>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="0" column="2">
@@ -175,6 +180,9 @@
           <widget class="QPushButton" name="add_newGroup">
            <property name="text">
             <string>Create Group</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -504,7 +512,13 @@ Sorting will be disabled</string>
   <tabstop>delete_button</tabstop>
   <tabstop>subject</tabstop>
   <tabstop>country</tabstop>
+  <tabstop>newGroup</tabstop>
+  <tabstop>add_newGroup</tabstop>
+  <tabstop>newday</tabstop>
+  <tabstop>sortby</tabstop>
+  <tabstop>Default_Tab</tabstop>
   <tabstop>scroll</tabstop>
+  <tabstop>refresh</tabstop>
   <tabstop>friend_username</tabstop>
   <tabstop>add_friends_button</tabstop>
   <tabstop>remove_friend_button</tabstop>
