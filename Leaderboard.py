@@ -12,14 +12,20 @@ from .forms import Leaderboard
 from .Stats import Stats
 from .Achievement import start_achievement
 from .config_manager import write_config
+from .League import load_league
 
 class start_main(QDialog):
-	def __init__(self, parent=None):
+	def __init__(self, season_start, season_end, parent=None):
 		self.parent = parent
+		self.season_start = season_start
+		self.season_end = season_end
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
-		self.setupUI()
+		
+		t = threading.Thread(target=self.setupUI, daemon=True)
+		t.start()
+		#self.setupUI()
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -56,10 +62,14 @@ class start_main(QDialog):
 		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 		config5 = config['subject'].replace(" ", "")
 		config6 = config['country'].replace(" ", "")
-		token = config["token"]
-		streak, cards, time, cards_past_30_days, retention = Stats()
+
+		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention = Stats(self.season_start, self.season_end)
+
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, "Token_v3": token, "Version": "v1.5.4"}
+		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, 
+		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
+		"Token_v3": config["token"], "Version": "v1.6.0"}
+
 		try:
 			x = requests.post(url, data = data, timeout=20)
 		except:
@@ -86,6 +96,7 @@ class start_main(QDialog):
 		self.dialog.Friends_Leaderboard.setRowCount(0)
 		self.dialog.Country_Leaderboard.setRowCount(0)
 		self.dialog.Custom_Leaderboard.setRowCount(0)
+		self.dialog.League.setRowCount(0)
 
 		### GET DATA ###
 
@@ -102,6 +113,20 @@ class start_main(QDialog):
 			data = requests.post(url, data = sortby, timeout=20).json()
 		except:
 			showWarning("Timeout error - No internet connection, or server response took too long.")
+
+		### LEAGUE ###
+
+		x = threading.Thread(target=load_league, args=(self,), daemon=True)
+		x.start()
+		time_remaining = self.season_end - datetime.datetime.now()
+		tr_days = time_remaining.days
+		tr_hours = int((time_remaining.seconds) / 60 / 60)
+
+		if tr_days < 0:
+			self.dialog.time_left.setText(f"The next season is going to start soon.")
+		else:
+			self.dialog.time_left.setText(f"{tr_days} days {tr_hours} hours remaining")
+
 
 		### BUILD LEADERBOARD ###
 
@@ -278,8 +303,8 @@ class start_main(QDialog):
 							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#51f564"))
 					if config["subject"] != "Custom":
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))	
-					
+							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))			
+		
 		### Highlight first three places###
 		
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:

@@ -1,5 +1,4 @@
 from aqt import mw
-from aqt.utils import showInfo
 
 def write_config(name, value):
 	config = mw.addonManager.getConfig(__name__)

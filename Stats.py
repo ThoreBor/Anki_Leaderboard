@@ -2,22 +2,32 @@ import time
 from datetime import date, timedelta
 import datetime
 import requests
+import threading
 
 from aqt import mw
-from aqt.utils import showWarning
+from aqt.utils import showInfo
 
-def Stats():
-
-	###LEADERBOARD###
-
+def Stats(season_start, season_end):
 	config = mw.addonManager.getConfig(__name__)
 	new_day = datetime.time(int(config['newday']),0,0)
 	time_now = datetime.datetime.now().time()
 	reviews = mw.col.db.list("SELECT id FROM revlog")
 	data = mw.col.db.all("SELECT * FROM revlog")
+
+	Streak = streak(config, reviews, new_day, time_now)
+	cards_past_30_days = reviews_past_31_days(reviews, new_day, time_now)
+	total_cards, retention = reviews_and_retention(data, new_day, time_now)
+	time_today = time_spend_today(data, new_day, time_now)
 	
-	###STREAK####
+	league_reviews, league_retention = league_reviews_and_retention(season_start, season_end, data)
+	league_time = league_time_spend(season_start, season_end, data)
+
+	return(Streak, total_cards, time_today, cards_past_30_days, retention, league_reviews, league_time, league_retention)
 	
+###LEADERBOARD###
+
+def streak(config, reviews, new_day, time_now):
+
 	newday = int(config['newday'])
 	date_list = []
 	Streak = 0
@@ -47,7 +57,9 @@ def Stats():
 			break
 		start_date -= delta
 
-	###REVIEWS PAST 31 DAYS###
+	return Streak
+
+def reviews_past_31_days(reviews, new_day, time_now):
 	
 	if time_now < new_day:
 		start_day = datetime.datetime.combine(date.today(), new_day)
@@ -63,7 +75,9 @@ def Stats():
 		if i >= end_day and i <= start_day:
 			cards_past_30_days = cards_past_30_days + 1
 
-	###REVIEWS TODAY AND RETENTION###
+	return cards_past_30_days
+
+def reviews_and_retention(data, new_day, time_now):
 
 	if time_now < new_day:
 		start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
@@ -79,8 +93,6 @@ def Stats():
 		if id_time >= start_day:
 			total_cards += 1
 
-			###RETENTION###
-
 			if flunked == 1:
 				flunked_total += 1
 	try:
@@ -88,8 +100,15 @@ def Stats():
 	except:
 		retention = ""
 
-	###TIME SPEND TODAY###
+	return total_cards, retention
+
+def time_spend_today(data, new_day, time_now):
 	
+	if time_now < new_day:
+		start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
+	else:
+		start_day = datetime.datetime.combine(date.today(), new_day)
+
 	time_today = 0
 	for i in data:
 		id_time = i[0]
@@ -98,18 +117,11 @@ def Stats():
 			time_today = time_today + int(i[7])
 	time_today = round(time_today / 60000, 1)
 
-	###LEAGUE###
+	return time_today
 
-	url = 'https://ankileaderboard.pythonanywhere.com/season/'
-	try:
-		season_start = requests.get(url, timeout=20).json()
-	except:
-		showWarning("Timeout error - No internet connection, or server response took too long.")
+###LEAGUE###
 
-	season_start = season_start[0]
-	season_start = datetime.datetime(season_start[0],season_start[1],season_start[2],season_start[3],season_start[4],season_start[5])
-
-	###REVIEWS AND RETENTION###
+def league_reviews_and_retention(season_start, season_end, data):
 
 	league_reviews = 0
 	flunked_total = 0
@@ -117,10 +129,8 @@ def Stats():
 		id_time = i[0]
 		flunked = i[3]
 		id_time = datetime.datetime.fromtimestamp(int(id_time) / 1000.0)
-		if id_time >= season_start:
+		if id_time >= season_start and id_time < season_end:
 			league_reviews += 1
-
-			###RETENTION###
 
 			if flunked == 1:
 				flunked_total += 1
@@ -129,14 +139,16 @@ def Stats():
 	except:
 		league_retention = ""
 
-	###TIME###
+	return league_reviews, league_retention
+
+def league_time_spend(season_start, season_end, data):
 
 	league_time = 0
 	for i in data:
 		id_time = i[0]
 		id_time = datetime.datetime.fromtimestamp(int(id_time) / 1000.0)
-		if id_time >= season_start:
+		if id_time >= season_start and id_time < season_end:
 			league_time = league_time + int(i[7])
 	league_time = round(league_time / 60000, 1)
 
-	return(Streak, total_cards, time_today, cards_past_30_days, retention, league_reviews, league_time, league_retention)
+	return league_time
