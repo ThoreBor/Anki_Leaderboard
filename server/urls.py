@@ -35,6 +35,7 @@ urlpatterns = [
 	path('getdata/', api.get_data, name="get_data"),
 	path('groups/', api.groups, name="groups"),
 	path('create_group/', api.create_group, name="create_group"),
+	path('league/', api.league_data, name="league_data"),
 	path('season/', api.season, name="season"),
 	path(r'user/<username>/', website.user, name="user"),
 	path('upload/', website.upload, name="upload"),
