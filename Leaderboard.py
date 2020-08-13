@@ -23,9 +23,11 @@ class start_main(QDialog):
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
 		
-		t = threading.Thread(target=self.setupUI, daemon=True)
-		t.start()
-		#self.setupUI()
+		# This opens the leaderboard immediately, but causes Anki to crash sometimes (even if the leaderboard is not open). 
+		# t = threading.Thread(target=self.setupUI, daemon=True)
+		# t.start()
+
+		self.setupUI()
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -123,7 +125,7 @@ class start_main(QDialog):
 		tr_hours = int((time_remaining.seconds) / 60 / 60)
 
 		if tr_days < 0:
-			self.dialog.time_left.setText(f"The next season is going to start soon.")
+			self.dialog.time_left.setText(f"The next season is going to start soon".)
 		else:
 			self.dialog.time_left.setText(f"{tr_days} days {tr_hours} hours remaining")
 
@@ -291,7 +293,6 @@ class start_main(QDialog):
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#2176ff"))
 				
-
 				if username == config['username']:
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#51f564"))
@@ -410,6 +411,10 @@ class start_main(QDialog):
 			pass
 
 	def change_colors_global(self):
+		try:
+			nightmode = mw.pm.night_mode()
+		except:
+			nightmode = False
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_global
@@ -424,7 +429,7 @@ class start_main(QDialog):
 
 			for i in first_three_global:
 				for j in range(self.dialog.Global_Leaderboard.columnCount()):
-					if mw.pm.night_mode() == False:
+					if nightmode == False:
 						if current_ranking_list.index(i) % 2 == 0:
 							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
 						else:
@@ -451,6 +456,10 @@ class start_main(QDialog):
 				first_three_global.append(item)
 
 	def change_colors_friends(self):
+		try:
+			nightmode = mw.pm.night_mode()
+		except:
+			nightmode = False
 		if self.dialog.Friends_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_friends
@@ -465,7 +474,7 @@ class start_main(QDialog):
 
 			for i in first_three_friends:
 				for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-					if mw.pm.night_mode() == False:
+					if nightmode == False:
 						if current_ranking_list.index(i) % 2 == 0:
 							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
 						else:
@@ -490,6 +499,10 @@ class start_main(QDialog):
 				first_three_friends.append(item)
 
 	def change_colors_country(self):
+		try:
+			nightmode = mw.pm.night_mode()
+		except:
+			nightmode = False
 		if self.dialog.Country_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_country
@@ -504,7 +517,7 @@ class start_main(QDialog):
 
 			for i in first_three_country:
 				for j in range(self.dialog.Country_Leaderboard.columnCount()):
-					if mw.pm.night_mode() == False:
+					if nightmode == False:
 						if current_ranking_list.index(i) % 2 == 0:
 							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
 						else:
@@ -531,6 +544,10 @@ class start_main(QDialog):
 				first_three_country.append(item)
 
 	def change_colors_custom(self):
+		try:
+			nightmode = mw.pm.night_mode()
+		except:
+			nightmode = False
 		if self.dialog.Custom_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_custom
@@ -545,7 +562,7 @@ class start_main(QDialog):
 
 			for i in first_three_custom:
 				for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-					if mw.pm.night_mode() == False:
+					if nightmode == False:
 						if current_ranking_list.index(i) % 2 == 0:
 							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
 						else:
