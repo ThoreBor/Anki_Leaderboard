@@ -1,7 +1,7 @@
 # Anki Leaderboard
 Leaderboard for Anki 2.1
 
-This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, current streak, reviews in the past 31 days and retention. You can also invite friends, join a group and join a country leaderboard.
+This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, current streak, reviews in the past 31 days and retention. You can also invite friends, join a group and country leaderboard and compete in leagues.
 
 You can also check the leaderboard on [this website](https://ankileaderboard.pythonanywhere.com/).
 
@@ -14,7 +14,7 @@ You can also download the newest stable version from Github. Just download the .
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE) file for details
 
 © Thore Tyborski 2020 <br>
 See also the list of [contributors](https://github.com/ThoreBor/Anki_Leaderboard/contributors) who participated in this project.
