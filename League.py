@@ -20,6 +20,7 @@ def load_league(self):
 			user_league_name = i[5]
 
 	self.dialog.league_label.setText(user_league_name)
+	self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
 
 	### BUILD TABLE ###
 
@@ -74,16 +75,16 @@ def load_league(self):
 	if user_league_name == "Delta":
 		threshold = int((users / 100) * 20)
 	if user_league_name == "Gamma":
-		threshold = int((users / 100) * 15)
+		threshold = int((users / 100) * 20)
 	if user_league_name == "Beta":
-		threshold = int((users / 100) * 10)
+		threshold = int((users / 100) * 20)
 	if user_league_name == "Alpha":
-		threshold = int((users / 100) * 10)
+		threshold = int((users / 100) * 20)
 
 	for i in range(threshold):
 		for j in range(self.dialog.League.columnCount()):
 			item = self.dialog.League.item(i, 0).text()
-			if item == config['username']:
+			if item == config['username'] or user_league_name == "Alpha":
 				continue
 			else:
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor("#abffc7"))
@@ -96,8 +97,10 @@ def load_league(self):
 	for i in range((users - threshold), users):
 		for j in range(self.dialog.League.columnCount()):
 			item = self.dialog.League.item(i, 0).text()
-			if item == config['username']:
+			if item == config['username'] and user_league_name != "Delta":
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor("#f21818"))
+			if user_league_name == "Delta":
+				continue
 			else:
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor("#f75e5e"))  
 

@@ -94,18 +94,18 @@ def background_sync():
 		showWarning(str(x.text))
 
 def season():
-		url = 'https://ankileaderboard.pythonanywhere.com/season/'
-		try:
-			season = requests.get(url, timeout=20).json()
-		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
+	url = 'https://ankileaderboard.pythonanywhere.com/season/'
+	try:
+		season = requests.get(url, timeout=20).json()
+	except:
+		showWarning("Timeout error - No internet connection, or server response took too long.")
 
-		global season_start
-		season_start = season[0]
-		season_start = datetime.datetime(season_start[0],season_start[1],season_start[2],season_start[3],season_start[4],season_start[5])
-		global season_end
-		season_end = season[1]
-		season_end = datetime.datetime(season_end[0],season_end[1],season_end[2],season_end[3],season_end[4],season_end[5])
+	global season_start
+	season_start = season[0]
+	season_start = datetime.datetime(season_start[0],season_start[1],season_start[2],season_start[3],season_start[4],season_start[5])
+	global season_end
+	season_end = season[1]
+	season_end = datetime.datetime(season_end[0],season_end[1],season_end[2],season_end[3],season_end[4],season_end[5])
 
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
