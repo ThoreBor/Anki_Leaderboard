@@ -81,7 +81,7 @@ class start_setup(QDialog):
 			button.setAutoDefault(False)
 
 		about_text = """
-<h2>Anki Leaderboard v1.5.4</h2>
+<h2>Anki Leaderboard v1.6.0</h2>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><br>
@@ -90,9 +90,9 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Confetti gif from <a href="https://giphy.com/stickers/giphycam-rainbow-WNJATm9pwnjpjI1i0g">Giphy</a></div>
 <h3>Change Log:</h3>
-- store verification token in config.json<br>
-- fixed delete account bug<br>
-- added "sort by..." to config
+- added leagues<br>
+- create groups from config<br>
+- fixed nightmode bug
 <br><br>
 <b>© Thore Tyborski 2020<br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a> and <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a>.</b>
