@@ -2,6 +2,8 @@ import datetime
 from datetime import date, timedelta
 import threading
 import requests
+import json
+from os.path import dirname, join, realpath
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from aqt import mw
@@ -14,31 +16,14 @@ from .Achievement import start_achievement
 from .config_manager import write_config
 from .League import load_league
 
-
-colors_themes = {
-    "light": {
-        "USER_COLOR": "#51f564",
-        "FRIEND_COLOR": "#2176ff",
-        "GOLD_COLOR": "#ffd700",
-        "SILVER_COLOR": "#c0c0c0",
-        "BRONZE_COLOR": "#bf8970",
-        "ROW_LIGHT": "#ffffff",
-        "ROW_DARK": "#f5f5f5",
-    },
-    "dark": {
-        "USER_COLOR": "#0cd723",
-        "FRIEND_COLOR": "#0058e6",
-        "GOLD_COLOR": "#ccac00",
-        "SILVER_COLOR": "#999999",
-        "BRONZE_COLOR": "#a7684a",
-        "ROW_LIGHT": "#3A3A3A",
-        "ROW_DARK": "#2F2F31",
-    },
-}
 try:
     nightmode = mw.pm.night_mode()
 except:
     nightmode = False
+
+with open(join(dirname(realpath(__file__)), "colors.json"), "r") as colors_file:
+    data = colors_file.read()
+colors_themes = json.loads(data)
 colors = colors_themes["dark"] if nightmode else colors_themes["light"]
 
 
@@ -146,7 +131,7 @@ class start_main(QDialog):
 
 		### LEAGUE ###
 
-		x = threading.Thread(target=load_league, args=(self,), daemon=True)
+		x = threading.Thread(target=load_league, args=(self, colors), daemon=True)
 		x.start()
 		time_remaining = self.season_end - datetime.datetime.now()
 		tr_days = time_remaining.days

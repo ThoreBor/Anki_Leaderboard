@@ -5,7 +5,8 @@ from aqt import mw
 from aqt.qt import *
 from aqt.utils import showWarning, showInfo
 
-def load_league(self):
+def load_league(self, colors):
+
 	### GET DATA ###
 
 	config = mw.addonManager.getConfig(__name__)
@@ -50,10 +51,10 @@ def load_league(self):
 
 			if username in config['friends']:
 				for j in range(self.dialog.League.columnCount()):
-					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor("#2176ff"))
+					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 			if username == config['username']:
 				for j in range(self.dialog.League.columnCount()):
-					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor("#51f564"))
+					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
 	### SCROLL ###
 
@@ -87,21 +88,21 @@ def load_league(self):
 			if item == config['username'] or user_league_name == "Alpha":
 				continue
 			else:
-				self.dialog.League.item(i, j).setBackground(QtGui.QColor("#abffc7"))
+				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_TOP']))
 
 	for j in range(self.dialog.League.columnCount()):
-		self.dialog.League.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-		self.dialog.League.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-		self.dialog.League.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+		self.dialog.League.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+		self.dialog.League.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+		self.dialog.League.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 	for i in range((users - threshold), users):
 		for j in range(self.dialog.League.columnCount()):
 			item = self.dialog.League.item(i, 0).text()
 			if item == config['username'] and user_league_name != "Delta":
-				self.dialog.League.item(i, j).setBackground(QtGui.QColor("#f21818"))
+				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM_USER']))
 			if user_league_name == "Delta":
 				continue
 			else:
-				self.dialog.League.item(i, j).setBackground(QtGui.QColor("#f75e5e"))  
+				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))  
 
 
