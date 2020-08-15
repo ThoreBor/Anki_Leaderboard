@@ -14,6 +14,34 @@ from .Achievement import start_achievement
 from .config_manager import write_config
 from .League import load_league
 
+
+colors_themes = {
+    "light": {
+        "USER_COLOR": "#51f564",
+        "FRIEND_COLOR": "#2176ff",
+        "GOLD_COLOR": "#ffd700",
+        "SILVER_COLOR": "#c0c0c0",
+        "BRONZE_COLOR": "#bf8970",
+        "ROW_LIGHT": "#ffffff",
+        "ROW_DARK": "#f5f5f5",
+    },
+    "dark": {
+        "USER_COLOR": "#0cd723",
+        "FRIEND_COLOR": "#0058e6",
+        "GOLD_COLOR": "#ccac00",
+        "SILVER_COLOR": "#999999",
+        "BRONZE_COLOR": "#a7684a",
+        "ROW_LIGHT": "#3A3A3A",
+        "ROW_DARK": "#2F2F31",
+    },
+}
+try:
+    nightmode = mw.pm.night_mode()
+except:
+    nightmode = False
+colors = colors_themes["dark"] if nightmode else colors_themes["light"]
+
+
 class start_main(QDialog):
 	def __init__(self, season_start, season_end, parent=None):
 		self.parent = parent
@@ -22,8 +50,8 @@ class start_main(QDialog):
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
-		
-		# This opens the leaderboard immediately, but causes Anki to crash sometimes (even if the leaderboard is not open). 
+
+		# This opens the leaderboard immediately, but causes Anki to crash sometimes (even if the leaderboard is not open).
 		# t = threading.Thread(target=self.setupUI, daemon=True)
 		# t.start()
 
@@ -57,7 +85,7 @@ class start_main(QDialog):
 		self.load_leaderboard()
 
 	def load_leaderboard(self):
-		
+
 		### SYNC ###
 
 		config = mw.addonManager.getConfig(__name__)
@@ -67,8 +95,8 @@ class start_main(QDialog):
 
 		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention = Stats(self.season_start, self.season_end)
 
-		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, 
+		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(),
+		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention,
 		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
 		"Token_v3": config["token"], "Version": "v1.6.0"}
 
@@ -194,7 +222,7 @@ class start_main(QDialog):
 					self.dialog.Country_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Country_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
+
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(cards))
 					self.dialog.Country_Leaderboard.setItem(rowPosition, 1, item)
@@ -206,7 +234,7 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(streak))
 					self.dialog.Country_Leaderboard.setItem(rowPosition, 3, item)
-				
+
 
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, month)
@@ -220,7 +248,7 @@ class start_main(QDialog):
 
 					if username in config['friends']:
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
-							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#2176ff"))
+							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
 				if subject == config5 and subject != "Custom":
 					custom_counter = custom_counter + 1
@@ -230,7 +258,7 @@ class start_main(QDialog):
 					self.dialog.Custom_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Custom_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
+
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(cards))
 					self.dialog.Custom_Leaderboard.setItem(rowPosition, 1, item)
@@ -242,7 +270,7 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(streak))
 					self.dialog.Custom_Leaderboard.setItem(rowPosition, 3, item)
-				
+
 
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, month)
@@ -256,7 +284,7 @@ class start_main(QDialog):
 
 					if username in config['friends']:
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#2176ff"))
+							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
 				if username in config['friends']:
 					friend_counter = friend_counter + 1
@@ -266,7 +294,7 @@ class start_main(QDialog):
 					self.dialog.Friends_Leaderboard.insertRow(rowPosition)
 
 					self.dialog.Friends_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			
+
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(cards))
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 1, item)
@@ -278,7 +306,7 @@ class start_main(QDialog):
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, int(streak))
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 3, item)
-				
+
 
 					item = QtWidgets.QTableWidgetItem()
 					item.setData(QtCore.Qt.DisplayRole, month)
@@ -289,25 +317,25 @@ class start_main(QDialog):
 					self.dialog.Friends_Leaderboard.setItem(rowPosition, 5, item)
 
 					self.dialog.Friends_Leaderboard.resizeColumnsToContents()
-				
+
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
-						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#2176ff"))
-				
+						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
+
 				if username == config['username']:
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
-						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor("#51f564"))
+						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 					if config['friends'] != []:
 						for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-							self.dialog.Friends_Leaderboard.item(friend_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+							self.dialog.Friends_Leaderboard.item(friend_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 					if config['country'] != "Country":
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
-							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor("#51f564"))
+							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 					if config["subject"] != "Custom":
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor("#51f564"))			
-		
+							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
+
 		### Highlight first three places###
-		
+
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			global first_three_global
 			first_three_global = []
@@ -316,9 +344,9 @@ class start_main(QDialog):
 				first_three_global.append(item)
 
 			for j in range(self.dialog.Global_Leaderboard.columnCount()):
-				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 		if self.dialog.Friends_Leaderboard.rowCount() >= 3:
 			global first_three_friends
@@ -328,9 +356,9 @@ class start_main(QDialog):
 				first_three_friends.append(item)
 
 			for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-				self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+				self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 		if self.dialog.Country_Leaderboard.rowCount() >= 3:
 			global first_three_country
@@ -340,9 +368,9 @@ class start_main(QDialog):
 				first_three_country.append(item)
 
 			for j in range(self.dialog.Country_Leaderboard.columnCount()):
-				self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+				self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 		if self.dialog.Custom_Leaderboard.rowCount() >= 3:
 			global first_three_custom
@@ -352,10 +380,10 @@ class start_main(QDialog):
 				first_three_custom.append(item)
 
 			for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
-		
+				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
+
 		### SCROLL ###
 
 		current_ranking_list = []
@@ -411,10 +439,6 @@ class start_main(QDialog):
 			pass
 
 	def change_colors_global(self):
-		try:
-			nightmode = mw.pm.night_mode()
-		except:
-			nightmode = False
 		if self.dialog.Global_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_global
@@ -429,26 +453,20 @@ class start_main(QDialog):
 
 			for i in first_three_global:
 				for j in range(self.dialog.Global_Leaderboard.columnCount()):
-					if nightmode == False:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
-						else:
-							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					if current_ranking_list.index(i) % 2 == 0:
+						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
 					else:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
-						else:
-							self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
 
 					if i in config['friends']:
-						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
+						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 					if i == config['username']:
-						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
+						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
 			for j in range(self.dialog.Global_Leaderboard.columnCount()):
-				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 			first_three_global = []
 			for i in range(3):
@@ -456,10 +474,6 @@ class start_main(QDialog):
 				first_three_global.append(item)
 
 	def change_colors_friends(self):
-		try:
-			nightmode = mw.pm.night_mode()
-		except:
-			nightmode = False
 		if self.dialog.Friends_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_friends
@@ -474,24 +488,18 @@ class start_main(QDialog):
 
 			for i in first_three_friends:
 				for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-					if nightmode == False:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
-						else:
-							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					if current_ranking_list.index(i) % 2 == 0:
+						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
 					else:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
-						else:
-							self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
 
 					if i == config['username']:
-						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
+						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
 			for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-				self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+				self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 			first_three_friends = []
 			for i in range(3):
@@ -499,10 +507,6 @@ class start_main(QDialog):
 				first_three_friends.append(item)
 
 	def change_colors_country(self):
-		try:
-			nightmode = mw.pm.night_mode()
-		except:
-			nightmode = False
 		if self.dialog.Country_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_country
@@ -517,26 +521,20 @@ class start_main(QDialog):
 
 			for i in first_three_country:
 				for j in range(self.dialog.Country_Leaderboard.columnCount()):
-					if nightmode == False:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
-						else:
-							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					if current_ranking_list.index(i) % 2 == 0:
+						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
 					else:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
-						else:
-							self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
 
 					if i in config['friends']:
-						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
+						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 					if i == config['username']:
-						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
+						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
 			for j in range(self.dialog.Country_Leaderboard.columnCount()):
-				self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+				self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 			first_three_country = []
 			for i in range(3):
@@ -544,10 +542,6 @@ class start_main(QDialog):
 				first_three_country.append(item)
 
 	def change_colors_custom(self):
-		try:
-			nightmode = mw.pm.night_mode()
-		except:
-			nightmode = False
 		if self.dialog.Custom_Leaderboard.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
 			global first_three_custom
@@ -562,26 +556,20 @@ class start_main(QDialog):
 
 			for i in first_three_custom:
 				for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-					if nightmode == False:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#ffffff"))
-						else:
-							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#f5f5f5"))
+					if current_ranking_list.index(i) % 2 == 0:
+						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
 					else:
-						if current_ranking_list.index(i) % 2 == 0:
-							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#3A3A3A"))
-						else:
-							self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2F2F31"))
+						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
 
 					if i in config['friends']:
-						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#2176ff"))
+						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 					if i == config['username']:
-						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor("#51f564"))
+						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
 			for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor("#ffd700"))
-				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor("#c0c0c0"))
-				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor("#bf8970"))
+				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 			first_three_custom = []
 			for i in range(3):
