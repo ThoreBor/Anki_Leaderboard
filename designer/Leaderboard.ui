@@ -311,7 +311,7 @@
            </column>
            <column>
             <property name="text">
-             <string>Time</string>
+             <string>Minutes</string>
             </property>
            </column>
            <column>
