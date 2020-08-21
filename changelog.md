@@ -1,4 +1,9 @@
 # Change Log
+## v1.6.0
+- added leagues
+- create groups from config
+- fixed nightmode bug and adjusted colors
+- display html in notification properly
 ## v1.5.4
 - store verification token in config.json
 - fixed delete account bug
