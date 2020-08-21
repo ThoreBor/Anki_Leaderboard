@@ -34,7 +34,7 @@ def load_league(self, colors):
 		retention = i[4]
 		league_name = i[5]
 
-		if league_name == user_league_name:
+		if league_name == user_league_name and xp != 0:
 			counter += 1
 
 			rowPosition = self.dialog.League.rowCount()
@@ -85,7 +85,7 @@ def load_league(self, colors):
 	for i in range(threshold):
 		for j in range(self.dialog.League.columnCount()):
 			item = self.dialog.League.item(i, 0).text()
-			if item == config['username'] or user_league_name == "Alpha":
+			if item == config['username'] or item == config['friends'] or user_league_name == "Alpha":
 				continue
 			else:
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_TOP']))
@@ -100,9 +100,7 @@ def load_league(self, colors):
 			item = self.dialog.League.item(i, 0).text()
 			if item == config['username'] and user_league_name != "Delta":
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM_USER']))
-			if user_league_name == "Delta":
+			if user_league_name == "Delta" or item == config['friends']:
 				continue
 			else:
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))  
-
-
