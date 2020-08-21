@@ -54,8 +54,8 @@ def check_info():
 		page = requests.get(url, headers=headers)
 		soup = BeautifulSoup(page.content, 'html.parser')
 		if soup.find(id='show_message').get_text() == "True":
-			info = soup.find(id='Message').get_text()
-			showInfo(info, title="Leaderboard")
+			info = soup.find("div", id="Message")
+			showInfo(str(info), title="Leaderboard")
 		else:
 			pass
 	except:
