@@ -92,10 +92,12 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 <h3>Change Log:</h3>
 - added leagues<br>
 - create groups from config<br>
-- fixed nightmode bug
+- fixed nightmode bug and adjusted colors<br>
+- display html in notification properly
 <br><br>
 <b>© Thore Tyborski 2020<br>
-With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a> and <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a>.</b>
+With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
+<a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.</b>
 """
 
 		self.dialog.about_text.setHtml(about_text)
