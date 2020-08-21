@@ -82,6 +82,13 @@ class start_setup(QDialog):
 
 		about_text = """
 <h2>Anki Leaderboard v1.6.0</h2>
+This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, 
+current streak, reviews in the past 31 days, and retention. You can also compete against friends, join a group, 
+and join a country leaderboard. You'll only see users, that synced on the same day as you.<br><br>
+In the leagues' tab you see everyone that synced at least once during the current season. There are four leagues
+(Alpha, Beta, Gamma, and Delta let me know if you think of something better). A season lasts two weeks. You don't have to sync every day.
+XP are being calculated based on the number of reviews, time spend studying, and average retention since the start of the season. At the end of each
+season, the first 20% of each league will get to the next league, the last 20% will drop a league.<br><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><br>
@@ -95,7 +102,7 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 - fixed nightmode bug and adjusted colors<br>
 - display html in notification properly
 <br><br>
-<b>© Thore Tyborski 2020<br>
+<b>© Thore Tyborski 2020<br><br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
 <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.</b>
 """
