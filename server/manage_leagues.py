@@ -8,19 +8,20 @@ delta_ranking = []
 #conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 conn = sqlite3.connect('Leaderboard.db')
 c = conn.cursor()
-c.execute("SELECT username, league FROM League ORDER BY xp DESC")
+c.execute("SELECT username, league, xp FROM League ORDER BY xp DESC")
 
 for row in c.fetchall():
 	user = row[0]
 	league_name = row[1]
+	xp = row[2]
 
-	if league_name == "Alpha":
+	if league_name == "Alpha" and xp != 0:
 		alpha_ranking.append(user)
-	if league_name == "Beta":
+	if league_name == "Beta" and xp != 0:
 		beta_ranking.append(user)
-	if league_name == "Gamma":
+	if league_name == "Gamma" and xp != 0:
 		gamma_ranking.append(user)
-	if league_name == "Delta":
+	if league_name == "Delta" and xp != 0:
 		delta_ranking.append(user)
 
 print(f"Alpha: {len(alpha_ranking)} \nBeta: {len(beta_ranking)} \nGamma: {len(gamma_ranking)} \nDelta: {len(delta_ranking)}")
