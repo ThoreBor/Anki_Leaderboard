@@ -90,17 +90,18 @@ def load_league(self, colors):
 			else:
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_TOP']))
 
-	for j in range(self.dialog.League.columnCount()):
-		self.dialog.League.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-		self.dialog.League.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-		self.dialog.League.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
-
-	for i in range((users - threshold), users):
+	if self.dialog.League.rowCount() >= 3:
 		for j in range(self.dialog.League.columnCount()):
-			item = self.dialog.League.item(i, 0).text()
-			if item == config['username'] and user_league_name != "Delta":
-				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM_USER']))
-			if user_league_name == "Delta" or item == config['friends']:
-				continue
-			else:
-				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))  
+			self.dialog.League.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+			self.dialog.League.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+			self.dialog.League.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
+
+		for i in range((users - threshold), users):
+			for j in range(self.dialog.League.columnCount()):
+				item = self.dialog.League.item(i, 0).text()
+				if item == config['username'] and user_league_name != "Delta":
+					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM_USER']))
+				if user_league_name == "Delta" or item == config['friends']:
+					continue
+				else:
+					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))  
