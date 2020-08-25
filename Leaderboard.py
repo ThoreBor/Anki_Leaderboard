@@ -15,14 +15,15 @@ from .Stats import Stats
 from .Achievement import start_achievement
 from .config_manager import write_config
 from .League import load_league
+from .userInfo import start_user_info
 
 try:
-    nightmode = mw.pm.night_mode()
+	nightmode = mw.pm.night_mode()
 except:
-    nightmode = False
+	nightmode = False
 
 with open(join(dirname(realpath(__file__)), "colors.json"), "r") as colors_file:
-    data = colors_file.read()
+	data = colors_file.read()
 colors_themes = json.loads(data)
 colors = colors_themes["dark"] if nightmode else colors_themes["light"]
 
@@ -59,13 +60,14 @@ class start_main(QDialog):
 			header4 = self.dialog.Custom_Leaderboard.horizontalHeader()
 			header4.sortIndicatorChanged.connect(self.change_colors_custom)
 
-		config = mw.addonManager.getConfig(__name__)
 		tab_widget = self.dialog.Parent
 		country_tab = tab_widget.indexOf(self.dialog.tab_3)
 		subject_tab = tab_widget.indexOf(self.dialog.tab_4)
 		tab_widget.setTabText(country_tab, config["country"])
 		tab_widget.setTabText(subject_tab, config["subject"])
 		self.dialog.Parent.setCurrentIndex(config['tab'])
+
+		self.dialog.Global_Leaderboard.doubleClicked.connect(self.user_info)
 
 		self.load_leaderboard()
 
@@ -168,7 +170,7 @@ class start_main(QDialog):
 				retention = float(retention)
 			except:
 				retention = ""
-			if sync_date > start_day:
+			if sync_date > start_day and username not in config["hidden_users"]:
 				counter = counter + 1
 
 				rowPosition = self.dialog.Global_Leaderboard.rowCount()
@@ -417,7 +419,7 @@ class start_main(QDialog):
 
 		if config["refresh"] == True:
 			global t
-			t = threading.Timer(120.0, self.load_leaderboard)
+			t = threading.Timer(20.0, self.load_leaderboard)
 			t.daemon = True
 			t.start()
 		else:
@@ -560,6 +562,14 @@ class start_main(QDialog):
 			for i in range(3):
 				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
 				first_three_custom.append(item)
+
+	def user_info(self):
+		for idx in self.dialog.Global_Leaderboard.selectionModel().selectedIndexes():
+			row = idx.row()
+		user_clicked = self.dialog.Global_Leaderboard.item(row, 0).text()
+		s = start_user_info(user_clicked)
+		if s.exec():
+			pass
 
 	def closeEvent(self, event):
 		config = mw.addonManager.getConfig(__name__)

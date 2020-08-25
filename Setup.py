@@ -31,6 +31,7 @@ class start_setup(QDialog):
 		self.dialog.scroll.setChecked(bool(config["scroll"]))
 		self.dialog.refresh.setChecked(bool(config["refresh"]))
 		self.update_friends_list(sorted(config["friends"], key=str.lower))
+		self.update_hidden_list(sorted(config["hidden_users"], key=str.lower))
 
 		if config["sortby"] == "Time_Spend":
 			self.dialog.sortby.setCurrentText("Time")
@@ -60,6 +61,7 @@ class start_setup(QDialog):
 		self.dialog.login_button.clicked.connect(self.login)
 		self.dialog.delete_username.returnPressed.connect(self.delete)
 		self.dialog.delete_button.clicked.connect(self.delete)
+		self.dialog.statusButton.clicked.connect(self.status)
 		self.dialog.friend_username.returnPressed.connect(self.add_friend)
 		self.dialog.add_friends_button.clicked.connect(self.add_friend)
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
@@ -73,6 +75,7 @@ class start_setup(QDialog):
 		self.dialog.refresh.stateChanged.connect(self.set_refresh)
 		self.dialog.import_friends.clicked.connect(self.import_list)
 		self.dialog.export_friends.clicked.connect(self.export_list)
+		self.dialog.unhideButton.clicked.connect(self.unhide)
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
@@ -100,6 +103,7 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 - added leagues<br>
 - create groups from config<br>
 - fixed nightmode bug and adjusted colors<br>
+- disabled auto refresh until some bugs are fixed<br>
 - display html in notification properly
 <br><br>
 <b>© Thore Tyborski 2020<br><br>
@@ -347,3 +351,38 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			index += 1
 
 		self.dialog.subject.setCurrentText(config["subject"])
+
+	def status(self):
+		config = mw.addonManager.getConfig(__name__)
+		statusMsg = self.dialog.statusMsg.text()
+		url = 'https://ankileaderboard.pythonanywhere.com/setStatus/'
+		data = {"status": statusMsg, "username": config["username"], "Token_v3": config["token"]}
+		
+		try:
+			x = requests.post(url, data = data, timeout=20)
+		except:
+			showWarning("Timeout error - No internet connection, or server response took too long.")
+
+		if x.text == "Done!":
+			tooltip("Done")
+		else:
+			tooltip(str(x.text))
+
+	def update_hidden_list(self, hidden):
+		config = mw.addonManager.getConfig(__name__)
+		hiddenUsers = self.dialog.hiddenUsers
+		hiddenUsers.clear()
+		for user in hidden:
+			hiddenUsers.addItem(user)
+
+	def unhide(self):
+		for item in self.dialog.hiddenUsers.selectedItems():
+			username = item.text()
+			config = mw.addonManager.getConfig(__name__)
+			config['hidden_users'].remove(username)
+			write_config("hidden_users", config["hidden_users"])
+			tooltip(f"{username} is now back on the leaderboard")
+			self.update_hidden_list(config["hidden_users"])
+
+
+
