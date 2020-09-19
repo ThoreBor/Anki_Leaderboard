@@ -162,12 +162,17 @@ def create_group(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
 	Group_Name = request.POST.get("Group_Name", None)
+	User = request.POST.get("User", None)
 	if c.execute("SELECT Group_Name FROM Groups WHERE Group_Name = (?)", (Group_Name,)).fetchone():
 		pass
 	else:
 		if Group_Name:
 			c.execute('INSERT INTO Groups (Group_Name) VALUES(?)', (Group_Name,))
 			conn.commit()
+			with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
+			    data = json.load(json_file)
+			r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
+			r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
 			print(f"Created new group {Group_Name}")
 			return HttpResponse("Done!")
 @csrf_exempt
@@ -175,11 +180,31 @@ def groups(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
 	Group_List = []
-	c.execute("SELECT Group_Name FROM Groups")
+	c.execute("SELECT Group_Name FROM Groups WHERE verified = 1")
 	for i in c.fetchall():
 		Group_Name = i[0]
 		Group_List.append(Group_Name)
 	return HttpResponse(json.dumps((sorted(Group_List, key=str.lower))))
 
+@csrf_exempt
+def setStatus(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	statusMsg = request.POST.get("status", None)
+	username = request.POST.get("username", None)
+	Token = request.POST.get("Token_v3", None)
+	t = c.execute("SELECT Username, Token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()
+	if t[1] == Token or t[1] is None:
+	    c.execute("UPDATE Leaderboard SET Status = (?) WHERE username = (?) ", (statusMsg, username))
+	    conn.commit()
+	    return HttpResponse("Done!")
+
+@csrf_exempt
+def getStatus(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	username = request.POST.get("username", None)
+	return HttpResponse(json.dumps(c.execute("SELECT Status FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()))
+
 def season(request):
-	return HttpResponse(json.dumps([[2020,8,1,0,0,0],[2020,9,1,0,0,0]]))
+	return HttpResponse(json.dumps([[2020,8,21,0,0,0],[2020,9,4,0,0,0]]))

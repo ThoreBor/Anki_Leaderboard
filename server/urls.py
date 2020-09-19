@@ -37,6 +37,8 @@ urlpatterns = [
 	path('create_group/', api.create_group, name="create_group"),
 	path('league/', api.league_data, name="league_data"),
 	path('season/', api.season, name="season"),
+	path('setStatus/', api.setStatus, name="setStatus"),
+	path('getStatus/', api.getStatus, name="getStatus"),
 	path(r'user/<username>/', website.user, name="user"),
 	path('upload/', website.upload, name="upload"),
 
