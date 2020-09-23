@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>488</width>
-    <height>364</height>
+    <width>490</width>
+    <height>393</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -232,13 +232,13 @@
       <attribute name="title">
        <string>Settings</string>
       </attribute>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>10</y>
+         <y>11</y>
          <width>446</width>
-         <height>294</height>
+         <height>324</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -400,13 +400,6 @@
          </layout>
         </item>
         <item>
-         <widget class="QCheckBox" name="LB_DeckBrowser">
-          <property name="text">
-           <string>Show leaderboard on homescreen (only works with Anki 2.1.20+)</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QCheckBox" name="scroll">
           <property name="text">
            <string>Automatically scroll to yourself</string>
@@ -430,6 +423,27 @@ Sorting will be disabled</string>
            <string>Sync when deck is finished (only works with Anki 2.1.20+)</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="LB_DeckBrowser">
+          <property name="text">
+           <string>Show leaderboard on homescreen (only works with Anki 2.1.20+)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="maxUsers_Label">
+            <property name="text">
+             <string>Maximum number of users on homescreen leaderboard:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="maxUsers"/>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
