@@ -35,6 +35,7 @@ class start_setup(QDialog):
 		self.update_hidden_list(sorted(config["hidden_users"], key=str.lower))
 		self.dialog.LB_DeckBrowser.setChecked(bool(config["homescreen"]))
 		self.dialog.autosync.setChecked(bool(config["autosync"]))
+		self.dialog.maxUsers.setValue(config["maxUsers"])
 
 		self.dialog.statusMsg.setToolTip("Message that everyone can see when clicking on your username (max. 280 characters). You can use markdown to embed links.")
 		self.dialog.create_button.setToolTip("This might take a few seconds.")
@@ -87,6 +88,7 @@ class start_setup(QDialog):
 		self.dialog.unhideButton.clicked.connect(self.unhide)
 		self.dialog.LB_DeckBrowser.stateChanged.connect(self.set_homescreen)
 		self.dialog.autosync.stateChanged.connect(self.set_autosync)
+		self.dialog.maxUsers.valueChanged.connect(self.set_maxUser)
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
@@ -305,6 +307,12 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			homescreen = False
 		write_config("homescreen", homescreen)
 		leaderboard_on_deck_browser()
+
+	def set_maxUser(self):
+		maxUsers = self.dialog.maxUsers.value()
+		write_config("maxUsers", maxUsers)
+		leaderboard_on_deck_browser()
+
 
 	def set_autosync(self):
 		if self.dialog.autosync.isChecked():

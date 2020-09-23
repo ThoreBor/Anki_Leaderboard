@@ -59,7 +59,7 @@ def getData():
 			if config["tab"] == 3 and subject == config["subject"]:
 				lb_list.append([username, cards, time, streak, month, retention])
 				counter += 1
-			if counter == 5:
+			if counter == config["maxUsers"]:
 				break
 	return lb_list
 
@@ -72,7 +72,7 @@ def on_deck_browser_will_render_content(overview, content):
 		table.lb_table {
 			font-family: arial, sans-serif;
 			border-collapse: collapse;
-			width: 40%;
+			width: 35%;
 			margin-left:auto;
 			margin-right:auto;
 			font-weight: bold;
@@ -123,7 +123,7 @@ def on_deck_browser_will_render_content(overview, content):
 			<td>{i[5]}</td>
 		</tr>
 		"""
-	content.stats += table_header + table_content + "</table>"
+	content.stats += table_header + table_content + "</table></div>"
 
 def leaderboard_on_deck_browser():
 	config = mw.addonManager.getConfig(__name__)
