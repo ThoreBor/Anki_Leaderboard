@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>501</width>
-    <height>622</height>
+    <width>488</width>
+    <height>364</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -23,11 +23,17 @@
    <iconset resource="icons.qrc">
     <normaloff>:/person/icons/person.png</normaloff>:/person/icons/person.png</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
+   <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -40,187 +46,10 @@
        <string>Account</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="4" column="0">
-        <widget class="QCheckBox" name="refresh">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Disabled until some bugs are fixed
-Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
-Sorting will be disabled</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <layout class="QGridLayout" name="gl2">
-         <item row="4" column="0" colspan="4">
-          <layout class="QGridLayout" name="gl3">
-           <item row="2" column="0">
-            <widget class="QLabel" name="Defaul_Tab_Label">
-             <property name="text">
-              <string>Default Leaderboard:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="next_day_info1">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Next day starts</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1" colspan="2">
-            <widget class="QComboBox" name="Default_Tab">
-             <item>
-              <property name="text">
-               <string>Global</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Friends</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Country</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Group</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>League</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="next_day_info2">
-             <property name="text">
-              <string>hours past midnight</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" colspan="2">
-            <widget class="QComboBox" name="sortby">
-             <item>
-              <property name="text">
-               <string>Reviews</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Time</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Streak</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Reviews past 30 days</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Retention</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="newday">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximum">
-              <number>23</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="sortby_label">
-             <property name="text">
-              <string>Sort by:</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QLabel" name="Group_Label">
-           <property name="text">
-            <string>Request a new group:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" colspan="4">
-          <widget class="QComboBox" name="subject">
-           <item>
-            <property name="text">
-             <string>Join a group</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="4">
-          <widget class="QComboBox" name="country">
-           <item>
-            <property name="text">
-             <string>Country</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QPushButton" name="add_newGroup">
-           <property name="text">
-            <string>Request Group</string>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLineEdit" name="newGroup"/>
-         </item>
-         <item row="3" column="0" colspan="4">
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="scroll">
-         <property name="text">
-          <string>Automatically scroll to yourself</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <layout class="QGridLayout" name="gl1">
-         <item row="0" column="0">
-          <widget class="QLabel" name="create_info">
+         <item row="7" column="0">
+          <widget class="QLabel" name="label">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -228,7 +57,30 @@ Sorting will be disabled</string>
             </font>
            </property>
            <property name="text">
-            <string>Create Account:</string>
+            <string>Status:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="login_button">
+           <property name="text">
+            <string>Login</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+           <property name="default">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLineEdit" name="login_username">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string>Username</string>
            </property>
           </widget>
          </item>
@@ -245,8 +97,8 @@ Sorting will be disabled</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label">
+         <item row="0" column="0">
+          <widget class="QLabel" name="create_info">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -254,22 +106,58 @@ Sorting will be disabled</string>
             </font>
            </property>
            <property name="text">
-            <string>Status:</string>
+            <string>Create Account:</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="QPushButton" name="delete_button">
+         <item row="5" column="0">
+          <widget class="QLabel" name="delete_info">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
            <property name="text">
-            <string>Delete Account</string>
+            <string>Delete Account:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="login_info">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Login:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QPushButton" name="statusButton">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Set Status</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QLineEdit" name="login_username">
+         <item row="6" column="0">
+          <widget class="QLineEdit" name="delete_username">
            <property name="text">
             <string/>
            </property>
@@ -291,6 +179,16 @@ Sorting will be disabled</string>
            </property>
           </widget>
          </item>
+         <item row="6" column="1">
+          <widget class="QPushButton" name="delete_button">
+           <property name="text">
+            <string>Delete Account</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
          <item row="4" column="0">
           <widget class="QLabel" name="login_info_2">
            <property name="font">
@@ -303,89 +201,238 @@ Sorting will be disabled</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QPushButton" name="login_button">
-           <property name="text">
-            <string>Login</string>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-           <property name="default">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="delete_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-             <underline>false</underline>
-            </font>
-           </property>
-           <property name="text">
-            <string>Delete Account:</string>
-           </property>
-          </widget>
-         </item>
          <item row="8" column="0">
           <widget class="QLineEdit" name="statusMsg">
-           <property name="placeholderText">
-            <string>Message that everyone can see when clicking on your username</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLineEdit" name="delete_username">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string>Username</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QPushButton" name="statusButton">
-           <property name="text">
-            <string>Set Status</string>
-           </property>
-           <property name="checkable">
-            <bool>false</bool>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="login_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Login:</string>
+           <property name="maxLength">
+            <number>280</number>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="Line" name="line">
+        <spacer name="verticalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
-        </widget>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Settings</string>
+      </attribute>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>446</width>
+         <height>294</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QGridLayout" name="gl2">
+          <item row="3" column="0" colspan="4">
+           <layout class="QGridLayout" name="gl3">
+            <item row="2" column="0">
+             <widget class="QLabel" name="Defaul_Tab_Label">
+              <property name="text">
+               <string>Default Leaderboard:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="next_day_info1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Next day starts</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="2">
+             <widget class="QComboBox" name="Default_Tab">
+              <item>
+               <property name="text">
+                <string>Global</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Friends</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Country</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Group</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>League</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="next_day_info2">
+              <property name="text">
+               <string>hours past midnight</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" colspan="2">
+             <widget class="QComboBox" name="sortby">
+              <item>
+               <property name="text">
+                <string>Reviews</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Time</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Streak</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Reviews past 31 days</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Retention</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="newday">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximum">
+               <number>23</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="sortby_label">
+              <property name="text">
+               <string>Sort by:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="newGroup"/>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QLabel" name="Group_Label">
+            <property name="text">
+             <string>Request a new group:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="4">
+           <widget class="QComboBox" name="country">
+            <item>
+             <property name="text">
+              <string>Country</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="4">
+           <widget class="QComboBox" name="subject">
+            <item>
+             <property name="text">
+              <string>Join a group</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="add_newGroup">
+            <property name="text">
+             <string>Request Group</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="LB_DeckBrowser">
+          <property name="text">
+           <string>Show leaderboard on homescreen (only works with Anki 2.1.20+)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="scroll">
+          <property name="text">
+           <string>Automatically scroll to yourself</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="refresh">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
+Sorting will be disabled</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="autosync">
+          <property name="text">
+           <string>Sync when deck is finished (only works with Anki 2.1.20+)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
      <widget class="QWidget" name="tabFriends">
       <attribute name="title">
@@ -538,78 +585,28 @@ Sorting will be disabled</string>
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>create_username</tabstop>
   <tabstop>create_button</tabstop>
   <tabstop>login_username</tabstop>
   <tabstop>login_button</tabstop>
   <tabstop>delete_username</tabstop>
   <tabstop>delete_button</tabstop>
-  <tabstop>subject</tabstop>
-  <tabstop>country</tabstop>
-  <tabstop>newGroup</tabstop>
-  <tabstop>add_newGroup</tabstop>
-  <tabstop>newday</tabstop>
-  <tabstop>sortby</tabstop>
-  <tabstop>Default_Tab</tabstop>
-  <tabstop>scroll</tabstop>
-  <tabstop>refresh</tabstop>
+  <tabstop>statusButton</tabstop>
   <tabstop>friend_username</tabstop>
   <tabstop>add_friends_button</tabstop>
+  <tabstop>friends_list</tabstop>
   <tabstop>remove_friend_button</tabstop>
   <tabstop>import_friends</tabstop>
   <tabstop>export_friends</tabstop>
-  <tabstop>friends_list</tabstop>
+  <tabstop>hiddenUsers</tabstop>
+  <tabstop>unhideButton</tabstop>
   <tabstop>about_text</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>254</x>
-     <y>421</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>307</x>
-     <y>421</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
