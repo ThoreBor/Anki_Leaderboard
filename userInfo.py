@@ -18,12 +18,12 @@ class start_user_info(QDialog):
 	def setupUI(self):
 		self.dialog.username_label.setText(self.user_clicked)
 		url = 'https://ankileaderboard.pythonanywhere.com/getStatus/'
-		sortby = {"username": self.user_clicked}
+		data = {"username": self.user_clicked}
 		try:
-			data = requests.post(url, data = sortby, timeout=20).json()
+			data = requests.post(url, data = data, timeout=20).json()
 		except:
 			showWarning("Timeout error - No internet connection, or server response took too long.")
-		self.dialog.status_message.setHtml(data[0])
+		self.dialog.status_message.setMarkdown(data[0])
 		self.dialog.hideUser.clicked.connect(self.hideUser)
 
 	def hideUser(self):

@@ -36,11 +36,6 @@ class start_main(QDialog):
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
-
-		# This opens the leaderboard immediately, but causes Anki to crash sometimes (even if the leaderboard is not open).
-		# t = threading.Thread(target=self.setupUI, daemon=True)
-		# t.start()
-
 		self.setupUI()
 
 	def setupUI(self):
@@ -67,10 +62,19 @@ class start_main(QDialog):
 		tab_widget.setTabText(subject_tab, config["subject"])
 		self.dialog.Parent.setCurrentIndex(config['tab'])
 
-		self.dialog.Global_Leaderboard.doubleClicked.connect(self.user_info)
-
+		self.dialog.Global_Leaderboard.doubleClicked.connect(self.user_info_Global)
+		self.dialog.Global_Leaderboard.setToolTip("Double click on user for more info.")
+		self.dialog.Friends_Leaderboard.doubleClicked.connect(self.user_info_Friends)
+		self.dialog.Friends_Leaderboard.setToolTip("Double click on user for more info.")
+		self.dialog.Country_Leaderboard.doubleClicked.connect(self.user_info_Country)
+		self.dialog.Country_Leaderboard.setToolTip("Double click on user for more info.")
+		self.dialog.Custom_Leaderboard.doubleClicked.connect(self.user_info_Custom)
+		self.dialog.Custom_Leaderboard.setToolTip("Double click on user for more info.")
+		self.dialog.League.doubleClicked.connect(self.user_info_League)
+		self.dialog.League.setToolTip("Double click on user for more info.")
+		
 		self.load_leaderboard()
-
+		
 	def load_leaderboard(self):
 
 		### SYNC ###
@@ -133,8 +137,9 @@ class start_main(QDialog):
 
 		### LEAGUE ###
 
-		x = threading.Thread(target=load_league, args=(self, colors), daemon=True)
-		x.start()
+		# x = threading.Thread(target=load_league, args=(self, colors), daemon=True)
+		# x.start()
+		load_league(self, colors)
 		time_remaining = self.season_end - datetime.datetime.now()
 		tr_days = time_remaining.days
 		tr_hours = int((time_remaining.seconds) / 60 / 60)
@@ -419,7 +424,7 @@ class start_main(QDialog):
 
 		if config["refresh"] == True:
 			global t
-			t = threading.Timer(20.0, self.load_leaderboard)
+			t = threading.Timer(120.0, self.load_leaderboard)
 			t.daemon = True
 			t.start()
 		else:
@@ -563,13 +568,50 @@ class start_main(QDialog):
 				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
 				first_three_custom.append(item)
 
-	def user_info(self):
+	def user_info_Global(self):
 		for idx in self.dialog.Global_Leaderboard.selectionModel().selectedIndexes():
 			row = idx.row()
 		user_clicked = self.dialog.Global_Leaderboard.item(row, 0).text()
-		s = start_user_info(user_clicked)
-		if s.exec():
-			pass
+		mw.user_info = start_user_info(user_clicked)
+		mw.user_info.show()
+		mw.user_info.raise_()
+		mw.user_info.activateWindow()
+
+	def user_info_Friends(self):
+		for idx in self.dialog.Friends_Leaderboard.selectionModel().selectedIndexes():
+			row = idx.row()
+		user_clicked = self.dialog.Friends_Leaderboard.item(row, 0).text()
+		mw.user_info = start_user_info(user_clicked)
+		mw.user_info.show()
+		mw.user_info.raise_()
+		mw.user_info.activateWindow()
+
+	def user_info_Country(self):
+		for idx in self.dialog.Country_Leaderboard.selectionModel().selectedIndexes():
+			row = idx.row()
+		user_clicked = self.dialog.Country_Leaderboard.item(row, 0).text()		
+		mw.user_info = start_user_info(user_clicked)
+		mw.user_info.show()
+		mw.user_info.raise_()
+		mw.user_info.activateWindow()
+
+	def user_info_Custom(self):
+		for idx in self.dialog.Custom_Leaderboard.selectionModel().selectedIndexes():
+			row = idx.row()
+		user_clicked = self.dialog.Custom_Leaderboard.item(row, 0).text()
+		mw.user_info = start_user_info(user_clicked)
+		mw.user_info.show()
+		mw.user_info.raise_()
+		mw.user_info.activateWindow()
+
+	def user_info_League(self):
+		for idx in self.dialog.League.selectionModel().selectedIndexes():
+			row = idx.row()
+		user_clicked = self.dialog.League.item(row, 0).text()
+		mw.user_info = start_user_info(user_clicked)
+		mw.user_info.show()
+		mw.user_info.raise_()
+		mw.user_info.activateWindow()
 
 	def closeEvent(self, event):
 		config = mw.addonManager.getConfig(__name__)

@@ -11,6 +11,7 @@ from aqt.utils import tooltip, showInfo, showWarning
 from .forms import setup
 from .Stats import Stats
 from .config_manager import write_config
+from .lb_on_homescreen import leaderboard_on_deck_browser
 
 class start_setup(QDialog):
 	def __init__(self, season_start, season_end, parent=None):
@@ -32,6 +33,12 @@ class start_setup(QDialog):
 		self.dialog.refresh.setChecked(bool(config["refresh"]))
 		self.update_friends_list(sorted(config["friends"], key=str.lower))
 		self.update_hidden_list(sorted(config["hidden_users"], key=str.lower))
+		self.dialog.LB_DeckBrowser.setChecked(bool(config["homescreen"]))
+		self.dialog.autosync.setChecked(bool(config["autosync"]))
+
+		self.dialog.statusMsg.setToolTip("Message that everyone can see when clicking on your username (max. 280 characters). You can use markdown to embed links.")
+		self.dialog.create_button.setToolTip("This might take a few seconds.")
+		self.dialog.newday.setToolTip("This needs to be the same as in Ankis' preferences.")
 
 		if config["sortby"] == "Time_Spend":
 			self.dialog.sortby.setCurrentText("Time")
@@ -62,12 +69,14 @@ class start_setup(QDialog):
 		self.dialog.delete_username.returnPressed.connect(self.delete)
 		self.dialog.delete_button.clicked.connect(self.delete)
 		self.dialog.statusButton.clicked.connect(self.status)
+		self.dialog.statusMsg.returnPressed.connect(self.status)
 		self.dialog.friend_username.returnPressed.connect(self.add_friend)
 		self.dialog.add_friends_button.clicked.connect(self.add_friend)
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
 		self.dialog.newday.valueChanged.connect(self.set_time)
 		self.dialog.subject.currentTextChanged.connect(self.set_subject)
 		self.dialog.add_newGroup.clicked.connect(self.create_new_group)
+		self.dialog.newGroup.returnPressed.connect(self.create_new_group)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
 		self.dialog.Default_Tab.currentTextChanged.connect(self.set_default_tab)
 		self.dialog.sortby.currentTextChanged.connect(self.set_sortby)
@@ -76,12 +85,14 @@ class start_setup(QDialog):
 		self.dialog.import_friends.clicked.connect(self.import_list)
 		self.dialog.export_friends.clicked.connect(self.export_list)
 		self.dialog.unhideButton.clicked.connect(self.unhide)
+		self.dialog.LB_DeckBrowser.stateChanged.connect(self.set_homescreen)
+		self.dialog.autosync.stateChanged.connect(self.set_autosync)
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
 
-		for button in self.dialog.buttonBox.buttons():
-			button.setAutoDefault(False)
+		# for button in self.dialog.buttonBox.buttons():
+		# 	button.setAutoDefault(False)
 
 		about_text = """
 <h2>Anki Leaderboard v1.6.0</h2>
@@ -101,9 +112,15 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 <div>Confetti gif from <a href="https://giphy.com/stickers/giphycam-rainbow-WNJATm9pwnjpjI1i0g">Giphy</a></div>
 <h3>Change Log:</h3>
 - added leagues<br>
-- create groups from config<br>
+- request groups from config<br>
+- added hide user option<br>
+- added option to show the leaderboard on the homescreen<br>
+- added auto-sync option after finishing reviews<br>
+- added option to set a status message<br>
+- more info in about tab<br>
+- config UI changes<br>
+- added some tooltips<br>
 - fixed nightmode bug and adjusted colors<br>
-- disabled auto refresh until some bugs are fixed<br>
 - display html in notification properly
 <br><br>
 <b>© Thore Tyborski 2020<br><br>
@@ -265,20 +282,36 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			write_config("tab", 3)
 		if tab == "League":
 			write_config("tab", 4)
+		leaderboard_on_deck_browser()
 
 	def set_sortby(self):
 		sortby = self.dialog.sortby.currentText()
-		config = mw.addonManager.getConfig(__name__)
 		if sortby == "Reviews":
 			write_config("sortby", "Cards")
 		if sortby == "Time":
 			write_config("sortby", "Time_Spend")
 		if sortby == "Streak":
 			write_config("sortby", sortby)
-		if sortby == "Revies past 30 days":
+		if sortby == "Reviews past 31 days":
 			write_config("sortby", "Month")
 		if sortby == "Retention":
 			write_config("sortby", sortby)
+		leaderboard_on_deck_browser()
+
+	def set_homescreen(self):
+		if self.dialog.LB_DeckBrowser.isChecked():
+			homescreen = True
+		else:
+			homescreen = False
+		write_config("homescreen", homescreen)
+		leaderboard_on_deck_browser()
+
+	def set_autosync(self):
+		if self.dialog.autosync.isChecked():
+			autosync = True
+		else:
+			autosync = False
+		write_config("autosync", autosync)
 
 
 	def import_list(self):
@@ -317,9 +350,10 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		tooltip("You can find the text file in the add-on folder.")
 
 	def create_new_group(self):
+		config = mw.addonManager.getConfig(__name__)
 		Group_Name = self.dialog.newGroup.text()
 		url = 'https://ankileaderboard.pythonanywhere.com/create_group/'
-		data = {'Group_Name': Group_Name}
+		data = {'Group_Name': Group_Name, "User": config['username']}
 		
 		try:
 			x = requests.post(url, data = data, timeout=20)
@@ -327,7 +361,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			showWarning("Timeout error - No internet connection, or server response took too long.")
 
 		if x.text == "Done!":
-			tooltip(f"Successfully created {Group_Name}")
+			showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
 		else:
 			tooltip("Error (Group)")
 		self.load_Group()		

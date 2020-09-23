@@ -2,6 +2,7 @@ from aqt import mw
 from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
 from aqt.utils import showInfo, showWarning, tooltip
+from aqt import gui_hooks
 
 import webbrowser
 import requests
@@ -13,6 +14,7 @@ from .Leaderboard import start_main
 from .Setup import start_setup
 from .Stats import Stats
 from .config_manager import write_config
+from .lb_on_homescreen import leaderboard_on_deck_browser
 
 def Main():
 	check_info()
@@ -21,6 +23,7 @@ def Main():
 	if config["username"] == "":
 		invoke_setup()
 	else:
+		#mw.progress.start()
 		mw.leaderboard = start_main(season_start, season_end)
 		mw.leaderboard.show()
 		mw.leaderboard.raise_()
@@ -83,13 +86,15 @@ def background_sync():
 	"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
 	"Token_v3": token, "Version": "v1.6.0"}
 
+	leaderboard_on_deck_browser()
+
 	try:
 		x = requests.post(url, data = data, timeout=20)
 	except:
 		showWarning("Timeout error - No internet connection, or server response took too long.")
 
 	if x.text == "Done!":
-		tooltip("Synced data successfully.")
+		tooltip("Synced leaderboard successfully.")
 	else:
 		showWarning(str(x.text))
 
@@ -120,12 +125,20 @@ def add_menu(Name, Button, exe, *sc):
 	for i in sc:
 		action.setShortcut(QKeySequence(i))
 
+def initialize():
+	config = mw.addonManager.getConfig(__name__)
+	if config["autosync"] == True:
+		gui_hooks.reviewer_will_end.append(background_sync)
+	if config["homescreen"] == True:
+		leaderboard_on_deck_browser()
+
 write_config("achievement", True)
 add_username_to_friendlist()
 season()
+gui_hooks.profile_did_open.append(initialize)
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
-add_menu('&Leaderboard',"&Sync", background_sync, "Shift+S")
+add_menu('&Leaderboard',"&Sync and update leaderboard on the homescreen", background_sync, "Shift+S")
 add_menu('&Leaderboard',"&Config", invoke_setup)
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 mw.addonManager.setConfigAction(__name__, config_setup)

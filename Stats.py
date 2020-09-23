@@ -98,7 +98,7 @@ def reviews_and_retention(data, new_day, time_now):
 	try:
 		retention = round(100 - (100 / total_cards * flunked_total), 1)
 	except:
-		retention = ""
+		retention = None
 
 	return total_cards, retention
 
@@ -137,7 +137,7 @@ def league_reviews_and_retention(season_start, season_end, data):
 	try:
 		league_retention = round(100 - (100 / league_reviews * flunked_total), 1)
 	except:
-		league_retention = ""
+		league_retention = None
 
 	return league_reviews, league_retention
 
