@@ -16,6 +16,7 @@ from .Achievement import start_achievement
 from .config_manager import write_config
 from .League import load_league
 from .userInfo import start_user_info
+from .lb_on_homescreen import leaderboard_on_deck_browser
 
 try:
 	nightmode = mw.pm.night_mode()
@@ -74,6 +75,8 @@ class start_main(QDialog):
 		self.dialog.League.setToolTip("Double click on user for more info.")
 		
 		self.load_leaderboard()
+		if config["homescreen"] == True:
+  			leaderboard_on_deck_browser()
 		
 	def load_leaderboard(self):
 

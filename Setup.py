@@ -271,6 +271,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			refresh = False
 		write_config("refresh", refresh)
 	def set_default_tab(self):
+		config = mw.addonManager.getConfig(__name__)
 		tab = self.dialog.Default_Tab.currentText()
 		if tab == "Global":
 			write_config("tab", 0)
@@ -282,9 +283,11 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			write_config("tab", 3)
 		if tab == "League":
 			write_config("tab", 4)
-		leaderboard_on_deck_browser()
+		if config["homescreen"] == True:
+			leaderboard_on_deck_browser()
 
 	def set_sortby(self):
+		config = mw.addonManager.getConfig(__name__)
 		sortby = self.dialog.sortby.currentText()
 		if sortby == "Reviews":
 			write_config("sortby", "Cards")
@@ -296,20 +299,25 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			write_config("sortby", "Month")
 		if sortby == "Retention":
 			write_config("sortby", sortby)
-		leaderboard_on_deck_browser()
+		if config["homescreen"] == True:
+			leaderboard_on_deck_browser()
 
 	def set_homescreen(self):
+		config = mw.addonManager.getConfig(__name__)
 		if self.dialog.LB_DeckBrowser.isChecked():
 			homescreen = True
 		else:
 			homescreen = False
 		write_config("homescreen", homescreen)
-		leaderboard_on_deck_browser()
+		if config["homescreen"] == True:
+			leaderboard_on_deck_browser()
 
 	def set_maxUser(self):
+		config = mw.addonManager.getConfig(__name__)
 		maxUsers = self.dialog.maxUsers.value()
 		write_config("maxUsers", maxUsers)
-		leaderboard_on_deck_browser()
+		if config["homescreen"] == True:
+			leaderboard_on_deck_browser()
 
 
 	def set_autosync(self):

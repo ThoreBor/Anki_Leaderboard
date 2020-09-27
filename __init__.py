@@ -91,6 +91,8 @@ def background_sync():
 		x = requests.post(url, data = data, timeout=20)
 		if x.text == "Done!":
 			tooltip("Synced leaderboard successfully.")
+		else:
+			showWarning(str(x.text))
 	except:
 		showWarning("Timeout error [background_sync] - No internet connection, or server response took too long.", title="Leaderboard error")
 
