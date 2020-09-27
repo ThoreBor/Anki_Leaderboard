@@ -14,13 +14,15 @@ def load_league(self, colors):
 	try:
 		data = requests.get(url, timeout=20).json()
 	except:
-		showWarning("Timeout error - No internet connection, or server response took too long.")
+		data = []
+		showWarning("Timeout error [load_league] - No internet connection, or server response took too long.", title="Leaderboard error")
 
+	user_league_name = "Alpha"
 	for i in data:
 		if config["username"] in i:
 			user_league_name = i[5]
+			self.dialog.league_label.setText(user_league_name)
 
-	self.dialog.league_label.setText(user_league_name)
 	self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
 
 	### BUILD TABLE ###

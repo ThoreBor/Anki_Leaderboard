@@ -93,13 +93,12 @@ class start_main(QDialog):
 
 		try:
 			x = requests.post(url, data = data, timeout=20)
+			if x.text == "Done!":
+				pass
+			else:
+				showWarning(str(x.text))
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
-
-		if x.text == "Done!":
-			pass
-		else:
-			showWarning(str(x.text))
+			showWarning("Timeout error [load_leaderboard sync] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 		### ACHIEVEMENT ###
 
@@ -133,7 +132,8 @@ class start_main(QDialog):
 		try:
 			data = requests.post(url, data = sortby, timeout=20).json()
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
+			data = []
+			showWarning("Timeout error [load_leaderboard getData] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 		### LEAGUE ###
 

@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
 from aqt.utils import showInfo, showWarning, tooltip
 from aqt import gui_hooks
+import threading
 
 import webbrowser
 import requests
@@ -62,7 +63,7 @@ def check_info():
 		else:
 			pass
 	except:
-		showWarning("Make sure you're connected to the internet.")
+		showWarning("Timeout error [check_info] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 def add_username_to_friendlist():
 	config = mw.addonManager.getConfig(__name__)
@@ -86,31 +87,30 @@ def background_sync():
 	"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
 	"Token_v3": token, "Version": "v1.6.0"}
 
-	leaderboard_on_deck_browser()
-
 	try:
 		x = requests.post(url, data = data, timeout=20)
+		if x.text == "Done!":
+			tooltip("Synced leaderboard successfully.")
 	except:
-		showWarning("Timeout error - No internet connection, or server response took too long.")
+		showWarning("Timeout error [background_sync] - No internet connection, or server response took too long.", title="Leaderboard error")
 
-	if x.text == "Done!":
-		tooltip("Synced leaderboard successfully.")
-	else:
-		showWarning(str(x.text))
+	if config["homescreen"] == True:
+		leaderboard_on_deck_browser()
 
 def season():
 	url = 'https://ankileaderboard.pythonanywhere.com/season/'
 	try:
 		season = requests.get(url, timeout=20).json()
+		global season_start
+		season_start = season[0]
+		season_start = datetime.datetime(season_start[0],season_start[1],season_start[2],season_start[3],season_start[4],season_start[5])
+		global season_end
+		season_end = season[1]
+		season_end = datetime.datetime(season_end[0],season_end[1],season_end[2],season_end[3],season_end[4],season_end[5])
 	except:
-		showWarning("Timeout error - No internet connection, or server response took too long.")
-
-	global season_start
-	season_start = season[0]
-	season_start = datetime.datetime(season_start[0],season_start[1],season_start[2],season_start[3],season_start[4],season_start[5])
-	global season_end
-	season_end = season[1]
-	season_end = datetime.datetime(season_end[0],season_end[1],season_end[2],season_end[3],season_end[4],season_end[5])
+		season_start = datetime.datetime.now()
+		season_end = datetime.datetime.now()
+		showWarning("Timeout error [season] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
@@ -135,7 +135,10 @@ def initialize():
 write_config("achievement", True)
 add_username_to_friendlist()
 season()
-gui_hooks.profile_did_open.append(initialize)
+try:
+	gui_hooks.profile_did_open.append(initialize)
+except:
+	pass
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Sync and update leaderboard on the homescreen", background_sync, "Shift+S")

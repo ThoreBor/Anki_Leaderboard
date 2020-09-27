@@ -21,7 +21,8 @@ def getData():
 	try:
 		data = requests.post(url, data = sortby, timeout=20).json()
 	except:
-		showWarning("Timeout error - No internet connection, or server response took too long.")
+		data = []
+		showWarning("Timeout error [getdata] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	lb_list = []
 	counter = 0
@@ -120,10 +121,10 @@ def on_deck_browser_will_render_content(overview, content):
 			<td>{i[2]}</td>
 			<td>{i[3]}</td>
 			<td>{i[4]}</td>
-			<td>{i[5]}</td>
+			<td>{i[5]}%</td>
 		</tr>
 		"""
-	content.stats += table_header + table_content + "</table></div>"
+	content.stats += table_header + table_content + "</table>"
 
 def leaderboard_on_deck_browser():
 	config = mw.addonManager.getConfig(__name__)

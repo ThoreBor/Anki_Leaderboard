@@ -40,6 +40,7 @@ class start_setup(QDialog):
 		self.dialog.statusMsg.setToolTip("Message that everyone can see when clicking on your username (max. 280 characters). You can use markdown to embed links.")
 		self.dialog.create_button.setToolTip("This might take a few seconds.")
 		self.dialog.newday.setToolTip("This needs to be the same as in Ankis' preferences.")
+		self.dialog.autosync.setToolTip("It will take a few extra seconds before you return to the homescreen after answering the last due card in a deck.")
 
 		if config["sortby"] == "Time_Spend":
 			self.dialog.sortby.setCurrentText("Time")
@@ -114,15 +115,16 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 <div>Confetti gif from <a href="https://giphy.com/stickers/giphycam-rainbow-WNJATm9pwnjpjI1i0g">Giphy</a></div>
 <h3>Change Log:</h3>
 - added leagues<br>
-- request groups from config<br>
+- added option to request groups from config<br>
 - added hide user option<br>
 - added option to show the leaderboard on the homescreen<br>
 - added auto-sync option after finishing reviews<br>
 - added option to set a status message<br>
-- more info in about tab<br>
 - config UI changes<br>
 - added some tooltips<br>
 - fixed nightmode bug and adjusted colors<br>
+- better timeout error handling<br>
+- more info in about tab<br>
 - display html in notification properly
 <br><br>
 <b>© Thore Tyborski 2020<br><br>
@@ -139,7 +141,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		try:
 			username_list = requests.get(url, timeout=20).json()
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
+			showWarning("Timeout error [create_account] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 		if username in username_list:
 			tooltip("Username already taken")
@@ -154,16 +156,17 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			"Subject": config["subject"], "Country": config["country"], "Retention": retention,
 			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": "v1.6.0"}
 			
-			x = requests.post(url, data = data)
-
-			write_config("username", username)
-
-			if x.text == "Done!":
-				tooltip("Successfully created account.")
-			else:
-				showWarning(str(x.text))
-			self.dialog.create_username.setText("")
-			self.update_login_info(username)
+			try:
+				x = requests.post(url, data = data)
+				if x.text == "Done!":
+					tooltip("Successfully created account.")
+				else:
+					showWarning(str(x.text))
+				write_config("username", username)
+				self.dialog.create_username.setText("")
+				self.update_login_info(username)
+			except:
+				showWarning("Timeout error [create_account] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	def update_login_info(self, username):
 		login_info = self.dialog.login_info_2
@@ -186,17 +189,15 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 		try:
 			username_list = requests.get(url, timeout=20).json()
+			if username in username_list:
+				write_config("username", username)
+				tooltip("Successfully logged in.")
+				self.dialog.login_username.setText("")
+				self.update_login_info(username)
+			else:
+				tooltip("Account doesn't exist.")
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
-
-		if username in username_list:
-			write_config("username", username)
-			tooltip("Successfully logged in.")
-			self.dialog.login_username.setText("")
-			self.update_login_info(username)
-		else:
-			tooltip("Account doesn't exist.")
-
+			showWarning("Timeout error [login] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	def delete(self):
 		username = self.dialog.delete_username.text()
@@ -205,16 +206,14 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		data = {'Username': username, "Token_v3": config["token"]}
 		try:
 			x = requests.post(url, data = data, timeout=20)
+			if x.text == "Deleted":
+				write_config("username", "")
+				tooltip("Successfully deleted account.")
+				self.dialog.delete_username.setText("")
+			else:
+				tooltip("Error")
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
-
-		if x.text == "Deleted":
-			write_config("username", "")
-			tooltip("Successfully deleted account.")
-			self.dialog.delete_username.setText("")
-		else:
-			tooltip("Error")
-
+			showWarning("Timeout error [delete] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	def add_friend(self):
 		username = self.dialog.friend_username.text()
@@ -222,20 +221,19 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
 		try:
 			username_list = requests.get(url).json()
+			if config['username'] and config['username'] not in config['friends']:
+				config['friends'].append(config['username'])
+			
+			if username in username_list and username not in config['friends']:
+				config['friends'].append(username)
+				write_config("friends", config['friends'])
+				tooltip(username + " is now your friend.")
+				self.dialog.friend_username.setText("")
+				self.update_friends_list(sorted(config["friends"], key=str.lower))
+			else:
+				tooltip("Couldn't find friend")
 		except:
-			showWarning("Make sure you're connected to the internet.")
-
-		if config['username'] and config['username'] not in config['friends']:
-			config['friends'].append(config['username'])
-		
-		if username in username_list and username not in config['friends']:
-			config['friends'].append(username)
-			write_config("friends", config['friends'])
-			tooltip(username + " is now your friend.")
-			self.dialog.friend_username.setText("")
-			self.update_friends_list(sorted(config["friends"], key=str.lower))
-		else:
-			tooltip("Couldn't find friend")
+			showWarning("Timeout error [add_friend] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	def remove_friend(self):
 		for item in self.dialog.friends_list.selectedItems():
@@ -333,7 +331,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			try:
 				username_list = requests.get(url).json()
 			except:
-				showWarning("Make sure you're connected to the internet.")
+				username_list = []
+				showWarning("Timeout error [import_list] - No internet connection, or server response took too long.", title="Leaderboard error")
 			
 			for name in file:
 				name = name.replace("\n", "")
@@ -365,14 +364,13 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		
 		try:
 			x = requests.post(url, data = data, timeout=20)
+			if x.text == "Done!":
+				showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
+			else:
+				tooltip("Error - Please try again.")
+			self.load_Group()
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
-
-		if x.text == "Done!":
-			showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
-		else:
-			tooltip("Error (Group)")
-		self.load_Group()		
+			showWarning("Timeout error [create_new_group] - No internet connection, or server response took too long.", title="Leaderboard error")		
 
 	def load_Group(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -381,7 +379,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		try:
 			Group_List = requests.get(url, timeout=20).json()
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
+			Group_List = []
+			showWarning("Timeout error [load_Group] - No internet connection, or server response took too long.", title="Leaderboard error")
 		
 		# item 0 is set by pyuic from the .ui file
 		for i in range(1, len(Group_List) + 1):
@@ -402,13 +401,12 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 		
 		try:
 			x = requests.post(url, data = data, timeout=20)
+			if x.text == "Done!":
+				tooltip("Done")
+			else:
+				tooltip(str(x.text))
 		except:
-			showWarning("Timeout error - No internet connection, or server response took too long.")
-
-		if x.text == "Done!":
-			tooltip("Done")
-		else:
-			tooltip(str(x.text))
+			showWarning("Timeout error [status] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	def update_hidden_list(self, hidden):
 		config = mw.addonManager.getConfig(__name__)
@@ -425,6 +423,3 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 			write_config("hidden_users", config["hidden_users"])
 			tooltip(f"{username} is now back on the leaderboard")
 			self.update_hidden_list(config["hidden_users"])
-
-
-
