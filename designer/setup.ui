@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>393</height>
+    <width>488</width>
+    <height>396</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -48,8 +48,18 @@
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <layout class="QGridLayout" name="gl1">
-         <item row="7" column="0">
-          <widget class="QLabel" name="label">
+         <item row="6" column="1">
+          <widget class="QPushButton" name="delete_button">
+           <property name="text">
+            <string>Delete Account</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="create_info">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -57,20 +67,20 @@
             </font>
            </property>
            <property name="text">
-            <string>Status:</string>
+            <string>Create Account:</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QPushButton" name="login_button">
+         <item row="2" column="0">
+          <widget class="QLabel" name="login_info">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
-            <string>Login</string>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-           <property name="default">
-            <bool>false</bool>
+            <string>Login:</string>
            </property>
           </widget>
          </item>
@@ -97,43 +107,16 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="create_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="login_button">
            <property name="text">
-            <string>Create Account:</string>
+            <string>Login</string>
            </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="delete_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-             <underline>false</underline>
-            </font>
+           <property name="autoDefault">
+            <bool>false</bool>
            </property>
-           <property name="text">
-            <string>Delete Account:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="login_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Login:</string>
+           <property name="default">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -156,6 +139,33 @@
            </property>
           </widget>
          </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="delete_info">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
+           <property name="text">
+            <string>Delete Account:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Status:</string>
+           </property>
+          </widget>
+         </item>
          <item row="6" column="0">
           <widget class="QLineEdit" name="delete_username">
            <property name="text">
@@ -163,6 +173,18 @@
            </property>
            <property name="placeholderText">
             <string>Username</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="login_info_2">
+           <property name="font">
+            <font>
+             <italic>true</italic>
+            </font>
+           </property>
+           <property name="text">
+            <string>You are not logged in.</string>
            </property>
           </widget>
          </item>
@@ -176,28 +198,6 @@
            </property>
            <property name="default">
             <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QPushButton" name="delete_button">
-           <property name="text">
-            <string>Delete Account</string>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="login_info_2">
-           <property name="font">
-            <font>
-             <italic>true</italic>
-            </font>
-           </property>
-           <property name="text">
-            <string>You are not logged in.</string>
            </property>
           </widget>
          </item>
