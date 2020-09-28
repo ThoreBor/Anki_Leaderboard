@@ -45,6 +45,7 @@ class start_user_info(QDialog):
 		self.dialog.group_label.setText(f"Group: {data[1]}")
 		self.dialog.league_label.setText(f"League: {data[2]}")
 		self.dialog.hideUser.clicked.connect(self.hideUser)
+		self.dialog.addFriend.clicked.connect(self.addFriend)
 
 	def hideUser(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -52,3 +53,13 @@ class start_user_info(QDialog):
 		hidden.append(self.user_clicked)
 		write_config("hidden_users", hidden)
 		tooltip(f"{self.user_clicked} will be hidden next time you open the leaderboard.")
+
+	def addFriend(self):
+		config = mw.addonManager.getConfig(__name__)
+		friends = config['friends']
+		if self.user_clicked in friends:
+			tooltip(f"{self.user_clicked} already is your friend.")
+		else:
+			friends.append(self.user_clicked)
+			write_config("friends", friends)
+			tooltip(f"{self.user_clicked} is now your friend.")
