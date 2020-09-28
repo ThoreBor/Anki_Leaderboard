@@ -1,8 +1,16 @@
 # Change Log
 ## v1.6.0
 - added leagues
-- create groups from config
+- added option to request groups from config
+- added option to show the leaderboard on the homescreen
+- added auto-sync option after finishing reviews
+- added option to set a status message
+- added option to click on user to add them as a friend/hide them, show status message & other info
+- added some tooltips
+- config UI changes
 - fixed nightmode bug and adjusted colors
+- better timeout error handling
+- more info in about tab
 - display html in notification properly
 ## v1.5.4
 - store verification token in config.json
