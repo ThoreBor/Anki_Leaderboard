@@ -109,19 +109,19 @@ season, the first 20% of each league will get to the next league, the last 20% w
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><br>
-You can also check the leaderboard (past 24 hours) and try mobile sync on this <a href="https://ankileaderboard.pythonanywhere.com/">website</a>.<br>
+You can also check the leaderboard (past 24 hours) on this <a href="https://ankileaderboard.pythonanywhere.com/">website</a>.<br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Confetti gif from <a href="https://giphy.com/stickers/giphycam-rainbow-WNJATm9pwnjpjI1i0g">Giphy</a></div>
 <h3>Change Log:</h3>
 - added leagues<br>
 - added option to request groups from config<br>
-- added hide user option<br>
 - added option to show the leaderboard on the homescreen<br>
 - added auto-sync option after finishing reviews<br>
 - added option to set a status message<br>
-- config UI changes<br>
+- added option to click on user to add them as a friend/hide them, show status message & other info<br>
 - added some tooltips<br>
+- config UI changes<br>
 - fixed nightmode bug and adjusted colors<br>
 - better timeout error handling<br>
 - more info in about tab<br>
@@ -129,7 +129,9 @@ You can also check the leaderboard (past 24 hours) and try mobile sync on this <
 <br><br>
 <b>© Thore Tyborski 2020<br><br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
-<a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.</b>
+<a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.</b><br><br>
+Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/user/Ttime5">Reddit</a> or 
+<a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a>.
 """
 
 		self.dialog.about_text.setHtml(about_text)

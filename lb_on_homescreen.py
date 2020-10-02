@@ -64,8 +64,6 @@ def getData():
 				break
 	return lb_list
 
-
-
 def on_deck_browser_will_render_content(overview, content):
 	lb = getData()
 	table_header = """

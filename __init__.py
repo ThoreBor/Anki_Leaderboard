@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
 from aqt.utils import showInfo, showWarning, tooltip
 from aqt import gui_hooks
-import threading
 
 import webbrowser
 import requests
@@ -24,7 +23,6 @@ def Main():
 	if config["username"] == "":
 		invoke_setup()
 	else:
-		#mw.progress.start()
 		mw.leaderboard = start_main(season_start, season_end)
 		mw.leaderboard.show()
 		mw.leaderboard.raise_()
@@ -74,6 +72,7 @@ def add_username_to_friendlist():
 
 def background_sync():
 	create_token()
+	check_info()
 	config = mw.addonManager.getConfig(__name__)
 	token = config["token"]
 	url = 'https://ankileaderboard.pythonanywhere.com/sync/'
@@ -94,6 +93,7 @@ def background_sync():
 		else:
 			showWarning(str(x.text))
 	except:
+		mw.progress.finish()
 		showWarning("Timeout error [background_sync] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	if config["homescreen"] == True:
@@ -143,7 +143,7 @@ except:
 	pass
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
-add_menu('&Leaderboard',"&Sync and update leaderboard on the homescreen", background_sync, "Shift+S")
+add_menu('&Leaderboard',"&Sync and update the homescreen leaderboard", background_sync, "Shift+S")
 add_menu('&Leaderboard',"&Config", invoke_setup)
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 mw.addonManager.setConfigAction(__name__, config_setup)
