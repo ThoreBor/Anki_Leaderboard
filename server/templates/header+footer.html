@@ -1,121 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-168789064-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-168789064-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
 
-      gtag('config', 'UA-168789064-1');
-    </script>
+	  gtag('config', 'UA-168789064-1');
+	</script>
 
 	<title>Leaderboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
-	    a.user_link:link {
-          text-decoration: none;
-          color: black;
-        }
-        a.user_link:visited {
-          text-decoration: none;
-          color: black;
-        }
-	    table.user {
-		  font-family: arial, sans-serif;
-		  border-collapse: collapse;
-		  width: 100%;
-		  margin-left:auto;
-    	  margin-right:auto;
+		.navbar {
+			overflow: hidden;
+			background-color: #275ae6;
+			width: 100%;
 		}
 
-		table.user td{
-		    white-space: nowrap;  /** added **/
-		}
-
-		table.user td, th {
-		  border: 1px solid #474642;
-		  text-align: left;
-		  padding: 8px;
-		}
-
-		ul {
-		  list-style-type: none;
-		  margin: 0;
-		  padding: 0;
-		  overflow: hidden;
-		  background-color: #275ae6;
-		  position: -webkit-sticky; /* Safari */
-          position: sticky;
-          top: 0;
-		}
-
-		li {
-		  float: left;
-		}
-
-		li a {
-		  display: block;
-		  color: white;
-		  text-align: center;
-		  padding: 12px 12px;
-		  text-decoration: none;
-		  font-family: Arial;
-		}
-
-		li a:hover {
-		  background-color: #214dc4;
+		.navbar a {
+			float: left;
+			font-size: 16px;
+			font-family: arial, sans-serif;
+			color: white;
+			text-align: center;
+			padding: 14px 9px;
+			text-decoration: none;
 		}
 
 		.active {
-          background-color: #214dc4;
-        }
+			background-color: #214dc4;
+		}
+
+		.dropdown {
+			font-family: arial, sans-serif;
+			float: left;
+			overflow: hidden;
+		}
+
+		.dropdown .dropbtn {
+			font-size: 16px;
+			border: none;
+			outline: none;
+			color: white;
+			padding: 14px 16px;
+			background-color: inherit;
+			font-family: inherit;
+			margin: 0;
+		}
+
+		.navbar a:hover, .dropdown:hover .dropbtn {
+			background-color: #214dc4;
+		}
+
+		.dropdown-content {
+			display: none;
+			position: absolute;
+			background-color: #f9f9f9;
+			min-width: 160px;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 1;
+		}
+
+		.dropdown-content a {
+			float: none;
+			color: black;
+			padding: 12px 16px;
+			text-decoration: none;
+			display: block;
+			text-align: left;
+		}
+
+		.dropdown-content a:hover {
+			background-color: #ddd;
+		}
+
+		.dropdown:hover .dropdown-content {
+			display: block;
+		}
+
+		a.user_link:link {
+			text-decoration: none;
+			color: black;
+		}
+		a.user_link:visited {
+			text-decoration: none;
+			color: black;
+		}
+		table.user {
+			font-family: arial, sans-serif;
+			border-collapse: collapse;
+			width: 100%;
+			margin-left:auto;
+			margin-right:auto;
+		}
+
+		table.user td{
+			white-space: nowrap;
+		}
+
+		table.user td, th {
+			border: 1px solid #474642;
+			text-align: left;
+			padding: 8px;
+		}
 
 		footer {
-		  font-family: arial, sans-serif;
-		  text-align: center;
-		  padding: 3px;
-		  background-color: #275ae6;
-		  color: white;
-		  position: fixed;
-		  left: 0;
-		  bottom: 0;
-		  width: 100%;
+			font-family: arial, sans-serif;
+			text-align: center;
+			padding: 3px;
+			background-color: #275ae6;
+			color: white;
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
 		}
 
 		table.lb {
-		  font-family: arial, sans-serif;
-		  border-collapse: collapse;
-		  width: 100%;
-		  margin-left:auto;
-    	  margin-right:auto;
+			font-family: arial, sans-serif;
+			border-collapse: collapse;
+			width: 100%;
+			margin-left:auto;
+			margin-right:auto;
 		}
 
 		table.lb td{
-		    white-space: nowrap;  /** added **/
+			white-space: nowrap;
 		}
 
 		table.lb td, th {
-		  border: 1px solid #474642;
-		  text-align: left;
-		  padding: 8px;
+			border: 1px solid #474642;
+			text-align: left;
+			padding: 8px;
 		}
 
 		table.lb tr:nth-child(even) {
-		  background-color: #dddddd;
+			background-color: #dddddd;
 		}
 		table.lb tr:nth-child(2) {
-		  background-color: #FFDF00;
-		  font-weight: bold;
+			background-color: #FFDF00;
+			font-weight: bold;
 		}
 		table.lb tr:nth-child(3) {
-		  background-color: #c0c0c0;
-		  font-weight: bold;
+			background-color: #c0c0c0;
+			font-weight: bold;
 		}
 		table.lb tr:nth-child(4) {
-		  background-color: #cd7f32;
-		  font-weight: bold;
+			background-color: #cd7f32;
+			font-weight: bold;
 		}
 		.loader {
 			border: 16px solid #f3f3f3;

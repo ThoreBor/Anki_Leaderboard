@@ -2,11 +2,11 @@
 
 {% block nav %}
 <div class="navbar">
-  <a class="active" href="/">Reviews</a>
+  <a href="/">Reviews</a>
   <a href="/time/">Time</a>
   <a href="/streak/">Streak</a>
   <a href="/retention/">Retention</a>
-  <div class="dropdown">
+  <div class="active dropdown">
     <button class="dropbtn">Leagues
       <i class="fa fa-caret-down"></i>
     </button>
@@ -26,13 +26,19 @@
 		<tr>
 		    <th>#</th>
 		    <th>Username</th>
+		    <th>XP</th>
+		    <th>Time</th>
 		    <th>Reviews</th>
+		    <th>Retention</th>
 		 </tr>
 		{% for i in  data %}
 			<tr>
 			    <td>{{i.place}}</td>
 				<td><a class="user_link" href="https://ankileaderboard.pythonanywhere.com/user/{{i.username}}" target="_blank">{{i.username}}</a></td>
-				<td>{{i.value}}</td>
+				<td>{{i.xp}}</td>
+				<td>{{i.time}}</td>
+				<td>{{i.reviews}}</td>
+				<td>{{i.retention}}</td>
 			 </tr>
 		{% endfor %}
 	</table>

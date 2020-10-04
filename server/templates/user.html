@@ -1,13 +1,23 @@
 {% extends "header+footer.html" %}
 
 {% block nav %}
-<ul>
-  <li><a href="/">Reviews</a></li>
-  <li><a href="/time/">Time</a></li>
-  <li><a href="/streak/">Streak</a></li>
-  <li><a href="/retention/">Retention</a></li>
-  <li><a href="/upload/">Sync</a></li>
-</ul>
+<div class="navbar">
+  <a href="/">Reviews</a>
+  <a href="/time/">Time</a>
+  <a href="/streak/">Streak</a>
+  <a href="/retention/">Retention</a>
+  <div class="dropdown">
+    <button class="dropbtn">Leagues
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="/alpha/">Alpha</a>
+      <a href="/beta/">Beta</a>
+      <a href="/gamma/">Gamma</a>
+      <a href="/delta/">Delta</a>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block user_info %}
@@ -35,7 +45,7 @@
 				<td>{{i.month}}</td>
 			</tr>
 			<tr>
-			    <td><b>Country</b</td>
+			    <td><b>Country</b></td>
 				<td>{{i.country}}</td>
 			</tr>
 			<tr>
