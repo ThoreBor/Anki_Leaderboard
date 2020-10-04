@@ -19,17 +19,22 @@ from . import api
 from django.urls import path
 
 app_name = "main"
-
+#path('upload/', website.upload, name="upload"),
 urlpatterns = [
 	path("", website.reviews, name="reviews"),
     path("time/", website.time, name="time"),
     path("streak/", website.streak, name="streak"),
     path("retention/", website.retention, name="retention"),
-	path('sync/', api.sync, name="sync"),
+    path(r'user/<username>/', website.user, name="user"),
+	path('alpha/', website.alpha, name="alpha"),
+	path('beta/', website.beta, name="beta"),
+	path('gamma/', website.gamma, name="gamma"),
+	path('delta/', website.delta, name="delta"),
 	path('users/', views.users, name="users"),
 	path('getstreaks/', views.getstreaks, name="getstreaks"),
 	path('getreviews/', views.getreviews, name="getreviews"),
 	path('gettime/', views.gettime, name="gettime"),
+	path('sync/', api.sync, name="sync"),
 	path('delete/', api.delete, name="delete"),
 	path('allusers/', api.all_users, name="allusers"),
 	path('getdata/', api.get_data, name="get_data"),
@@ -39,7 +44,5 @@ urlpatterns = [
 	path('season/', api.season, name="season"),
 	path('setStatus/', api.setStatus, name="setStatus"),
 	path('getStatus/', api.getStatus, name="getStatus"),
-	path(r'user/<username>/', website.user, name="user"),
-	path('upload/', website.upload, name="upload"),
-
+	path('getUserinfo/', api.getUserinfo, name="Userinfo"),
 ]

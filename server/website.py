@@ -100,6 +100,62 @@ def user(request, username):
 
 	return render(request, "user.html", {"data": data})
 
+def alpha(request):
+	data = []
+	counter = 1
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+
+	for row in c.fetchall():
+		if row[5] == "Alpha" and row[1] != 0:
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			data.append(x)
+			counter += 1
+	return render(request, "leagues.html", {"data": data})
+
+def beta(request):
+	data = []
+	counter = 1
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+
+	for row in c.fetchall():
+		if row[5] == "Beta" and row[1] != 0:
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			data.append(x)
+			counter += 1
+	return render(request, "leagues.html", {"data": data})
+
+def gamma(request):
+	data = []
+	counter = 1
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+
+	for row in c.fetchall():
+		if row[5] == "Gamma" and row[1] != 0:
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			data.append(x)
+			counter += 1
+	return render(request, "leagues.html", {"data": data})
+
+def delta(request):
+	data = []
+	counter = 1
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+
+	for row in c.fetchall():
+		if row[5] == "Delta" and row[1] != 0:
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			data.append(x)
+			counter += 1
+	return render(request, "leagues.html", {"data": data})
+
 def upload(request):
 	if request.method == "POST":
 		print("Start mobile sync...")
