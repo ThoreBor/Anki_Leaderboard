@@ -55,10 +55,10 @@ def getData():
 				if config["tab"] == 1 and username in config["friends"]:
 					counter += 1
 					lb_list.append([username, cards, time, streak, month, retention, counter])
-				if config["tab"] == 2 and country == config["country"]:
+				if config["tab"] == 2 and country == config["country"].replace(" ", ""):
 					counter += 1
 					lb_list.append([username, cards, time, streak, month, retention, counter])
-				if config["tab"] == 3 and subject == config["subject"]:
+				if config["tab"] == 3 and subject == config["subject"].replace(" ", ""):
 					counter += 1
 					lb_list.append([username, cards, time, streak, month, retention, counter])
 				if counter == config["maxUsers"]:
