@@ -50,8 +50,8 @@ def getData():
 				retention = float(retention)
 			except:
 				retention = ""
+			
 			if sync_date > start_day and username not in config["hidden_users"]:
-
 				if config["tab"] == 0:
 					counter += 1
 					lb_list.append([username, cards, time, streak, month, retention, counter])
@@ -64,8 +64,6 @@ def getData():
 				if config["tab"] == 3 and subject == config["subject"].replace(" ", ""):
 					counter += 1
 					lb_list.append([username, cards, time, streak, month, retention, counter])
-				if counter == config["maxUsers"]:
-					break
 
 	if config["tab"] == 4:
 		url = 'https://ankileaderboard.pythonanywhere.com/league/'
@@ -94,47 +92,77 @@ def getData():
 			if league_name == user_league_name and xp != 0:
 				counter += 1
 				lb_list.append([counter, username, xp, reviews, time_spend, retention])
-				if counter == config["maxUsers"]:
-					break
 
 	return lb_list
 
 def on_deck_browser_will_render_content(overview, content):
 	config = mw.addonManager.getConfig(__name__)
 	lb = getData()
-	table_style = """
-	<style>
-		table.lb_table {
-			font-family: arial, sans-serif;
-			border-collapse: collapse;
-			width: 35%;
-			margin-left:auto;
-			margin-right:auto;
-			font-weight: bold;
-		}
+	result = []
+	if config["focus_on_user"] == True and len(lb) > config["maxUsers"]:
+		for i in lb:
+			if config["username"] in i:
+				user_index = lb.index(i)
+		for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2))):
+			result.append(lb[i])
 
-		table.lb_table td{
-			white-space: nowrap;  /** added **/
-		}
+		table_style = """
+		<style>
+			table.lb_table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 35%;
+				margin-left:auto;
+				margin-right:auto;
+				font-weight: bold;
+			}
 
-		table.lb_table td, th {
-			text-align: left;
-			padding: 8px;
-		}
+			table.lb_table td{
+				white-space: nowrap;  /** added **/
+			}
 
-		table.lb_table tr:nth-child(2) {
-			background-color: #ccac00;
-		}
+			table.lb_table td, th {
+				text-align: left;
+				padding: 8px;
+			}
+		</style>
+		"""
+	else:
+		result = lb[:config["maxUsers"]]
 
-		table.lb_table tr:nth-child(3) {
-			background-color: #999999;
-		}
+		table_style = """
+		<style>
+			table.lb_table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 35%;
+				margin-left:auto;
+				margin-right:auto;
+				font-weight: bold;
+			}
 
-		table.lb_table tr:nth-child(4) {
-			background-color: #a7684a;
-		}
-	</style>
-	"""
+			table.lb_table td{
+				white-space: nowrap;  /** added **/
+			}
+
+			table.lb_table td, th {
+				text-align: left;
+				padding: 8px;
+			}
+
+			table.lb_table tr:nth-child(2) {
+				background-color: #ccac00;
+			}
+
+			table.lb_table tr:nth-child(3) {
+				background-color: #999999;
+			}
+
+			table.lb_table tr:nth-child(4) {
+				background-color: #a7684a;
+			}
+		</style>
+		"""
 	if config["tab"] != 4:
 		table_header = """
 		<br>
@@ -151,7 +179,7 @@ def on_deck_browser_will_render_content(overview, content):
 		"""
 		table_content = ""
 
-		for i in lb:
+		for i in result:
 			table_content = table_content + f"""
 			<tr>
 				<td>{i[6]}</td>
@@ -178,7 +206,7 @@ def on_deck_browser_will_render_content(overview, content):
 		"""
 		table_content = ""
 
-		for i in lb:
+		for i in result:
 			table_content = table_content + f"""
 			<tr>
 				<td>{i[0]}</td>

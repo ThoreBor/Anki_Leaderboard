@@ -36,18 +36,20 @@ class start_setup(QDialog):
 		self.dialog.LB_DeckBrowser.setChecked(bool(config["homescreen"]))
 		self.dialog.autosync.setChecked(bool(config["autosync"]))
 		self.dialog.maxUsers.setValue(config["maxUsers"])
-
-		self.dialog.statusMsg.setToolTip("Message that everyone can see when clicking on your username (max. 280 characters). You can use markdown to embed links.")
-		self.dialog.create_button.setToolTip("This might take a few seconds.")
-		self.dialog.newday.setToolTip("This needs to be the same as in Ankis' preferences.")
-		self.dialog.autosync.setToolTip("It will take a few extra seconds before you return to the homescreen after answering the last due card in a deck.")
-
+		self.dialog.lb_focus.setChecked(bool(config["focus_on_user"]))
 		if config["sortby"] == "Time_Spend":
 			self.dialog.sortby.setCurrentText("Time")
 		if config["sortby"] == "Month":
 			self.dialog.sortby.setCurrentText("Reviews past 30 days")
 		else:
 			self.dialog.sortby.setCurrentText(config["sortby"])
+
+		self.dialog.Default_Tab.setToolTip("This affects the Leaderboard and, if enabled, the home screen leaderboard.")
+		self.dialog.sortby.setToolTip("This affects the Leaderboard and, if enabled, the home screen leaderboard.")
+		self.dialog.statusMsg.setToolTip("Message that everyone can see when clicking on your username (max. 280 characters). You can use markdown to embed links.")
+		self.dialog.create_button.setToolTip("This might take a few seconds.")
+		self.dialog.newday.setToolTip("This needs to be the same as in Ankis' preferences.")
+		self.dialog.autosync.setToolTip("It will take a few extra seconds before you return to the homescreen after answering the last due card in a deck.")
 
 		self.load_Group()
 
@@ -90,6 +92,7 @@ class start_setup(QDialog):
 		self.dialog.LB_DeckBrowser.stateChanged.connect(self.set_homescreen)
 		self.dialog.autosync.stateChanged.connect(self.set_autosync)
 		self.dialog.maxUsers.valueChanged.connect(self.set_maxUser)
+		self.dialog.lb_focus.stateChanged.connect(self.set_focus)
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
@@ -98,7 +101,7 @@ class start_setup(QDialog):
 		# 	button.setAutoDefault(False)
 
 		about_text = """
-<h2>Anki Leaderboard v1.6.0</h2>
+<h2>Anki Leaderboard v1.6.1</h2>
 This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, 
 current streak, reviews in the past 31 days, and retention. You can also compete against friends, join a group, 
 and join a country leaderboard. You'll only see users, that synced on the same day as you.<br><br>
@@ -114,18 +117,10 @@ You can also check the leaderboard (past 24 hours) on this <a href="https://anki
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Confetti gif from <a href="https://giphy.com/stickers/giphycam-rainbow-WNJATm9pwnjpjI1i0g">Giphy</a></div>
 <h3>Change Log:</h3>
-- added leagues<br>
-- added option to request groups from config<br>
-- added option to show the leaderboard on the homescreen<br>
-- added auto-sync option after finishing reviews<br>
-- added option to set a status message<br>
-- added option to click on user to add them as a friend/hide them, show status message & other info<br>
-- added some tooltips<br>
-- config UI changes<br>
-- fixed nightmode bug and adjusted colors<br>
-- better timeout error handling<br>
-- more info in about tab<br>
-- display html in notification properly
+- added # column to home screen leaderboard<br>
+- leagues also work on home screen leaderboard now<br>
+- added option to focus on user on home screen leaderboard<br>
+- fixed various bugs
 <br><br>
 <b>© Thore Tyborski 2020<br><br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
@@ -311,8 +306,7 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		else:
 			homescreen = False
 		write_config("homescreen", homescreen)
-		if config["homescreen"] == True:
-			leaderboard_on_deck_browser()
+		leaderboard_on_deck_browser()
 
 	def set_maxUser(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -321,7 +315,6 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		if config["homescreen"] == True:
 			leaderboard_on_deck_browser()
 
-
 	def set_autosync(self):
 		if self.dialog.autosync.isChecked():
 			autosync = True
@@ -329,6 +322,15 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 			autosync = False
 		write_config("autosync", autosync)
 
+	def set_focus(self):
+		config = mw.addonManager.getConfig(__name__)
+		if self.dialog.lb_focus.isChecked():
+			focus = True
+		else:
+			focus = False
+		write_config("focus_on_user", focus)
+		if config["homescreen"] == True:
+			leaderboard_on_deck_browser()
 
 	def import_list(self):
 		showInfo("The text file must contain one name per line.")
