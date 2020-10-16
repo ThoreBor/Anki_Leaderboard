@@ -2,7 +2,10 @@ import datetime
 from datetime import date, timedelta
 import requests
 
-from aqt import gui_hooks
+try:
+	from aqt import gui_hooks
+except:
+	pass
 from aqt.deckbrowser import DeckBrowser
 from aqt import mw
 from aqt.utils import showWarning

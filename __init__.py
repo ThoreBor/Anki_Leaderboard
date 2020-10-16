@@ -2,7 +2,6 @@ from aqt import mw
 from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
 from aqt.utils import showInfo, showWarning, tooltip
-from aqt import gui_hooks
 
 import webbrowser
 import requests
@@ -15,6 +14,12 @@ from .Setup import start_setup
 from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
+
+try:
+	from aqt import gui_hooks
+	gui_hooks.profile_did_open.append(initialize)
+except:
+	showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
 
 def Main():
 	check_info()
@@ -137,10 +142,6 @@ def initialize():
 write_config("achievement", True)
 add_username_to_friendlist()
 season()
-try:
-	gui_hooks.profile_did_open.append(initialize)
-except:
-	pass
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Sync and update the homescreen leaderboard", background_sync, "Shift+S")
