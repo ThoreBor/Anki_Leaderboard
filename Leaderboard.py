@@ -123,10 +123,15 @@ class start_main(QDialog):
 
 		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention = Stats(self.season_start, self.season_end)
 
-		data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(),
-		"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention,
-		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
-		"Token_v3": config["token"], "Version": "v1.6.0"}
+		if datetime.datetime.now() < self.season_end:
+			data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(),
+			"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention,
+			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
+			"Token_v3": config["token"], "Version": "v1.6.0"}
+		else:
+			data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(),
+			"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention,
+			"Token_v3": config["token"], "Version": "v1.6.0"}
 
 		try:
 			x = requests.post(url, data = data, timeout=20)
