@@ -34,6 +34,10 @@ class start_main(QDialog):
 		self.parent = parent
 		self.season_start = season_start
 		self.season_end = season_end
+		self.first_three_global = []
+		self.first_three_friends = []
+		self.first_three_country = []
+		self.first_three_custom =[]
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
@@ -48,13 +52,13 @@ class start_main(QDialog):
 			self.dialog.Custom_Leaderboard.setSortingEnabled(False)
 		else:
 			header1 = self.dialog.Global_Leaderboard.horizontalHeader()
-			header1.sortIndicatorChanged.connect(self.change_colors_global)
+			header1.sortIndicatorChanged.connect(lambda: self.change_colors(self.dialog.Global_Leaderboard))
 			header2 = self.dialog.Friends_Leaderboard.horizontalHeader()
-			header2.sortIndicatorChanged.connect(self.change_colors_friends)
+			header2.sortIndicatorChanged.connect(lambda: self.change_colors(self.dialog.Friends_Leaderboard))
 			header3 = self.dialog.Country_Leaderboard.horizontalHeader()
-			header3.sortIndicatorChanged.connect(self.change_colors_country)
+			header3.sortIndicatorChanged.connect(lambda: self.change_colors(self.dialog.Country_Leaderboard))
 			header4 = self.dialog.Custom_Leaderboard.horizontalHeader()
-			header4.sortIndicatorChanged.connect(self.change_colors_custom)
+			header4.sortIndicatorChanged.connect(lambda: self.change_colors(self.dialog.Custom_Leaderboard))
 
 		tab_widget = self.dialog.Parent
 		country_tab = tab_widget.indexOf(self.dialog.tab_3)
@@ -63,20 +67,50 @@ class start_main(QDialog):
 		tab_widget.setTabText(subject_tab, config["subject"])
 		self.dialog.Parent.setCurrentIndex(config['tab'])
 
-		self.dialog.Global_Leaderboard.doubleClicked.connect(self.user_info_Global)
+		self.dialog.Global_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Global_Leaderboard))
 		self.dialog.Global_Leaderboard.setToolTip("Double click on user for more info.")
-		self.dialog.Friends_Leaderboard.doubleClicked.connect(self.user_info_Friends)
+		self.dialog.Friends_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Friends_Leaderboard))
 		self.dialog.Friends_Leaderboard.setToolTip("Double click on user for more info.")
-		self.dialog.Country_Leaderboard.doubleClicked.connect(self.user_info_Country)
+		self.dialog.Country_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Country_Leaderboard))
 		self.dialog.Country_Leaderboard.setToolTip("Double click on user for more info.")
-		self.dialog.Custom_Leaderboard.doubleClicked.connect(self.user_info_Custom)
+		self.dialog.Custom_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Custom_Leaderboard))
 		self.dialog.Custom_Leaderboard.setToolTip("Double click on user for more info.")
-		self.dialog.League.doubleClicked.connect(self.user_info_League)
+		self.dialog.League.doubleClicked.connect(lambda: self.user_info(self.dialog.League))
 		self.dialog.League.setToolTip("Double click on user for more info.")
 		
 		self.load_leaderboard()
 		if config["homescreen"] == True:
-  			leaderboard_on_deck_browser()
+			leaderboard_on_deck_browser()
+
+	def add_row(self, tab, username, cards, time, streak, month, retention):
+
+		rowPosition = tab.rowCount()
+		tab.setColumnCount(6)
+		tab.insertRow(rowPosition)
+
+		tab.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
+
+		item = QtWidgets.QTableWidgetItem()
+		item.setData(QtCore.Qt.DisplayRole, int(cards))
+		tab.setItem(rowPosition, 1, item)
+
+		item = QtWidgets.QTableWidgetItem()
+		item.setData(QtCore.Qt.DisplayRole, float(time))
+		tab.setItem(rowPosition, 2, item)
+
+		item = QtWidgets.QTableWidgetItem()
+		item.setData(QtCore.Qt.DisplayRole, int(streak))
+		tab.setItem(rowPosition, 3, item)
+
+		item = QtWidgets.QTableWidgetItem()
+		item.setData(QtCore.Qt.DisplayRole, month)
+		tab.setItem(rowPosition, 4, item)
+
+		item = QtWidgets.QTableWidgetItem()
+		item.setData(QtCore.Qt.DisplayRole, retention)
+		tab.setItem(rowPosition, 5, item)
+
+		tab.resizeColumnsToContents()
 		
 	def load_leaderboard(self):
 
@@ -140,8 +174,6 @@ class start_main(QDialog):
 
 		### LEAGUE ###
 
-		# x = threading.Thread(target=load_league, args=(self, colors), daemon=True)
-		# x.start()
 		load_league(self, colors)
 		time_remaining = self.season_end - datetime.datetime.now()
 		tr_days = time_remaining.days
@@ -179,139 +211,28 @@ class start_main(QDialog):
 			except:
 				retention = ""
 			if sync_date > start_day and username not in config["hidden_users"]:
-				counter = counter + 1
-
-				rowPosition = self.dialog.Global_Leaderboard.rowCount()
-				self.dialog.Global_Leaderboard.setColumnCount(6)
-				self.dialog.Global_Leaderboard.insertRow(rowPosition)
-
-				self.dialog.Global_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-
-				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, int(cards))
-				self.dialog.Global_Leaderboard.setItem(rowPosition, 1, item)
-
-				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, float(time))
-				self.dialog.Global_Leaderboard.setItem(rowPosition, 2, item)
-
-				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, int(streak))
-				self.dialog.Global_Leaderboard.setItem(rowPosition, 3, item)
-
-				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, month)
-				self.dialog.Global_Leaderboard.setItem(rowPosition, 4, item)
-
-				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, retention)
-				self.dialog.Global_Leaderboard.setItem(rowPosition, 5, item)
-
-				self.dialog.Global_Leaderboard.resizeColumnsToContents()
+				counter += 1
+				self.add_row(self.dialog.Global_Leaderboard, username, cards, time, streak, month, retention)
 
 				if country == config6 and country != "Country":
-					country_counter = country_counter + 1
-
-					rowPosition = self.dialog.Country_Leaderboard.rowCount()
-					self.dialog.Country_Leaderboard.setColumnCount(6)
-					self.dialog.Country_Leaderboard.insertRow(rowPosition)
-
-					self.dialog.Country_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(cards))
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 1, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, float(time))
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 2, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(streak))
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 3, item)
-
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, month)
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 4, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, retention)
-					self.dialog.Country_Leaderboard.setItem(rowPosition, 5, item)
-
-					self.dialog.Country_Leaderboard.resizeColumnsToContents()
+					country_counter += 1
+					self.add_row(self.dialog.Country_Leaderboard, username, cards, time, streak, month, retention)
 
 					if username in config['friends']:
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
 							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
 				if subject == config5 and subject != "Custom":
-					custom_counter = custom_counter + 1
-
-					rowPosition = self.dialog.Custom_Leaderboard.rowCount()
-					self.dialog.Custom_Leaderboard.setColumnCount(6)
-					self.dialog.Custom_Leaderboard.insertRow(rowPosition)
-
-					self.dialog.Custom_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(cards))
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 1, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, float(time))
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 2, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(streak))
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 3, item)
-
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, month)
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 4, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, retention)
-					self.dialog.Custom_Leaderboard.setItem(rowPosition, 5, item)
-
-					self.dialog.Custom_Leaderboard.resizeColumnsToContents()
+					custom_counter += 1
+					self.add_row(self.dialog.Custom_Leaderboard, username, cards, time, streak, month, retention)
 
 					if username in config['friends']:
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
 				if username in config['friends']:
-					friend_counter = friend_counter + 1
-
-					rowPosition = self.dialog.Friends_Leaderboard.rowCount()
-					self.dialog.Friends_Leaderboard.setColumnCount(6)
-					self.dialog.Friends_Leaderboard.insertRow(rowPosition)
-
-					self.dialog.Friends_Leaderboard.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(cards))
-					self.dialog.Friends_Leaderboard.setItem(rowPosition, 1, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, float(time))
-					self.dialog.Friends_Leaderboard.setItem(rowPosition, 2, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, int(streak))
-					self.dialog.Friends_Leaderboard.setItem(rowPosition, 3, item)
-
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, month)
-					self.dialog.Friends_Leaderboard.setItem(rowPosition, 4, item)
-
-					item = QtWidgets.QTableWidgetItem()
-					item.setData(QtCore.Qt.DisplayRole, retention)
-					self.dialog.Friends_Leaderboard.setItem(rowPosition, 5, item)
-
-					self.dialog.Friends_Leaderboard.resizeColumnsToContents()
+					friend_counter += 1
+					self.add_row(self.dialog.Friends_Leaderboard, username, cards, time, streak, month, retention)
 
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
@@ -331,99 +252,45 @@ class start_main(QDialog):
 
 		### Highlight first three places###
 
-		if self.dialog.Global_Leaderboard.rowCount() >= 3:
-			global first_three_global
-			first_three_global = []
-			for i in range(3):
-				item = self.dialog.Global_Leaderboard.item(i, 0).text()
-				first_three_global.append(item)
+		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard]
 
-			for j in range(self.dialog.Global_Leaderboard.columnCount()):
-				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
+		for l in lb_list:
+			if l.rowCount() >= 3:
+				if l == self.dialog.Global_Leaderboard:
+					for i in range(3):
+						item = l.item(i, 0).text()
+						self.first_three_global.append(item)
+				if l == self.dialog.Friends_Leaderboard:
+					for i in range(3):
+						item = l.item(i, 0).text()
+						self.first_three_friends.append(item)
+				if l == self.dialog.Country_Leaderboard:
+					for i in range(3):
+						item = l.item(i, 0).text()
+						self.first_three_country.append(item)
+				if l == self.dialog.Custom_Leaderboard:
+					for i in range(3):
+						item = l.item(i, 0).text()
+						self.first_three_custom.append(item)
 
-		if self.dialog.Friends_Leaderboard.rowCount() >= 3:
-			global first_three_friends
-			first_three_friends = []
-			for i in range(3):
-				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
-				first_three_friends.append(item)
-
-			for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-				self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
-
-		if self.dialog.Country_Leaderboard.rowCount() >= 3:
-			global first_three_country
-			first_three_country = []
-			for i in range(3):
-				item = self.dialog.Country_Leaderboard.item(i, 0).text()
-				first_three_country.append(item)
-
-			for j in range(self.dialog.Country_Leaderboard.columnCount()):
-				self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
-
-		if self.dialog.Custom_Leaderboard.rowCount() >= 3:
-			global first_three_custom
-			first_three_custom = []
-			for i in range(3):
-				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
-				first_three_custom.append(item)
-
-			for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
+				for j in range(l.columnCount()):
+					l.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+					l.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+					l.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
 		### SCROLL ###
 
 		current_ranking_list = []
 		if config["scroll"] == True:
-			for i in range(self.dialog.Global_Leaderboard.rowCount()):
-				item = self.dialog.Global_Leaderboard.item(i, 0).text()
-				current_ranking_list.append(item)
-				if item == config['username']:
-					userposition = self.dialog.Global_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Global_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-					self.dialog.Global_Leaderboard.selectRow(current_ranking_list.index(item))
-					self.dialog.Global_Leaderboard.clearSelection()
-
-		current_ranking_list = []
-		if config["scroll"] == True:
-			for i in range(self.dialog.Friends_Leaderboard.rowCount()):
-				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
-				current_ranking_list.append(item)
-				if item == config['username']:
-					userposition = self.dialog.Friends_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Friends_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-					self.dialog.Friends_Leaderboard.selectRow(current_ranking_list.index(item))
-					self.dialog.Friends_Leaderboard.clearSelection()
-
-		current_ranking_list = []
-		if config["scroll"] == True:
-			for i in range(self.dialog.Country_Leaderboard.rowCount()):
-				item = self.dialog.Country_Leaderboard.item(i, 0).text()
-				current_ranking_list.append(item)
-				if item == config['username']:
-					userposition = self.dialog.Country_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Country_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-					self.dialog.Country_Leaderboard.selectRow(current_ranking_list.index(item))
-					self.dialog.Country_Leaderboard.clearSelection()
-
-		current_ranking_list = []
-		if config["scroll"] == True:
-			for i in range(self.dialog.Custom_Leaderboard.rowCount()):
-				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
-				current_ranking_list.append(item)
-				if item == config['username']:
-					userposition = self.dialog.Custom_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Custom_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-					self.dialog.Custom_Leaderboard.selectRow(current_ranking_list.index(item))
-					self.dialog.Custom_Leaderboard.clearSelection()
+			for l in lb_list:
+				for i in range(l.rowCount()):
+					item = l.item(i, 0).text()
+					current_ranking_list.append(item)
+					if item == config['username']:
+						userposition = l.item(current_ranking_list.index(item), 0)
+						l.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+						l.selectRow(current_ranking_list.index(item))
+						l.clearSelection()
 
 		if config["refresh"] == True:
 			global t
@@ -433,184 +300,73 @@ class start_main(QDialog):
 		else:
 			pass
 
-	def change_colors_global(self):
-		if self.dialog.Global_Leaderboard.rowCount() >= 3:
+	def change_colors(self, tab):
+		if tab == self.dialog.Global_Leaderboard:
+			top_list = self.first_three_global
+		if tab == self.dialog.Friends_Leaderboard:
+			top_list = self.first_three_friends
+		if tab == self.dialog.Country_Leaderboard:
+			top_list = self.first_three_country
+		if tab == self.dialog.Custom_Leaderboard:
+			top_list = self.first_three_custom
+
+		if tab.rowCount() >= 3:
 			config = mw.addonManager.getConfig(__name__)
-			global first_three_global
 			current_ranking_list = []
 
-			for i in range(self.dialog.Global_Leaderboard.rowCount()):
-				item = self.dialog.Global_Leaderboard.item(i, 0).text()
+			for i in range(tab.rowCount()):
+				item = tab.item(i, 0).text()
 				current_ranking_list.append(item)
 				if item == config['username'] and config["scroll"] == True:
-					userposition = self.dialog.Global_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Global_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+					userposition = tab.item(current_ranking_list.index(item), 0)
+					tab.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
 
-			for i in first_three_global:
-				for j in range(self.dialog.Global_Leaderboard.columnCount()):
+			for i in top_list:
+				for j in range(tab.columnCount()):
 					if current_ranking_list.index(i) % 2 == 0:
-						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
+						tab.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
 					else:
-						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
+						tab.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
 
 					if i in config['friends']:
-						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
+						tab.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 					if i == config['username']:
-						self.dialog.Global_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
+						tab.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
-			for j in range(self.dialog.Global_Leaderboard.columnCount()):
-				self.dialog.Global_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Global_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Global_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
+			for j in range(tab.columnCount()):
+				tab.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
+				tab.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
+				tab.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
-			first_three_global = []
-			for i in range(3):
-				item = self.dialog.Global_Leaderboard.item(i, 0).text()
-				first_three_global.append(item)
+			
+			if tab == self.dialog.Global_Leaderboard:
+				self.first_three_global = []
+				for i in range(3):
+					item = tab.item(i, 0).text()
+					self.first_three_global.append(item)
 
-	def change_colors_friends(self):
-		if self.dialog.Friends_Leaderboard.rowCount() >= 3:
-			config = mw.addonManager.getConfig(__name__)
-			global first_three_friends
-			current_ranking_list = []
+			if tab == self.dialog.Friends_Leaderboard:
+				self.first_three_friends = []
+				for i in range(3):
+					item = tab.item(i, 0).text()
+					self.first_three_friends.append(item)
+			
+			if tab == self.dialog.Country_Leaderboard:
+				self.first_three_country = []
+				for i in range(3):
+					item = tab.item(i, 0).text()
+					self.first_three_country.append(item)
+			
+			if tab == self.dialog.Custom_Leaderboard:
+				self.first_three_custom = []
+				for i in range(3):
+					item = tab.item(i, 0).text()
+					self.first_three_custom.append(item)
 
-			for i in range(self.dialog.Friends_Leaderboard.rowCount()):
-				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
-				current_ranking_list.append(item)
-				if item == config['username'] and config["scroll"] == True:
-					userposition = self.dialog.Friends_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Friends_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-
-			for i in first_three_friends:
-				for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-					if current_ranking_list.index(i) % 2 == 0:
-						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
-					else:
-						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
-
-					if i == config['username']:
-						self.dialog.Friends_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
-
-			for j in range(self.dialog.Friends_Leaderboard.columnCount()):
-				self.dialog.Friends_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Friends_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Friends_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
-
-			first_three_friends = []
-			for i in range(3):
-				item = self.dialog.Friends_Leaderboard.item(i, 0).text()
-				first_three_friends.append(item)
-
-	def change_colors_country(self):
-		if self.dialog.Country_Leaderboard.rowCount() >= 3:
-			config = mw.addonManager.getConfig(__name__)
-			global first_three_country
-			current_ranking_list = []
-
-			for i in range(self.dialog.Country_Leaderboard.rowCount()):
-				item = self.dialog.Country_Leaderboard.item(i, 0).text()
-				current_ranking_list.append(item)
-				if item == config['username'] and config["scroll"] == True:
-					userposition = self.dialog.Country_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Country_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-
-			for i in first_three_country:
-				for j in range(self.dialog.Country_Leaderboard.columnCount()):
-					if current_ranking_list.index(i) % 2 == 0:
-						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
-					else:
-						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
-
-					if i in config['friends']:
-						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
-					if i == config['username']:
-						self.dialog.Country_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
-
-			for j in range(self.dialog.Country_Leaderboard.columnCount()):
-				self.dialog.Country_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Country_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Country_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
-
-			first_three_country = []
-			for i in range(3):
-				item = self.dialog.Country_Leaderboard.item(i, 0).text()
-				first_three_country.append(item)
-
-	def change_colors_custom(self):
-		if self.dialog.Custom_Leaderboard.rowCount() >= 3:
-			config = mw.addonManager.getConfig(__name__)
-			global first_three_custom
-			current_ranking_list = []
-
-			for i in range(self.dialog.Custom_Leaderboard.rowCount()):
-				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
-				current_ranking_list.append(item)
-				if item == config['username'] and config["scroll"] == True:
-					userposition = self.dialog.Custom_Leaderboard.item(current_ranking_list.index(item), 0)
-					self.dialog.Custom_Leaderboard.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-
-			for i in first_three_custom:
-				for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-					if current_ranking_list.index(i) % 2 == 0:
-						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
-					else:
-						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
-
-					if i in config['friends']:
-						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
-					if i == config['username']:
-						self.dialog.Custom_Leaderboard.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
-
-			for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-				self.dialog.Custom_Leaderboard.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				self.dialog.Custom_Leaderboard.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				self.dialog.Custom_Leaderboard.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
-
-			first_three_custom = []
-			for i in range(3):
-				item = self.dialog.Custom_Leaderboard.item(i, 0).text()
-				first_three_custom.append(item)
-
-	def user_info_Global(self):
-		for idx in self.dialog.Global_Leaderboard.selectionModel().selectedIndexes():
+	def user_info(self, tab):
+		for idx in tab.selectionModel().selectedIndexes():
 			row = idx.row()
-		user_clicked = self.dialog.Global_Leaderboard.item(row, 0).text()
-		mw.user_info = start_user_info(user_clicked)
-		mw.user_info.show()
-		mw.user_info.raise_()
-		mw.user_info.activateWindow()
-
-	def user_info_Friends(self):
-		for idx in self.dialog.Friends_Leaderboard.selectionModel().selectedIndexes():
-			row = idx.row()
-		user_clicked = self.dialog.Friends_Leaderboard.item(row, 0).text()
-		mw.user_info = start_user_info(user_clicked)
-		mw.user_info.show()
-		mw.user_info.raise_()
-		mw.user_info.activateWindow()
-
-	def user_info_Country(self):
-		for idx in self.dialog.Country_Leaderboard.selectionModel().selectedIndexes():
-			row = idx.row()
-		user_clicked = self.dialog.Country_Leaderboard.item(row, 0).text()		
-		mw.user_info = start_user_info(user_clicked)
-		mw.user_info.show()
-		mw.user_info.raise_()
-		mw.user_info.activateWindow()
-
-	def user_info_Custom(self):
-		for idx in self.dialog.Custom_Leaderboard.selectionModel().selectedIndexes():
-			row = idx.row()
-		user_clicked = self.dialog.Custom_Leaderboard.item(row, 0).text()
-		mw.user_info = start_user_info(user_clicked)
-		mw.user_info.show()
-		mw.user_info.raise_()
-		mw.user_info.activateWindow()
-
-	def user_info_League(self):
-		for idx in self.dialog.League.selectionModel().selectedIndexes():
-			row = idx.row()
-		user_clicked = self.dialog.League.item(row, 0).text()
+		user_clicked = tab.item(row, 0).text()
 		mw.user_info = start_user_info(user_clicked)
 		mw.user_info.show()
 		mw.user_info.raise_()
