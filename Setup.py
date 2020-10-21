@@ -2,6 +2,7 @@ from datetime import datetime
 from os.path import dirname, join, realpath
 
 import requests
+import hashlib
 from PyQt5 import QtCore
 
 from aqt import mw
@@ -78,9 +79,11 @@ class start_setup(QDialog):
 		self.dialog.add_friends_button.clicked.connect(self.add_friend)
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
 		self.dialog.newday.valueChanged.connect(self.set_time)
-		self.dialog.subject.currentTextChanged.connect(self.set_subject)
+		self.dialog.joinGroup.clicked.connect(self.join_group)
+		#self.dialog.subject.currentTextChanged.connect(self.set_subject)
 		self.dialog.add_newGroup.clicked.connect(self.create_new_group)
-		self.dialog.newGroup.returnPressed.connect(self.create_new_group)
+		#self.dialog.newGroup.returnPressed.connect(self.create_new_group)
+		self.dialog.manageSave.clicked.connect(self.manage_group)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
 		self.dialog.Default_Tab.currentTextChanged.connect(self.set_default_tab)
 		self.dialog.sortby.currentTextChanged.connect(self.set_sortby)
@@ -96,9 +99,6 @@ class start_setup(QDialog):
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
-
-		# for button in self.dialog.buttonBox.buttons():
-		# 	button.setAutoDefault(False)
 
 		about_text = """
 <h2>Anki Leaderboard v1.6.1</h2>
@@ -245,12 +245,6 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		beginning_of_new_day = self.dialog.newday.value()
 		write_config("newday", beginning_of_new_day)
 
-	def set_subject(self):
-		subject = self.dialog.subject.currentText()
-		if subject == "Join a group":
-			subject = "Custom"
-		write_config("subject", subject)
-
 	def set_country(self):
 		country = self.dialog.country.currentText()
 		write_config("country", country)
@@ -368,21 +362,86 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		export_file.close()
 		tooltip("You can find the text file in the add-on folder.")
 
+	def join_group(self):
+		group = self.dialog.subject.currentText()
+		config = mw.addonManager.getConfig(__name__)
+		if group == "Join a group":
+			group = "Custom"
+		pwd = self.dialog.joinPwd.text()
+		if pwd:
+			pwd = hashlib.sha1(pwd.encode('utf-8')).hexdigest().upper()
+		else:
+			pwd = None
+
+		url = 'https://ankileaderboard.pythonanywhere.com/joinGroup/'
+		data = {"username": config["username"], "group": group.replace(" ", ""), "pwd": pwd, "token": config["token"]}
+		try:
+			x = requests.post(url, data = data, timeout=20)
+			if x.text == "Done!":
+				tooltip(f"You joined {group}")
+				write_config("subject", group)
+				write_config("group_pwd", pwd)
+				self.dialog.joinPwd.clear()
+			else:
+				showWarning(str(x.text))
+		except:
+			showWarning("Timeout error [join_group] - No internet connection, or server response took too long.", title="Leaderboard error")
+
 	def create_new_group(self):
 		config = mw.addonManager.getConfig(__name__)
 		Group_Name = self.dialog.newGroup.text()
+		mail = self.dialog.mailGroup.text()
+		pwd = self.dialog.newPwd.text()
+		r_pwd = self.dialog.newRepeat.text()
+
+		if pwd != r_pwd:
+			showWarning("Passwords are not the same.")
+			self.dialog.newPwd.clear()
+			self.dialog.newRepeat.clear()
+			return
+		else:
+			pwd = hashlib.sha1(pwd.encode('utf-8')).hexdigest().upper()
+
 		url = 'https://ankileaderboard.pythonanywhere.com/create_group/'
-		data = {'Group_Name': Group_Name, "User": config['username']}
+		data = {'Group_Name': Group_Name, "User": config['username'], "Mail": mail, "Pwd": pwd}
 		
 		try:
 			x = requests.post(url, data = data, timeout=20)
 			if x.text == "Done!":
 				showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
 			else:
-				tooltip("Error - Please try again.")
-			self.load_Group()
+				showWarning(str(x.text))
 		except:
 			showWarning("Timeout error [create_new_group] - No internet connection, or server response took too long.", title="Leaderboard error")		
+
+	def manage_group(self):
+		config = mw.addonManager.getConfig(__name__)
+		group = self.dialog.manageGroup.currentText()
+		oldPwd = self.dialog.oldPwd.text()
+		newPwd = self.dialog.manage_newPwd.text()
+		rPwd = self.dialog.manage_newRepeat.text()
+		addAdmin = self.dialog.newAdmin.text()
+		if newPwd != rPwd:
+			showWarning("Passwords are not the same.")
+			self.dialog.manage_newPwd.clear()
+			self.dialog.manage_newRepeat.clear()
+			return
+		else:
+			newPwd = hashlib.sha1(newPwd.encode('utf-8')).hexdigest().upper()
+			oldPwd = hashlib.sha1(oldPwd.encode('utf-8')).hexdigest().upper()
+		url = 'https://ankileaderboard.pythonanywhere.com/manageGroup/'
+		data = {'group': group, "user": config["username"], "token": config["token"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
+
+		try:
+			x = requests.post(url, data = data, timeout=20)
+			if x.text == "Done!":
+				tooltip(f"{group} was updated successfully.")
+				write_config("group_pwd", newPwd) if oldPwd != newPwd else write_config("group_pwd", oldPwd)
+			else:
+				showWarning(str(x.text))
+		except:
+			showWarning("Timeout error [manage_group] - No internet connection, or server response took too long.", title="Leaderboard error")		
+
 
 	def load_Group(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -397,10 +456,12 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		# item 0 is set by pyuic from the .ui file
 		for i in range(1, len(Group_List) + 1):
 			self.dialog.subject.addItem("")
+			self.dialog.manageGroup.addItem("")
 
 		index = 1
 		for i in Group_List:
 			self.dialog.subject.setItemText(index, _translate("Dialog", i))
+			self.dialog.manageGroup.setItemText(index, _translate("Dialog", i))
 			index += 1
 
 		self.dialog.subject.setCurrentText(config["subject"])

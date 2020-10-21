@@ -7,9 +7,10 @@ from .forms import user_info
 from .config_manager import write_config
 
 class start_user_info(QDialog):
-	def __init__(self, user_clicked, parent=None):
+	def __init__(self, user_clicked, enabled, parent=None):
 		self.parent = parent
 		self.user_clicked = user_clicked
+		self.enabled = enabled
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = user_info.Ui_Dialog()
 		self.dialog.setupUi(self)
@@ -17,6 +18,8 @@ class start_user_info(QDialog):
 
 	def setupUI(self):
 		self.dialog.username_label.setText(self.user_clicked)
+		if self.enabled == True:
+			self.dialog.banUser.setEnabled(True)
 
 		url = 'https://ankileaderboard.pythonanywhere.com/getStatus/'
 		data = {"username": self.user_clicked}
@@ -46,6 +49,7 @@ class start_user_info(QDialog):
 		self.dialog.league_label.setText(f"League: {data[2]}")
 		self.dialog.hideUser.clicked.connect(self.hideUser)
 		self.dialog.addFriend.clicked.connect(self.addFriend)
+		self.dialog.banUser.clicked.connect(self.banUser)
 
 	def hideUser(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -63,3 +67,24 @@ class start_user_info(QDialog):
 			friends.append(self.user_clicked)
 			write_config("friends", friends)
 			tooltip(f"{self.user_clicked} is now your friend.")
+
+	def banUser(self):
+		config = mw.addonManager.getConfig(__name__)
+		toBan = self.user_clicked
+		group = config["subject"]
+		pwd = config["group_pwd"]
+		token = config["token"]
+		user = config["username"]
+		url = 'https://ankileaderboard.pythonanywhere.com/banUser/'
+		data = {"toBan": toBan, "group": group, "pwd": pwd, "token": token, "user": user}
+
+		try:
+			x = requests.post(url, data = data, timeout=20)
+			if x.text == "Done!":
+				tooltip(f"{toBan} is now banned from {group}")
+			else:
+				showWarning(str(x.text))
+		except:
+			showWarning("Timeout error [banUser] - No internet connection, or server response took too long.", title="Leaderboard error")		
+
+

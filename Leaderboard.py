@@ -83,7 +83,6 @@ class start_main(QDialog):
 			leaderboard_on_deck_browser()
 
 	def add_row(self, tab, username, cards, time, streak, month, retention):
-
 		rowPosition = tab.rowCount()
 		tab.setColumnCount(6)
 		tab.insertRow(rowPosition)
@@ -125,12 +124,12 @@ class start_main(QDialog):
 
 		if datetime.datetime.now() < self.season_end:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(),
-			"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention,
+			"Month": cards_past_30_days, "Country": config6, "Retention": retention,
 			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
 			"Token_v3": config["token"], "Version": "v1.6.0"}
 		else:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(),
-			"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention,
+			"Month": cards_past_30_days, "Country": config6, "Retention": retention,
 			"Token_v3": config["token"], "Version": "v1.6.0"}
 
 		try:
@@ -372,7 +371,11 @@ class start_main(QDialog):
 		for idx in tab.selectionModel().selectedIndexes():
 			row = idx.row()
 		user_clicked = tab.item(row, 0).text()
-		mw.user_info = start_user_info(user_clicked)
+		if tab == self.dialog.Custom_Leaderboard:
+			enabled = True
+		else:
+			enabled = False
+		mw.user_info = start_user_info(user_clicked, enabled)
 		mw.user_info.show()
 		mw.user_info.raise_()
 		mw.user_info.activateWindow()
