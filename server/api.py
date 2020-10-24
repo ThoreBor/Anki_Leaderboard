@@ -16,13 +16,13 @@ def sync(request):
 	Time = request.POST.get("Time", "")
 	Sync_Date = request.POST.get("Sync_Date", "")
 	Month = request.POST.get("Month","")
-	Subject = request.POST.get("Subject","")
 	Country = request.POST.get("Country","")
 	Retention = request.POST.get("Retention","")
 
 	league_reviews = request.POST.get("league_reviews", 0)
 	league_time = request.POST.get("league_time", 0)
 	league_retention = request.POST.get("league_retention", 0)
+	Update_League = request.POST.get("Update_League", True)
 
 	Token = request.POST.get("Token_v3", None)
 	Version = request.POST.get("Version", None)
@@ -86,15 +86,16 @@ def sync(request):
 	if c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (User,)).fetchone():
 		t = c.execute("SELECT Username, Token FROM Leaderboard WHERE Username = (?)", (User,)).fetchone()
 		if t[1] == Token or t[1] is None:
-			c.execute("UPDATE Leaderboard SET Streak = (?), Cards = (?), Time_Spend = (?), Sync_Date = (?), Month = (?), Subject = (?), Country = (?), Retention = (?), Token = (?) WHERE Username = (?) ", (Streak, Cards, Time, Sync_Date, Month, Subject, Country, Retention, Token, User))
+			c.execute("UPDATE Leaderboard SET Streak = (?), Cards = (?), Time_Spend = (?), Sync_Date = (?), Month = (?), Country = (?), Retention = (?), Token = (?) WHERE Username = (?) ", (Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token, User))
 			conn.commit()
 
-			if c.execute("SELECT username FROM League WHERE username = (?)", (User,)).fetchone():
-			    c.execute("UPDATE League SET xp = (?), time_spend = (?), reviews = (?), retention = (?) WHERE username = (?) ", (xp, league_time, league_reviews, league_retention, User))
-			    conn.commit()
-			else:
-			    c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league) VALUES(?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta"))
-			    conn.commit()
+			if Update_League == True:
+				if c.execute("SELECT username FROM League WHERE username = (?)", (User,)).fetchone():
+				    c.execute("UPDATE League SET xp = (?), time_spend = (?), reviews = (?), retention = (?) WHERE username = (?) ", (xp, league_time, league_reviews, league_retention, User))
+				    conn.commit()
+				else:
+				    c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league) VALUES(?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta"))
+				    conn.commit()
 
 			print("Updated entry: " + str(User) + " (" + str(Version) + ")")
 			return HttpResponse("Done!")
@@ -104,12 +105,13 @@ def sync(request):
 			r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
 			r.redditor('Ttime5').message('Verification Error', "Username: " + str(User) + "\n" + "Token: " + str(Token) + "\n" + str(t[1]) + "\n" + "Version: " + str(Version))
 			print("Verification error: " + str(User))
-			return HttpResponse("<h3>Error - invalid token</h3>The verification token you send doesn't match the one in the database. Make sure that you're using the newest version. <br><br>If you recently changed devices, you need to copy your old meta.json file into the leaderboard add-on folder of your new device.<br><br>If you think that this error is a bug, please open a new issue on <a href='https://github.com/ThoreBor/Anki_Leaderboard/issues'>GitHub</a>, contact me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a> or send me an email to leaderboard_support@protonmail.com.")
+			return HttpResponse("<h3>Error - invalid token</h3>The verification token you send doesn't match the one in the database. Make sure that you're using the newest version. <br><br>If you recently changed devices, you need to copy your old meta.json file into the leaderboard add-on folder of your new device.<br><br>If you think that this error is a bug, please open a new issue on <a href='https://github.com/ThoreBor/Anki_Leaderboard/issues'>GitHub</a>, contact me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a> or send an email to leaderboard_support@protonmail.com.")
 	else:
-		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention, Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Subject, Country, Retention, Token))
+		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token))
 		conn.commit()
-		c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league) VALUES(?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta"))
-		conn.commit()
+		if Update_League == True:
+			c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league) VALUES(?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta"))
+			conn.commit()
 		print("Created new entry: " + str(User))
 		return HttpResponse("Done!")
 
@@ -163,18 +165,117 @@ def create_group(request):
 	c = conn.cursor()
 	Group_Name = request.POST.get("Group_Name", None)
 	User = request.POST.get("User", None)
+	Pwd = request.POST.get("Pwd", None)
+	Mail = request.POST.get("Mail", None)
+
 	if c.execute("SELECT Group_Name FROM Groups WHERE Group_Name = (?)", (Group_Name,)).fetchone():
-		pass
+		return HttpResponse("This group already exists.")
 	else:
 		if Group_Name:
-			c.execute('INSERT INTO Groups (Group_Name) VALUES(?)', (Group_Name,))
+			c.execute('INSERT INTO Groups (Group_Name, pwd, admins) VALUES(?, ?, ?)', (Group_Name, Pwd, f"{User},"))
 			conn.commit()
 			with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
 			    data = json.load(json_file)
 			r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
-			r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
-			print(f"Created new group {Group_Name}")
+			r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}\nE-Mail: {Mail}")
+			print(f"{User} requested a new group: {Group_Name}")
 			return HttpResponse("Done!")
+
+@csrf_exempt
+def joinGroup(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	username = request.POST.get("username", None)
+	group = request.POST.get("group", None)
+	pwd = request.POST.get("pwd", None)
+	token = request.POST.get("token", None)
+	check_pwd = c.execute("SELECT pwd FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
+	check_token = c.execute("SELECT Token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()
+	check_banned = c.execute("SELECT banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
+
+	try:
+		if username in check_banned[0]:
+			return HttpResponse("You're banned from this group.")
+	except:
+		pass
+
+	if check_pwd[0]:
+		if check_pwd[0] == pwd and check_token[0] == token:
+			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group, username))
+			conn.commit()
+			return HttpResponse("Done!")
+		else:
+			return HttpResponse("<h3>Something went wrong</h3>Wrong password or verification token.")
+	else:
+		if check_token[0] == token:
+			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group, username))
+			conn.commit()
+			return HttpResponse("Done!")
+		else:
+			return HttpResponse("<h3>Something went wrong</h3>Wrong verification token.")
+
+@csrf_exempt
+def manageGroup(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	username = request.POST.get("user", None)
+	group = request.POST.get("group", None)
+	oldPwd = request.POST.get("oldPwd", None)
+	newPwd = request.POST.get("newPwd", None)
+	token = request.POST.get("token", None)
+	addAdmin = request.POST.get("addAdmin", "")
+	check_pwd_admins = c.execute("SELECT pwd, admins FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
+	check_token = c.execute("SELECT Token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()
+	if addAdmin:
+	    newAdmin = f"{check_pwd_admins[1]} {addAdmin},"
+	else:
+	    newAdmin = check_pwd_admins[1]
+
+
+	if check_pwd_admins[0]:
+		if check_pwd_admins[0] == oldPwd and check_token[0] == token and username in check_pwd_admins[1]:
+			c.execute("UPDATE Groups SET pwd = (?), admins = (?) WHERE Group_Name = (?) ", (newPwd, newAdmin, group))
+			conn.commit()
+			return HttpResponse("Done!")
+		else:
+			return HttpResponse("<h3>Something went wrong</h3>You're either not an admin of this group, or the password is wrong.")
+	else:
+		if check_token[0] == token and username in check_pwd_admins[1]:
+			c.execute("UPDATE Groups SET pwd = (?), admins = (?) WHERE Group_Name = (?) ", (newPwd, newAdmin, group))
+			conn.commit()
+			return HttpResponse("Done!")
+		else:
+			return HttpResponse("<h3>Something went wrong</h3>You're not an admin of this group.")
+
+@csrf_exempt
+def banUser(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	toBan = request.POST.get("toBan", None)
+	group = request.POST.get("group", None)
+	pwd = request.POST.get("pwd", None)
+	token = request.POST.get("token", None)
+	user = request.POST.get("user", None)
+	check_group = c.execute("SELECT pwd, admins, banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
+	check_token = c.execute("SELECT Token FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
+
+	if check_group[0]:
+		if check_group[0] == pwd and user in check_group[1] and check_token[0] == token:
+			c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
+			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
+			conn.commit()
+			return HttpResponse("Done!")
+		else:
+			return HttpResponse("<h3>Something went wrong</h3>You're either not an admin of this group, or the password is wrong.")
+	else:
+		if user in check_group[1] and check_token[0] == token:
+			c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
+			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
+			conn.commit()
+			return HttpResponse("Done!")
+		else:
+			return HttpResponse("<h3>Something went wrong</h3>You're not an admin of this group.")
+
 @csrf_exempt
 def groups(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
@@ -218,4 +319,4 @@ def getUserinfo(request):
     return HttpResponse(json.dumps(u1 + u2))
 
 def season(request):
-	return HttpResponse(json.dumps([[2020,10,2,0,0,0],[2020,10,16,0,0,0]]))
+	return HttpResponse(json.dumps([[2020,10,16,0,0,0],[2020,10,30,0,0,0]]))

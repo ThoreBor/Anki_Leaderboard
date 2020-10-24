@@ -5,9 +5,10 @@ beta_ranking = []
 gamma_ranking = []
 delta_ranking = []
 
-#conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
-conn = sqlite3.connect('Leaderboard.db')
+conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+#conn = sqlite3.connect('Leaderboard.db')
 c = conn.cursor()
+
 c.execute("SELECT username, league, xp FROM League ORDER BY xp DESC")
 
 for row in c.fetchall():
@@ -25,6 +26,8 @@ for row in c.fetchall():
 		delta_ranking.append(user)
 
 print(f"Alpha: {len(alpha_ranking)} \nBeta: {len(beta_ranking)} \nGamma: {len(gamma_ranking)} \nDelta: {len(delta_ranking)}")
+print("")
+
 
 for i in alpha_ranking[-int((len(alpha_ranking) / 100) * 20):]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Beta", i))
@@ -33,7 +36,7 @@ for i in beta_ranking[:int((len(beta_ranking) / 100) * 20)]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Alpha", i))
 for i in beta_ranking[-int((len(beta_ranking) / 100) * 20):]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Gamma", i))
- 
+
 for i in gamma_ranking[:int((len(gamma_ranking) / 100) * 20)]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Beta", i))
 for i in gamma_ranking[-int((len(gamma_ranking) / 100) * 20):]:
