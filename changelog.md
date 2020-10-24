@@ -1,4 +1,12 @@
 # Change Log
+## v1.6.1
+- added # column to home screen leaderboard
+- leagues also work on home screen leaderboard now
+- added option to focus on user on home screen leaderboard
+- config ui changes
+- added password protected groups (Users that requested a new group in v1.6.0 are automatically admins. Groups can only be
+changed in v1.6.1 and future versions. Older versions won't be supported anymore)
+- fixed various bugs
 ## v1.6.0
 - added leagues
 - added option to request groups from config
