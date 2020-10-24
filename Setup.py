@@ -51,7 +51,6 @@ class start_setup(QDialog):
 		self.dialog.create_button.setToolTip("This might take a few seconds.")
 		self.dialog.newday.setToolTip("This needs to be the same as in Ankis' preferences.")
 		self.dialog.autosync.setToolTip("It will take a few extra seconds before you return to the homescreen after answering the last due card in a deck.")
-
 		self.load_Group()
 
 		_translate = QtCore.QCoreApplication.translate
@@ -120,6 +119,9 @@ You can also check the leaderboard (past 24 hours) on this <a href="https://anki
 - added # column to home screen leaderboard<br>
 - leagues also work on home screen leaderboard now<br>
 - added option to focus on user on home screen leaderboard<br>
+- config ui changes<br>
+- added password protected groups (<b>The user that requested the group is automatically the admin. Groups can only be 
+changed in v1.6.1 and future versions. Older versions won't be supported anymore</b>)<br>
 - fixed various bugs
 <br><br>
 <b>© Thore Tyborski 2020<br><br>
@@ -149,9 +151,9 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 			config5 = config['subject'].replace(" ", "")
 			config6 = config['country'].replace(" ", "")
 
-			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), "Month": cards_past_30_days, 
-			"Subject": config["subject"], "Country": config["country"], "Retention": retention,
-			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": "v1.6.0"}
+			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), 
+			"Month": cards_past_30_days, "Country": config["country"], "Retention": retention,
+			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": "v1.6.1"}
 			
 			try:
 				x = requests.post(url, data = data)
@@ -400,7 +402,10 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 			self.dialog.newRepeat.clear()
 			return
 		else:
-			pwd = hashlib.sha1(pwd.encode('utf-8')).hexdigest().upper()
+			if pwd != "":
+				pwd = hashlib.sha1(pwd.encode('utf-8')).hexdigest().upper()
+			else:
+				pwd = None
 
 		url = 'https://ankileaderboard.pythonanywhere.com/create_group/'
 		data = {'Group_Name': Group_Name, "User": config['username'], "Mail": mail, "Pwd": pwd}
@@ -421,14 +426,23 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		newPwd = self.dialog.manage_newPwd.text()
 		rPwd = self.dialog.manage_newRepeat.text()
 		addAdmin = self.dialog.newAdmin.text()
+
 		if newPwd != rPwd:
 			showWarning("Passwords are not the same.")
 			self.dialog.manage_newPwd.clear()
 			self.dialog.manage_newRepeat.clear()
 			return
 		else:
-			newPwd = hashlib.sha1(newPwd.encode('utf-8')).hexdigest().upper()
-			oldPwd = hashlib.sha1(oldPwd.encode('utf-8')).hexdigest().upper()
+			if oldPwd == "":
+				oldPwd = None
+			else:
+				oldPwd = hashlib.sha1(oldPwd.encode('utf-8')).hexdigest().upper()
+			
+			if newPwd == "":
+				newPwd = oldPwd
+			else:
+				newPwd = hashlib.sha1(newPwd.encode('utf-8')).hexdigest().upper()
+			
 		url = 'https://ankileaderboard.pythonanywhere.com/manageGroup/'
 		data = {'group': group, "user": config["username"], "token": config["token"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
 

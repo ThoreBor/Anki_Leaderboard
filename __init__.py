@@ -80,10 +80,15 @@ def background_sync():
 
 	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention = Stats(season_start, season_end)
 
-	data = {'Username': config['username'], "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.datetime.now(), 
-	"Month": cards_past_30_days, "Subject": config5, "Country": config6, "Retention": retention, 
-	"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
-	"Token_v3": token, "Version": "v1.6.0"}
+	if datetime.datetime.now() < season_end:
+		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
+		"Month": cards_past_30_days, "Country": config6, "Retention": retention,
+		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
+		"Token_v3": config["token"], "Version": "v1.6.1"}
+	else:
+		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
+		"Month": cards_past_30_days, "Country": config6, "Retention": retention, "Update_League": False,
+		"Token_v3": config["token"], "Version": "v1.6.1"}
 
 	try:
 		x = requests.post(url, data = data, timeout=20)
@@ -141,7 +146,10 @@ try:
 	from aqt import gui_hooks
 	gui_hooks.profile_did_open.append(initialize)
 except:
-	showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
+	config = mw.addonManager.getConfig(__name__)
+	if config["import_error"] == True:
+		showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
+		write_config("import_error", False)
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Sync and update the homescreen leaderboard", background_sync, "Shift+S")

@@ -1,8 +1,6 @@
 import time
 from datetime import date, timedelta
 import datetime
-import requests
-import threading
 
 from aqt import mw
 from aqt.utils import showInfo
