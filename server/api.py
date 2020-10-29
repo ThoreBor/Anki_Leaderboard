@@ -201,14 +201,14 @@ def joinGroup(request):
 
 	if check_pwd[0]:
 		if check_pwd[0] == pwd and check_token[0] == token:
-			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group, username))
+			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
 			conn.commit()
 			return HttpResponse("Done!")
 		else:
 			return HttpResponse("<h3>Something went wrong</h3>Wrong password or verification token.")
 	else:
 		if check_token[0] == token:
-			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group, username))
+			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
 			conn.commit()
 			return HttpResponse("Done!")
 		else:
