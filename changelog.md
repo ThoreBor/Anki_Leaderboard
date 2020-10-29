@@ -1,4 +1,6 @@
 # Change Log
+## v1.6.2
+- join group bug fix
 ## v1.6.1
 - added # column to home screen leaderboard
 - leagues also work on home screen leaderboard now
