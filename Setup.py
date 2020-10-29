@@ -100,7 +100,7 @@ class start_setup(QDialog):
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
 
 		about_text = """
-<h2>Anki Leaderboard v1.6.1</h2>
+<h2>Anki Leaderboard v1.6.2</h2>
 This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, 
 current streak, reviews in the past 31 days, and retention. You can also compete against friends, join a group, 
 and join a country leaderboard. You'll only see users, that synced on the same day as you.<br><br>
@@ -116,13 +116,7 @@ You can also check the leaderboard (past 24 hours) on this <a href="https://anki
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Confetti gif from <a href="https://giphy.com/stickers/giphycam-rainbow-WNJATm9pwnjpjI1i0g">Giphy</a></div>
 <h3>Change Log:</h3>
-- added # column to home screen leaderboard<br>
-- leagues also work on home screen leaderboard now<br>
-- added option to focus on user on home screen leaderboard<br>
-- config ui changes<br>
-- added password protected groups (<b>The user that requested the group is automatically the admin. Groups can only be 
-changed in v1.6.1 and future versions. Older versions won't be supported anymore</b>)<br>
-- fixed various bugs
+- join group bug fix
 <br><br>
 <b>© Thore Tyborski 2020<br><br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
@@ -376,7 +370,7 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 			pwd = None
 
 		url = 'https://ankileaderboard.pythonanywhere.com/joinGroup/'
-		data = {"username": config["username"], "group": group.replace(" ", ""), "pwd": pwd, "token": config["token"]}
+		data = {"username": config["username"], "group": group, "pwd": pwd, "token": config["token"]}
 		try:
 			x = requests.post(url, data = data, timeout=20)
 			if x.text == "Done!":
