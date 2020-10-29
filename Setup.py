@@ -147,7 +147,7 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), 
 			"Month": cards_past_30_days, "Country": config["country"], "Retention": retention,
-			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": "v1.6.1"}
+			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": "v1.6.2"}
 			
 			try:
 				x = requests.post(url, data = data)
