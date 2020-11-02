@@ -103,8 +103,12 @@ def on_deck_browser_will_render_content(overview, content):
 		for i in lb:
 			if config["username"] in i:
 				user_index = lb.index(i)
-				for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2))):
-					result.append(lb[i])
+				if int(config["maxUsers"]) % 2 == 0:
+					for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2))):
+						result.append(lb[i])
+				else:
+					for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2) + 1)):
+						result.append(lb[i])
 	
 		if not result:
 			result = lb[:config["maxUsers"]]
