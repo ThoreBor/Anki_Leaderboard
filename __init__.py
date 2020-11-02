@@ -84,11 +84,11 @@ def background_sync():
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config6, "Retention": retention,
 		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
-		"Token_v3": config["token"], "Version": "v1.6.2"}
+		"Token_v3": config["token"], "Version": config["version"]}
 	else:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config6, "Retention": retention, "Update_League": False,
-		"Token_v3": config["token"], "Version": "v1.6.2"}
+		"Token_v3": config["token"], "Version": config["version"]}
 
 	try:
 		x = requests.post(url, data = data, timeout=20)

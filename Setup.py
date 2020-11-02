@@ -99,8 +99,8 @@ class start_setup(QDialog):
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
 
-		about_text = """
-<h2>Anki Leaderboard v1.6.2</h2>
+		about_text = f"""
+<h2>Anki Leaderboard {config["version"]}</h2>
 This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, 
 current streak, reviews in the past 31 days, and retention. You can also compete against friends, join a group, 
 and join a country leaderboard. You'll only see users, that synced on the same day as you.<br><br>
@@ -147,7 +147,7 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), 
 			"Month": cards_past_30_days, "Country": config["country"], "Retention": retention,
-			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": "v1.6.2"}
+			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": config["version"]}
 			
 			try:
 				x = requests.post(url, data = data)
