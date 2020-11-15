@@ -85,8 +85,8 @@ def retention(request):
 def user(request, username):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT * FROM Leaderboard WHERE Username = (?)",(username,))
-	user_data = c.fetchone()
+	user_data = c.execute("SELECT * FROM Leaderboard WHERE Username = (?)",(username,)).fetchone()
+	league = c.execute("SELECT league FROM League WHERE Username = (?)",(username,)).fetchone()
 	if user_data[7] == "Country" or "":
 		country = "-"
 	else:
@@ -96,7 +96,7 @@ def user(request, username):
 	else:
 		subject = user_data[6]
 	data = [{"username": username, "streak": user_data[1], "cards": user_data[2], "time": user_data[3], "sync": user_data[4][:19], "month": user_data[5],
-	"subject": subject, "country": country, "retention": user_data[8]}]
+	"subject": subject, "country": country, "retention": user_data[8], "status": user_data[10], "league": league[0]}]
 
 	return render(request, "user.html", {"data": data})
 

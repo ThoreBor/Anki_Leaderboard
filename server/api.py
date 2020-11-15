@@ -86,7 +86,7 @@ def sync(request):
 	if c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (User,)).fetchone():
 		t = c.execute("SELECT Username, Token FROM Leaderboard WHERE Username = (?)", (User,)).fetchone()
 		if t[1] == Token or t[1] is None:
-			c.execute("UPDATE Leaderboard SET Streak = (?), Cards = (?), Time_Spend = (?), Sync_Date = (?), Month = (?), Country = (?), Retention = (?), Token = (?) WHERE Username = (?) ", (Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token, User))
+			c.execute("UPDATE Leaderboard SET Streak = (?), Cards = (?), Time_Spend = (?), Sync_Date = (?), Month = (?), Country = (?), Retention = (?), Token = (?), version = (?) WHERE Username = (?) ", (Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token, Version, User))
 			conn.commit()
 
 			if Update_League == True:
@@ -107,7 +107,7 @@ def sync(request):
 			print("Verification error: " + str(User))
 			return HttpResponse("<h3>Error - invalid token</h3>The verification token you send doesn't match the one in the database. Make sure that you're using the newest version. <br><br>If you recently changed devices, you need to copy your old meta.json file into the leaderboard add-on folder of your new device.<br><br>If you think that this error is a bug, please open a new issue on <a href='https://github.com/ThoreBor/Anki_Leaderboard/issues'>GitHub</a>, contact me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a> or send an email to leaderboard_support@protonmail.com.")
 	else:
-		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token))
+		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token, Version))
 		conn.commit()
 		if Update_League == True:
 			c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league) VALUES(?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta"))
@@ -319,4 +319,4 @@ def getUserinfo(request):
     return HttpResponse(json.dumps(u1 + u2))
 
 def season(request):
-	return HttpResponse(json.dumps([[2020,10,16,0,0,0],[2020,10,30,0,0,0]]))
+	return HttpResponse(json.dumps([[2020,11,13,0,0,0],[2020,11,27,0,0,0]]))
