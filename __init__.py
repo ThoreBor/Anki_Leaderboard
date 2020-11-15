@@ -140,6 +140,7 @@ def initialize():
 		leaderboard_on_deck_browser()
 
 write_config("achievement", True)
+write_config("homescreen_data", [])
 add_username_to_friendlist()
 season()
 
