@@ -57,19 +57,6 @@ def load_league(self, colors):
 			if username == config['username']:
 				for j in range(self.dialog.League.columnCount()):
 					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
-
-	### SCROLL ###
-
-	current_ranking_list = []
-	if config["scroll"] == True:
-		for i in range(self.dialog.League.rowCount()):
-			item = self.dialog.League.item(i, 0).text()
-			current_ranking_list.append(item)
-			if item == config['username']:
-				userposition = self.dialog.League.item(current_ranking_list.index(item), 0)
-				self.dialog.League.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-				self.dialog.League.selectRow(current_ranking_list.index(item))
-				self.dialog.League.clearSelection()
 	
 	### HIGHLIGHT ###
 

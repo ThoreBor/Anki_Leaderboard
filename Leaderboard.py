@@ -79,8 +79,6 @@ class start_main(QDialog):
 		self.dialog.League.setToolTip("Double click on user for more info.")
 		
 		self.load_leaderboard()
-		if config["homescreen"] == True:
-			leaderboard_on_deck_browser()
 
 	def add_row(self, tab, username, cards, time, streak, month, retention):
 		rowPosition = tab.rowCount()
@@ -256,9 +254,9 @@ class start_main(QDialog):
 
 		### Highlight first three places###
 
-		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard]
+		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 
-		for l in lb_list:
+		for index, l in zip(range(4), lb_list):
 			if l.rowCount() >= 3:
 				if l == self.dialog.Global_Leaderboard:
 					for i in range(3):
@@ -284,16 +282,14 @@ class start_main(QDialog):
 
 		### SCROLL ###
 
-		current_ranking_list = []
 		if config["scroll"] == True:
 			for l in lb_list:
 				for i in range(l.rowCount()):
 					item = l.item(i, 0).text()
-					current_ranking_list.append(item)
 					if item == config['username']:
-						userposition = l.item(current_ranking_list.index(item), 0)
+						userposition = l.item(i, 0)
+						l.selectRow(i)
 						l.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
-						l.selectRow(current_ranking_list.index(item))
 						l.clearSelection()
 
 		if config["refresh"] == True:
