@@ -10,6 +10,8 @@ from aqt.deckbrowser import DeckBrowser
 from aqt import mw
 from aqt.utils import showWarning
 
+from .config_manager import write_config
+
 def getData():
 	config = mw.addonManager.getConfig(__name__)
 	if config["tab"] != 4:
@@ -93,11 +95,15 @@ def getData():
 				counter += 1
 				lb_list.append([counter, username, xp, reviews, time_spend, retention])
 
+	write_config("homescreen_data", lb_list)
 	return lb_list
 
 def on_deck_browser_will_render_content(overview, content):
 	config = mw.addonManager.getConfig(__name__)
-	lb = getData()
+	if config["homescreen_data"]:
+		lb = config["homescreen_data"]
+	else:
+		lb = getData()
 	result = []
 	if config["focus_on_user"] == True and len(lb) > config["maxUsers"]:
 		for i in lb:

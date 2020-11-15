@@ -101,6 +101,7 @@ def background_sync():
 		showWarning("Timeout error [background_sync] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	if config["homescreen"] == True:
+		write_config("homescreen_data", [])
 		leaderboard_on_deck_browser()
 
 def season():
