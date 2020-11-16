@@ -271,6 +271,7 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		if tab == "League":
 			write_config("tab", 4)
 		if config["homescreen"] == True:
+			write_config("homescreen_data", [])
 			leaderboard_on_deck_browser()
 
 	def set_sortby(self):
