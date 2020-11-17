@@ -32,7 +32,7 @@ def rewrite_history(league, counter):
 		history["bronce"] += 1
 		history["bronce_leagues"].append(league)
 		history["bronce_seasons"].append(SEASON)
-	
+
 	results = history["results"]
 	results["leagues"].append(league)
 	results["seasons"].append(SEASON)
@@ -51,13 +51,13 @@ for row in c.fetchall():
 	xp = row[2]
 
 
-	if league_name == "Alpha":
+	if league_name == "Alpha" and xp != 0:
 		alpha_ranking.append(user)
-	if league_name == "Beta":
+	if league_name == "Beta" and xp != 0:
 		beta_ranking.append(user)
-	if league_name == "Gamma":
+	if league_name == "Gamma" and xp != 0:
 		gamma_ranking.append(user)
-	if league_name == "Delta":
+	if league_name == "Delta" and xp != 0:
 		delta_ranking.append(user)
 
 counter = 1
