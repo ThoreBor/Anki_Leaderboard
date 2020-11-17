@@ -251,12 +251,14 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		else:
 			scroll = False
 		write_config("scroll", scroll)
+	
 	def set_refresh(self):
 		if self.dialog.refresh.isChecked():
 			refresh = True
 		else:
 			refresh = False
 		write_config("refresh", refresh)
+	
 	def set_default_tab(self):
 		config = mw.addonManager.getConfig(__name__)
 		tab = self.dialog.Default_Tab.currentText()
@@ -450,7 +452,6 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 				showWarning(str(x.text))
 		except:
 			showWarning("Timeout error [manage_group] - No internet connection, or server response took too long.", title="Leaderboard error")		
-
 
 	def load_Group(self):
 		config = mw.addonManager.getConfig(__name__)

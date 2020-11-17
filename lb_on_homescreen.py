@@ -9,7 +9,10 @@ except:
 from aqt.deckbrowser import DeckBrowser
 from aqt import mw
 from aqt.utils import showWarning
+from aqt.deckbrowser import DeckBrowser
+from anki.hooks import wrap
 
+from .userInfo import start_user_info
 from .config_manager import write_config
 
 def getData():
@@ -191,12 +194,11 @@ def on_deck_browser_will_render_content(overview, content):
 			</tr>
 		"""
 		table_content = ""
-
 		for i in result:
 			table_content = table_content + f"""
 			<tr>
 				<td>{i[6]}</td>
-				<td>{i[0]}</td>
+				<td><button style="outline:0 !important; cursor:pointer; border: none; background: none;" type="button" onclick="pycmd('userinfo:{i[0]}')"><b>{i[0]}</b></button></td>
 				<td>{i[1]}</td>
 				<td>{i[2]}</td>
 				<td>{i[3]}</td>
@@ -223,7 +225,7 @@ def on_deck_browser_will_render_content(overview, content):
 			table_content = table_content + f"""
 			<tr>
 				<td>{i[0]}</td>
-				<td>{i[1]}</td>
+				<td><button style="outline:0 !important; cursor:pointer; border: none; background: none;" type="button" onclick="pycmd('userinfo:{i[1]}')"><b>{i[1]}</b></button></td>
 				<td>{i[2]}</td>
 				<td>{i[3]}</td>
 				<td>{i[4]}</td>
@@ -240,3 +242,13 @@ def leaderboard_on_deck_browser():
 		gui_hooks.deck_browser_will_render_content.append(on_deck_browser_will_render_content)
 	DB = DeckBrowser(mw)
 	DB.refresh()
+
+def deckbrowser_linkHandler_wrapper(overview, url):
+	url = url.split(":")
+	if url[0] == "userinfo":
+		mw.user_info = start_user_info(url[1], False)
+		mw.user_info.show()
+		mw.user_info.raise_()
+		mw.user_info.activateWindow()
+
+DeckBrowser._linkHandler = wrap(DeckBrowser._linkHandler, deckbrowser_linkHandler_wrapper, "after")

@@ -138,7 +138,7 @@ def initialize():
 		gui_hooks.reviewer_will_end.append(background_sync)
 	if config["homescreen"] == True:
 		leaderboard_on_deck_browser()
-
+	
 write_config("achievement", True)
 write_config("homescreen_data", [])
 add_username_to_friendlist()
