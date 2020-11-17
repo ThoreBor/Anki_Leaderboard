@@ -9,11 +9,11 @@ delta_ranking = []
 SEASON = input("Past season:")
 
 #conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
-#conn = sqlite3.connect('Leaderboard.db')
+conn = sqlite3.connect('Leaderboard.db')
 c = conn.cursor()
 
-def rewrite_history(league, counter):
-	data = c.execute("SELECT xp, history FROM League WHERE username = (?)", (i,)).fetchone()
+def rewrite_history(username, league, counter):
+	data = c.execute("SELECT xp, history FROM League WHERE username = (?)", (username,)).fetchone()
 	xp = data[0]
 	try:
 		history = json.loads(data[1])
@@ -40,7 +40,7 @@ def rewrite_history(league, counter):
 	results["rank"].append(counter)
 
 	new_history = {"gold": history["gold"], "silver": history["silver"], "bronce": history["bronce"], "gold_leagues": history["gold_leagues"], "silver_leagues": history["silver_leagues"], "bronce_leagues": history["bronce_leagues"], "gold_seasons": history["gold_seasons"], "silver_seasons": history["silver_seasons"], "bronce_seasons": history["bronce_seasons"], "results":{"leagues": results["leagues"], "seasons": results["seasons"], "xp": results["xp"], "rank": results["rank"]}}
-	c.execute("""UPDATE League SET history = (?) WHERE username = (?) """, (json.dumps(new_history), i))
+	c.execute("""UPDATE League SET history = (?) WHERE username = (?) """, (json.dumps(new_history), username))
 
 
 c.execute("SELECT username, league, xp FROM League ORDER BY xp DESC")
@@ -62,22 +62,22 @@ for row in c.fetchall():
 
 counter = 1
 for i in alpha_ranking:
-	rewrite_history("Alpha", counter)
+	rewrite_history(i, "Alpha", counter)
 	counter += 1
 
 counter = 1
 for i in beta_ranking:
-	rewrite_history("Beta", counter)
+	rewrite_history(i, "Beta", counter)
 	counter += 1
 
 counter = 1
 for i in gamma_ranking:
-	rewrite_history("Gamma", counter)
+	rewrite_history(i, "Gamma", counter)
 	counter += 1
 
 counter = 1
 for i in delta_ranking:
-	rewrite_history("Delta", counter)
+	rewrite_history(i, "Delta", counter)
 	counter += 1
 
 
