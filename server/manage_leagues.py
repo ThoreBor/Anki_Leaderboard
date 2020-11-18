@@ -6,10 +6,10 @@ beta_ranking = []
 gamma_ranking = []
 delta_ranking = []
 
-SEASON = input("Past season:")
+SEASON = int(input("Past season:"))
 
-#conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
-conn = sqlite3.connect('Leaderboard.db')
+conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+#conn = sqlite3.connect('Leaderboard.db')
 c = conn.cursor()
 
 def rewrite_history(username, league, counter):
@@ -18,20 +18,14 @@ def rewrite_history(username, league, counter):
 	try:
 		history = json.loads(data[1])
 	except:
-		history = {"gold": 0, "silver": 0, "bronce": 0, "gold_leagues": [], "silver_leagues": [], "bronce_leagues": [], "gold_seasons": [], "silver_seasons": [], "bronce_seasons": [], "results": { "leagues": [], "seasons": [], "xp": [], "rank": []}}
+		history = {"gold": 0, "silver": 0, "bronce": 0, "results": { "leagues": [], "seasons": [], "xp": [], "rank": []}}
 
 	if counter == 1:
 		history["gold"] += 1
-		history["gold_leagues"].append(league)
-		history["gold_seasons"].append(SEASON)
 	if counter == 2:
 		history["silver"] += 1
-		history["silver_leagues"].append(league)
-		history["silver_seasons"].append(SEASON)
 	if counter == 3:
 		history["bronce"] += 1
-		history["bronce_leagues"].append(league)
-		history["bronce_seasons"].append(SEASON)
 
 	results = history["results"]
 	results["leagues"].append(league)
@@ -39,7 +33,7 @@ def rewrite_history(username, league, counter):
 	results["xp"].append(xp)
 	results["rank"].append(counter)
 
-	new_history = {"gold": history["gold"], "silver": history["silver"], "bronce": history["bronce"], "gold_leagues": history["gold_leagues"], "silver_leagues": history["silver_leagues"], "bronce_leagues": history["bronce_leagues"], "gold_seasons": history["gold_seasons"], "silver_seasons": history["silver_seasons"], "bronce_seasons": history["bronce_seasons"], "results":{"leagues": results["leagues"], "seasons": results["seasons"], "xp": results["xp"], "rank": results["rank"]}}
+	new_history = {"gold": history["gold"], "silver": history["silver"], "bronce": history["bronce"], "results":{"leagues": results["leagues"], "seasons": results["seasons"], "xp": results["xp"], "rank": results["rank"]}}
 	c.execute("""UPDATE League SET history = (?) WHERE username = (?) """, (json.dumps(new_history), username))
 
 
