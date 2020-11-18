@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import requests
+import json
 
 from aqt import mw
 from aqt.qt import *
@@ -23,10 +24,9 @@ def load_league(self, colors):
 			user_league_name = i[5]
 			self.dialog.league_label.setText(user_league_name)
 
-	self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
-
 	### BUILD TABLE ###
 
+	medal_users = []
 	counter = 0
 	for i in data:
 		username = i[0]
@@ -35,6 +35,17 @@ def load_league(self, colors):
 		time_spend = i[3]
 		retention = i[4]
 		league_name = i[5]
+		if i[6]:
+			history = json.loads(i[6])
+			if history["gold"] != 0 or history["silver"] != 0 or history["bronze"] != 0:
+				medal_users.append([username, history["gold"], history["silver"], history["bronze"]])
+				username = f"{username} |"
+			if history["gold"] > 0:
+				username = f"{username} {history['gold'] if history['gold'] != 1 else 1 }🥇"
+			if history["silver"] > 0:
+				username = f"{username} {history['silver'] if history['silver'] != 1 else 1 }🥈"
+			if history["bronze"] > 0:
+				username = f"{username} {history['bronze'] if history['bronze'] != 1 else 1 }🥉"
 
 		if league_name == user_league_name and xp != 0:
 			counter += 1
@@ -51,10 +62,10 @@ def load_league(self, colors):
 
 			#self.dialog.League.resizeColumnsToContents()
 
-			if username in config['friends']:
+			if username.split(" |")[0] in config['friends']:
 				for j in range(self.dialog.League.columnCount()):
 					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
-			if username == config['username']:
+			if username.split(" |")[0] == config['username']:
 				for j in range(self.dialog.League.columnCount()):
 					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 	
@@ -73,7 +84,7 @@ def load_league(self, colors):
 
 	for i in range(threshold):
 		for j in range(self.dialog.League.columnCount()):
-			item = self.dialog.League.item(i, 0).text()
+			item = self.dialog.League.item(i, 0).text().split(" |")[0]
 			if item == config['username'] or item == config['friends'] or user_league_name == "Alpha":
 				continue
 			else:
@@ -87,10 +98,11 @@ def load_league(self, colors):
 
 		for i in range((users - threshold), users):
 			for j in range(self.dialog.League.columnCount()):
-				item = self.dialog.League.item(i, 0).text()
+				item = self.dialog.League.item(i, 0).text().split(" |")[0]
 				if item == config['username'] and user_league_name != "Delta":
 					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM_USER']))
 				if user_league_name == "Delta" or item == config['friends']:
 					continue
 				else:
-					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))  
+					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))
+	return medal_users

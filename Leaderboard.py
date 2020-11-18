@@ -77,6 +77,7 @@ class start_main(QDialog):
 		self.dialog.Custom_Leaderboard.setToolTip("Double click on user for more info.")
 		self.dialog.League.doubleClicked.connect(lambda: self.user_info(self.dialog.League))
 		self.dialog.League.setToolTip("Double click on user for more info.")
+		self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
 		
 		self.load_leaderboard()
 
@@ -176,7 +177,7 @@ class start_main(QDialog):
 
 		### LEAGUE ###
 
-		load_league(self, colors)
+		medal_users = load_league(self, colors)
 		time_remaining = self.season_end - datetime.datetime.now()
 		tr_days = time_remaining.days
 		tr_hours = int((time_remaining.seconds) / 60 / 60)
@@ -212,6 +213,16 @@ class start_main(QDialog):
 				retention = float(retention)
 			except:
 				retention = ""
+			for i in medal_users:
+				if username in i:
+					username = f"{username} |"
+					if i[1] > 0:
+						username = f"{username} {i[1] if i[1] != 1 else 1 }🥇"
+					if i[2] > 0:
+						username = f"{username} {i[2] if i[2] != 1 else 1 }🥈"
+					if i[3] > 0:
+						username = f"{username} {i[3] if i[3] != 1 else 1 }🥉"
+
 			if sync_date > start_day and username not in config["hidden_users"]:
 				counter += 1
 				self.add_row(self.dialog.Global_Leaderboard, username, cards, time, streak, month, retention)
@@ -232,14 +243,14 @@ class start_main(QDialog):
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
-				if username in config['friends']:
+				if username.split(" |")[0] in config['friends']:
 					friend_counter += 1
 					self.add_row(self.dialog.Friends_Leaderboard, username, cards, time, streak, month, retention)
 
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
-				if username == config['username']:
+				if username.split(" |")[0] == config['username']:
 					for j in range(self.dialog.Global_Leaderboard.columnCount()):
 						self.dialog.Global_Leaderboard.item(counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 					if config['friends'] != []:
@@ -285,7 +296,7 @@ class start_main(QDialog):
 		if config["scroll"] == True:
 			for l in lb_list:
 				for i in range(l.rowCount()):
-					item = l.item(i, 0).text()
+					item = l.item(i, 0).text().split(" |")[0]
 					if item == config['username']:
 						userposition = l.item(i, 0)
 						l.selectRow(i)
@@ -315,7 +326,7 @@ class start_main(QDialog):
 			current_ranking_list = []
 
 			for i in range(tab.rowCount()):
-				item = tab.item(i, 0).text()
+				item = tab.item(i, 0).text().split(" |")[0]
 				current_ranking_list.append(item)
 				if item == config['username'] and config["scroll"] == True:
 					userposition = tab.item(current_ranking_list.index(item), 0)
@@ -328,9 +339,9 @@ class start_main(QDialog):
 					else:
 						tab.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['ROW_DARK']))
 
-					if i in config['friends']:
+					if i.split(" |")[0] in config['friends']:
 						tab.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
-					if i == config['username']:
+					if i.split(" |")[0] == config['username']:
 						tab.item(current_ranking_list.index(i), j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
 			for j in range(tab.columnCount()):
@@ -342,31 +353,31 @@ class start_main(QDialog):
 			if tab == self.dialog.Global_Leaderboard:
 				self.first_three_global = []
 				for i in range(3):
-					item = tab.item(i, 0).text()
+					item = tab.item(i, 0).text().split(" |")[0]
 					self.first_three_global.append(item)
 
 			if tab == self.dialog.Friends_Leaderboard:
 				self.first_three_friends = []
 				for i in range(3):
-					item = tab.item(i, 0).text()
+					item = tab.item(i, 0).text().split(" |")[0]
 					self.first_three_friends.append(item)
 			
 			if tab == self.dialog.Country_Leaderboard:
 				self.first_three_country = []
 				for i in range(3):
-					item = tab.item(i, 0).text()
+					item = tab.item(i, 0).text().split(" |")[0]
 					self.first_three_country.append(item)
 			
 			if tab == self.dialog.Custom_Leaderboard:
 				self.first_three_custom = []
 				for i in range(3):
-					item = tab.item(i, 0).text()
+					item = tab.item(i, 0).text().split(" |")[0]
 					self.first_three_custom.append(item)
 
 	def user_info(self, tab):
 		for idx in tab.selectionModel().selectedIndexes():
 			row = idx.row()
-		user_clicked = tab.item(row, 0).text()
+		user_clicked = tab.item(row, 0).text().split(" |")[0]
 		if tab == self.dialog.Custom_Leaderboard:
 			enabled = True
 		else:

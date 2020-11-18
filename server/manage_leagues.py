@@ -18,14 +18,14 @@ def rewrite_history(username, league, counter):
 	try:
 		history = json.loads(data[1])
 	except:
-		history = {"gold": 0, "silver": 0, "bronce": 0, "results": { "leagues": [], "seasons": [], "xp": [], "rank": []}}
+		history = {"gold": 0, "silver": 0, "bronze": 0, "results": { "leagues": [], "seasons": [], "xp": [], "rank": []}}
 
 	if counter == 1:
 		history["gold"] += 1
 	if counter == 2:
 		history["silver"] += 1
 	if counter == 3:
-		history["bronce"] += 1
+		history["bronze"] += 1
 
 	results = history["results"]
 	results["leagues"].append(league)
@@ -33,7 +33,7 @@ def rewrite_history(username, league, counter):
 	results["xp"].append(xp)
 	results["rank"].append(counter)
 
-	new_history = {"gold": history["gold"], "silver": history["silver"], "bronce": history["bronce"], "results":{"leagues": results["leagues"], "seasons": results["seasons"], "xp": results["xp"], "rank": results["rank"]}}
+	new_history = {"gold": history["gold"], "silver": history["silver"], "bronze": history["bronze"], "results":{"leagues": results["leagues"], "seasons": results["seasons"], "xp": results["xp"], "rank": results["rank"]}}
 	c.execute("""UPDATE League SET history = (?) WHERE username = (?) """, (json.dumps(new_history), username))
 
 
