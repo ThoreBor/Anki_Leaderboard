@@ -8,7 +8,7 @@ def write_config(name, value):
 	"refresh": config["refresh"], "tab": config["tab"], "token": config["token"], "achievement": config["achievement"], 
 	"sortby": config["sortby"], "hidden_users": config["hidden_users"], "homescreen": config["homescreen"],
 	"autosync": config["autosync"], "maxUsers": config["maxUsers"], "focus_on_user": config["focus_on_user"], "import_error": config["import_error"],
-	"homescreen_data": config["homescreen_data"]}
+	"homescreen_data": config["homescreen_data"], "medal_users": config["medal_users"]}
 
 	config_content[name] = value
 	mw.addonManager.writeConfig(__name__, config_content)

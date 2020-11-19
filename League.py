@@ -6,6 +6,8 @@ from aqt import mw
 from aqt.qt import *
 from aqt.utils import showWarning, showInfo
 
+from .config_manager import write_config
+
 def load_league(self, colors):
 
 	### GET DATA ###
@@ -41,11 +43,11 @@ def load_league(self, colors):
 				medal_users.append([username, history["gold"], history["silver"], history["bronze"]])
 				username = f"{username} |"
 			if history["gold"] > 0:
-				username = f"{username} {history['gold'] if history['gold'] != 1 else 1 }🥇"
+				username = f"{username} {history['gold'] if history['gold'] != 1 else ''}🥇"
 			if history["silver"] > 0:
-				username = f"{username} {history['silver'] if history['silver'] != 1 else 1 }🥈"
+				username = f"{username} {history['silver'] if history['silver'] != 1 else ''}🥈"
 			if history["bronze"] > 0:
-				username = f"{username} {history['bronze'] if history['bronze'] != 1 else 1 }🥉"
+				username = f"{username} {history['bronze'] if history['bronze'] != 1 else ''}🥉"
 
 		if league_name == user_league_name and xp != 0:
 			counter += 1
@@ -105,4 +107,5 @@ def load_league(self, colors):
 					continue
 				else:
 					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))
-	return medal_users
+	
+	write_config("medal_users", medal_users)

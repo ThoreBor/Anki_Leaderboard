@@ -177,7 +177,7 @@ class start_main(QDialog):
 
 		### LEAGUE ###
 
-		medal_users = load_league(self, colors)
+		load_league(self, colors)
 		time_remaining = self.season_end - datetime.datetime.now()
 		tr_days = time_remaining.days
 		tr_hours = int((time_remaining.seconds) / 60 / 60)
@@ -190,10 +190,13 @@ class start_main(QDialog):
 
 		### BUILD LEADERBOARD ###
 
+		config = mw.addonManager.getConfig(__name__)
+		medal_users = config["medal_users"]
 		counter = 0
 		friend_counter = 0
 		country_counter = 0
 		custom_counter = 0
+
 		for i in data:
 			username = i[0]
 			streak = i[1]
@@ -213,17 +216,18 @@ class start_main(QDialog):
 				retention = float(retention)
 			except:
 				retention = ""
+				
 			for i in medal_users:
 				if username in i:
 					username = f"{username} |"
 					if i[1] > 0:
-						username = f"{username} {i[1] if i[1] != 1 else 1 }🥇"
+						username = f"{username} {i[1] if i[1] != 1 else ''}🥇"
 					if i[2] > 0:
-						username = f"{username} {i[2] if i[2] != 1 else 1 }🥈"
+						username = f"{username} {i[2] if i[2] != 1 else ''}🥈"
 					if i[3] > 0:
-						username = f"{username} {i[3] if i[3] != 1 else 1 }🥉"
+						username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
 
-			if sync_date > start_day and username not in config["hidden_users"]:
+			if sync_date > start_day and username.split(" |")[0] not in config["hidden_users"]:
 				counter += 1
 				self.add_row(self.dialog.Global_Leaderboard, username, cards, time, streak, month, retention)
 
@@ -231,7 +235,7 @@ class start_main(QDialog):
 					country_counter += 1
 					self.add_row(self.dialog.Country_Leaderboard, username, cards, time, streak, month, retention)
 
-					if username in config['friends']:
+					if username.split(" |")[0] in config['friends']:
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
 							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
@@ -239,7 +243,7 @@ class start_main(QDialog):
 					custom_counter += 1
 					self.add_row(self.dialog.Custom_Leaderboard, username, cards, time, streak, month, retention)
 
-					if username in config['friends']:
+					if username.split(" |")[0] in config['friends']:
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
@@ -271,19 +275,19 @@ class start_main(QDialog):
 			if l.rowCount() >= 3:
 				if l == self.dialog.Global_Leaderboard:
 					for i in range(3):
-						item = l.item(i, 0).text()
+						item = l.item(i, 0).text().split(" |")[0]
 						self.first_three_global.append(item)
 				if l == self.dialog.Friends_Leaderboard:
 					for i in range(3):
-						item = l.item(i, 0).text()
+						item = l.item(i, 0).text().split(" |")[0]
 						self.first_three_friends.append(item)
 				if l == self.dialog.Country_Leaderboard:
 					for i in range(3):
-						item = l.item(i, 0).text()
+						item = l.item(i, 0).text().split(" |")[0]
 						self.first_three_country.append(item)
 				if l == self.dialog.Custom_Leaderboard:
 					for i in range(3):
-						item = l.item(i, 0).text()
+						item = l.item(i, 0).text().split(" |")[0]
 						self.first_three_custom.append(item)
 
 				for j in range(l.columnCount()):
@@ -377,7 +381,7 @@ class start_main(QDialog):
 	def user_info(self, tab):
 		for idx in tab.selectionModel().selectedIndexes():
 			row = idx.row()
-		user_clicked = tab.item(row, 0).text().split(" |")[0]
+		user_clicked = tab.item(row, 0).text()
 		if tab == self.dialog.Custom_Leaderboard:
 			enabled = True
 		else:

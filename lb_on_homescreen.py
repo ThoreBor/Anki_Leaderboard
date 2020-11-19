@@ -17,6 +17,7 @@ from .config_manager import write_config
 
 def getData():
 	config = mw.addonManager.getConfig(__name__)
+	medal_users = config["medal_users"]
 	if config["tab"] != 4:
 		new_day = datetime.time(int(config['newday']),0,0)
 		time_now = datetime.datetime.now().time()
@@ -55,20 +56,30 @@ def getData():
 				retention = float(retention)
 			except:
 				retention = ""
+
+			for i in medal_users:
+				if username in i:
+					username = f"{username} |"
+					if i[1] > 0:
+						username = f"{username} {i[1] if i[1] != 1 else ''}🥇"
+					if i[2] > 0:
+						username = f"{username} {i[2] if i[2] != 1 else ''}🥈"
+					if i[3] > 0:
+						username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
 			
 			if sync_date > start_day and username not in config["hidden_users"]:
 				if config["tab"] == 0:
 					counter += 1
-					lb_list.append([username, cards, time, streak, month, retention, counter])
+					lb_list.append([counter, username, cards, time, streak, month, retention])
 				if config["tab"] == 1 and username in config["friends"]:
 					counter += 1
-					lb_list.append([username, cards, time, streak, month, retention, counter])
+					lb_list.append([counter, username, cards, time, streak, month, retention])
 				if config["tab"] == 2 and country == config["country"].replace(" ", ""):
 					counter += 1
-					lb_list.append([username, cards, time, streak, month, retention, counter])
+					lb_list.append([counter, username, cards, time, streak, month, retention])
 				if config["tab"] == 3 and subject == config["subject"].replace(" ", ""):
 					counter += 1
-					lb_list.append([username, cards, time, streak, month, retention, counter])
+					lb_list.append([counter, username, cards, time, streak, month, retention])
 
 	if config["tab"] == 4:
 		url = 'https://ankileaderboard.pythonanywhere.com/league/'
@@ -94,6 +105,16 @@ def getData():
 			retention = i[4]
 			league_name = i[5]
 
+			for i in medal_users:
+				if username in i:
+					username = f"{username} |"
+					if i[1] > 0:
+						username = f"{username} {i[1] if i[1] != 1 else ''}🥇"
+					if i[2] > 0:
+						username = f"{username} {i[2] if i[2] != 1 else ''}🥈"
+					if i[3] > 0:
+						username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
+
 			if league_name == user_league_name and xp != 0:
 				counter += 1
 				lb_list.append([counter, username, xp, reviews, time_spend, retention])
@@ -110,7 +131,7 @@ def on_deck_browser_will_render_content(overview, content):
 	result = []
 	if config["focus_on_user"] == True and len(lb) > config["maxUsers"]:
 		for i in lb:
-			if config["username"] in i:
+			if config["username"] == i[1].split(" |")[0]:
 				user_index = lb.index(i)
 				if int(config["maxUsers"]) % 2 == 0:
 					for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2))):
@@ -197,13 +218,13 @@ def on_deck_browser_will_render_content(overview, content):
 		for i in result:
 			table_content = table_content + f"""
 			<tr>
-				<td>{i[6]}</td>
-				<td><button style="outline:0 !important; cursor:pointer; border: none; background: none;" type="button" onclick="pycmd('userinfo:{i[0]}')"><b>{i[0]}</b></button></td>
-				<td>{i[1]}</td>
+				<td>{i[0]}</td>
+				<td><button style="outline:0 !important; cursor:pointer; border: none; background: none;" type="button" onclick="pycmd('userinfo:{i[1]}')"><b>{i[1]}</b></button></td>
 				<td>{i[2]}</td>
 				<td>{i[3]}</td>
 				<td>{i[4]}</td>
-				<td>{i[5]}%</td>
+				<td>{i[5]}</td>
+				<td>{i[6]}%</td>
 			</tr>
 			"""
 	if config["tab"] == 4:
@@ -229,7 +250,7 @@ def on_deck_browser_will_render_content(overview, content):
 				<td>{i[2]}</td>
 				<td>{i[3]}</td>
 				<td>{i[4]}</td>
-				<td>{i[5]}</td>
+				<td>{i[5]}%</td>
 			</tr>
 			"""
 

@@ -9,7 +9,7 @@ from .config_manager import write_config
 class start_user_info(QDialog):
 	def __init__(self, user_clicked, enabled, parent=None):
 		self.parent = parent
-		self.user_clicked = user_clicked
+		self.user_clicked = user_clicked.split(" |")[0]
 		self.enabled = enabled
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = user_info.Ui_Dialog()
