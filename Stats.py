@@ -68,13 +68,12 @@ def streak(config, new_day, time_now):
 	return Streak
 
 def reviews_past_31_days(new_day, time_now):
-	# Start of next day because time < end_day
 	if time_now < new_day:
-		end_day = datetime.datetime.combine(date.today() + timedelta(days=1), new_day)
+		end_day = datetime.datetime.combine(date.today(), new_day)
 	else:
-		end_day = datetime.datetime.combine(date.today() + timedelta(days=2), new_day)
+		end_day = datetime.datetime.combine(date.today()+timedelta(days=1), new_day)
 
-	start_day = datetime.datetime.combine(date.today() - timedelta(days=30), new_day)
+	start_day = end_day - timedelta(days=31)
 	reviews, _ =  get_reviews_and_retention(start_day, end_day)
 	return reviews
 
