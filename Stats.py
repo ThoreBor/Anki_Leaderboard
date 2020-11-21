@@ -18,6 +18,7 @@ def Stats(season_start, season_end):
 	league_reviews, league_retention = league_reviews_and_retention(season_start, season_end)
 	league_time = league_time_spend(season_start, season_end)
 
+	print(Streak, total_cards, time_today, cards_past_30_days, retention, league_reviews, league_time, league_retention)
 	return(Streak, total_cards, time_today, cards_past_30_days, retention, league_reviews, league_time, league_retention)
 
 
@@ -34,13 +35,13 @@ def get_reviews_and_retention(start_date, end_date):
     return reviews, retention
 
 def get_time_spend(start_date, end_date):
-    start = int(start_date.timestamp()*1000)
-    end = int(end_date.timestamp()*1000)
+	start = int(start_date.timestamp()*1000)
+	end = int(end_date.timestamp()*1000)
     
-    time = mw.col.db.scalar("SELECT SUM(time) FROM revlog WHERE id >= ? AND id < ?", start, end)
-    time = round(time / 60000, 1)
-    return time
-
+	time = mw.col.db.scalar("SELECT SUM(time) FROM revlog WHERE id >= ? AND id < ?", start, end)
+	if not time or time <= 0:
+		return 0
+	return round(time / 60000, 1)
 
 ###LEADERBOARD###
 
@@ -49,7 +50,7 @@ def streak(config, new_day, time_now):
 	date_list = []
 	Streak = 0
 
-	date_list = mw.col.db.list("SELECT DISTINCT strftime('%Y-%m-%d',datetime((id-?)/1000, 'unixepoch')) FROM revlog ORDER BY id DESC;", new_day_shift_in_ms)
+	date_list = mw.col.db.list("SELECT DISTINCT strftime('%Y-%m-%d %H',datetime((id-?)/1000, 'unixepoch')) FROM revlog ORDER BY id DESC;", new_day_shift_in_ms)
 	
 	if time_now < new_day:
 		start_date = date.today() - timedelta(days=1)
@@ -59,10 +60,29 @@ def streak(config, new_day, time_now):
 	end_date = date(2006, 10, 15)
 	delta = timedelta(days=1)
 	while start_date >= end_date:
-		if start_date.strftime("%Y-%m-%d") in date_list:
-			Streak = Streak + 1
+		# The Anki day does not match the date day. For example the user might have set the next Anki day
+		# to be at 2 AM their local time. This has edge cases like the following:
+		#
+		# Reviews:           X     X
+		# Anki day:     [   day 0   ][   day 1   ][   day 2   ]
+		# Date day:  [   day 0   ][   day 1   ][   day2   ]
+		#
+		#
+		# Reviews:            X                 X
+		# Anki day:     [   day 0   ][   day 1   ][   day 2   ]
+		# Date day:  [   day 0   ][   day 1   ][   day2   ]
+		#
+		# As currently only an hourly offset can be selected, not only the date, but 
+		# the hours have to be considered
+		base = datetime.datetime.combine(start_date, new_day)
+		for hours in range(24):
+			if (base+timedelta(hours=hours)).strftime("%Y-%m-%d %H") in date_list:
+				break
 		else:
+			#Nothing in list for 24 hours? Streak ends here
 			break
+
+		Streak = Streak + 1
 		start_date -= delta
 
 	return Streak
