@@ -78,6 +78,17 @@ class start_main(QDialog):
 		self.dialog.League.doubleClicked.connect(lambda: self.user_info(self.dialog.League))
 		self.dialog.League.setToolTip("Double click on user for more info.")
 		self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
+
+		### RESIZE ###
+		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard]
+		for l in lb_list:
+			header = l.horizontalHeader()   
+			header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+			header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+			header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+			header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+			header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+			header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
 		
 		self.load_leaderboard()
 
@@ -107,8 +118,6 @@ class start_main(QDialog):
 		item = QtWidgets.QTableWidgetItem()
 		item.setData(QtCore.Qt.DisplayRole, retention)
 		tab.setItem(rowPosition, 5, item)
-
-		tab.resizeColumnsToContents()
 		
 	def load_leaderboard(self):
 
@@ -217,15 +226,16 @@ class start_main(QDialog):
 			except:
 				retention = ""
 				
-			for i in medal_users:
-				if username in i:
-					username = f"{username} |"
-					if i[1] > 0:
-						username = f"{username} {i[1] if i[1] != 1 else ''}🥇"
-					if i[2] > 0:
-						username = f"{username} {i[2] if i[2] != 1 else ''}🥈"
-					if i[3] > 0:
-						username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
+			if config["show_medals"] == True:
+				for i in medal_users:
+					if username in i:
+						username = f"{username} |"
+						if i[1] > 0:
+							username = f"{username} {i[1] if i[1] != 1 else ''}🥇"
+						if i[2] > 0:
+							username = f"{username} {i[2] if i[2] != 1 else ''}🥈"
+						if i[3] > 0:
+							username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
 
 			if sync_date > start_day and username.split(" |")[0] not in config["hidden_users"]:
 				counter += 1

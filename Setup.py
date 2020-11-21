@@ -38,6 +38,7 @@ class start_setup(QDialog):
 		self.dialog.autosync.setChecked(bool(config["autosync"]))
 		self.dialog.maxUsers.setValue(config["maxUsers"])
 		self.dialog.lb_focus.setChecked(bool(config["focus_on_user"]))
+		self.dialog.medals.setChecked(bool(config["show_medals"]))
 		if config["sortby"] == "Time_Spend":
 			self.dialog.sortby.setCurrentText("Time")
 		if config["sortby"] == "Month":
@@ -79,15 +80,14 @@ class start_setup(QDialog):
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
 		self.dialog.newday.valueChanged.connect(self.set_time)
 		self.dialog.joinGroup.clicked.connect(self.join_group)
-		#self.dialog.subject.currentTextChanged.connect(self.set_subject)
 		self.dialog.add_newGroup.clicked.connect(self.create_new_group)
-		#self.dialog.newGroup.returnPressed.connect(self.create_new_group)
 		self.dialog.manageSave.clicked.connect(self.manage_group)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
 		self.dialog.Default_Tab.currentTextChanged.connect(self.set_default_tab)
 		self.dialog.sortby.currentTextChanged.connect(self.set_sortby)
 		self.dialog.scroll.stateChanged.connect(self.set_scroll)
 		self.dialog.refresh.stateChanged.connect(self.set_refresh)
+		self.dialog.medals.stateChanged.connect(self.set_medals)
 		self.dialog.import_friends.clicked.connect(self.import_list)
 		self.dialog.export_friends.clicked.connect(self.export_list)
 		self.dialog.unhideButton.clicked.connect(self.unhide)
@@ -324,6 +324,17 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 			focus = False
 		write_config("focus_on_user", focus)
 		if config["homescreen"] == True:
+			leaderboard_on_deck_browser()
+
+	def set_medals(self):
+		config = mw.addonManager.getConfig(__name__)
+		if self.dialog.medals.isChecked():
+			medals = True
+		else:
+			medals = False
+		write_config("show_medals", medals)
+		if config["homescreen"] == True:
+			write_config("homescreen_data", [])
 			leaderboard_on_deck_browser()
 
 	def import_list(self):

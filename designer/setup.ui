@@ -378,6 +378,13 @@ Sorting will be disabled</string>
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="medals">
+         <property name="text">
+          <string>Show league medals next to username</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string>Home screen</string>

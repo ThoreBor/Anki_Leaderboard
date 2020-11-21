@@ -37,17 +37,19 @@ def load_league(self, colors):
 		time_spend = i[3]
 		retention = i[4]
 		league_name = i[5]
+
 		if i[6]:
 			history = json.loads(i[6])
 			if history["gold"] != 0 or history["silver"] != 0 or history["bronze"] != 0:
 				medal_users.append([username, history["gold"], history["silver"], history["bronze"]])
+			if config["show_medals"] == True:
 				username = f"{username} |"
-			if history["gold"] > 0:
-				username = f"{username} {history['gold'] if history['gold'] != 1 else ''}🥇"
-			if history["silver"] > 0:
-				username = f"{username} {history['silver'] if history['silver'] != 1 else ''}🥈"
-			if history["bronze"] > 0:
-				username = f"{username} {history['bronze'] if history['bronze'] != 1 else ''}🥉"
+				if history["gold"] > 0:
+					username = f"{username} {history['gold'] if history['gold'] != 1 else ''}🥇"
+				if history["silver"] > 0:
+					username = f"{username} {history['silver'] if history['silver'] != 1 else ''}🥈"
+				if history["bronze"] > 0:
+					username = f"{username} {history['bronze'] if history['bronze'] != 1 else ''}🥉"
 
 		if league_name == user_league_name and xp != 0:
 			counter += 1
@@ -61,8 +63,6 @@ def load_league(self, colors):
 			self.dialog.League.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(reviews)))
 			self.dialog.League.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(str(time_spend)))
 			self.dialog.League.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(retention)))
-
-			#self.dialog.League.resizeColumnsToContents()
 
 			if username.split(" |")[0] in config['friends']:
 				for j in range(self.dialog.League.columnCount()):

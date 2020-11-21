@@ -57,15 +57,16 @@ def getData():
 			except:
 				retention = ""
 
-			for i in medal_users:
-				if username in i:
-					username = f"{username} |"
-					if i[1] > 0:
-						username = f"{username} {i[1] if i[1] != 1 else ''}🥇"
-					if i[2] > 0:
-						username = f"{username} {i[2] if i[2] != 1 else ''}🥈"
-					if i[3] > 0:
-						username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
+			if config["show_medals"] == True:
+				for i in medal_users:
+					if username in i:
+						username = f"{username} |"
+						if i[1] > 0:
+							username = f"{username} {i[1] if i[1] != 1 else ''}🥇"
+						if i[2] > 0:
+							username = f"{username} {i[2] if i[2] != 1 else ''}🥈"
+						if i[3] > 0:
+							username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
 			
 			if sync_date > start_day and username not in config["hidden_users"]:
 				if config["tab"] == 0:

@@ -315,7 +315,7 @@ def getUserinfo(request):
     c = conn.cursor()
     user = request.POST.get("user", None)
     u1 = c.execute("SELECT Country, Subject FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
-    u2 = c.execute("SELECT league FROM League WHERE username = (?)", (user,)).fetchone()
+    u2 = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
     return HttpResponse(json.dumps(u1 + u2))
 
 def season(request):

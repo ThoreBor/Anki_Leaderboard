@@ -19,5 +19,6 @@
 	"focus_on_user": false, 
 	"import_error": true, 
 	"homescreen_data": [],
-	"medal_users": []
+	"medal_users": [],
+	"show_medals": true
 }

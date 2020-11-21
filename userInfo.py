@@ -1,7 +1,10 @@
 from aqt.qt import *
 from aqt.utils import showWarning, tooltip
-import requests
 from aqt import mw
+
+import requests
+import json
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .forms import user_info
 from .config_manager import write_config
@@ -29,7 +32,10 @@ class start_user_info(QDialog):
 			data = []
 			showWarning("Timeout error [user_info] - No internet connection, or server response took too long.", title="Leaderboard error")
 
-		self.dialog.status_message.setMarkdown(data[0])
+		if data[0]:
+			self.dialog.status_message.setMarkdown(data[0])
+		else:
+			pass
 
 		url = 'https://ankileaderboard.pythonanywhere.com/getUserinfo/'
 		data = {"user": self.user_clicked}
@@ -43,6 +49,38 @@ class start_user_info(QDialog):
 			data[0] = None
 		if data[1] == "Custom":
 			data[1] = None
+		if data[3]:
+			medals = ""
+			history = json.loads(data[3])
+			results = history["results"]
+			if history["gold"] > 0:
+				medals = f"{medals} {history['gold'] if history['gold'] != 1 else ''}🥇"
+			if history["silver"] > 0:
+				medals = f"{medals} {history['silver'] if history['silver'] != 1 else ''}🥈"
+			if history["bronze"] > 0:
+				medals = f"{medals} {history['bronze'] if history['bronze'] != 1 else ''}🥉"
+			self.dialog.medals_label.setText(f"Medals: {medals}")
+			index = 0
+			for i in results["leagues"]:
+				rowPosition = self.dialog.history.rowCount()
+				self.dialog.history.insertRow(rowPosition)
+				
+				self.dialog.history.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(str(i)))
+
+				item = QtWidgets.QTableWidgetItem()
+				item.setData(QtCore.Qt.DisplayRole, int(results["seasons"][index]))
+				self.dialog.history.setItem(rowPosition, 2, item)
+
+				item = QtWidgets.QTableWidgetItem()
+				item.setData(QtCore.Qt.DisplayRole, int(results["xp"][index]))
+				self.dialog.history.setItem(rowPosition, 1, item)
+
+				item = QtWidgets.QTableWidgetItem()
+				item.setData(QtCore.Qt.DisplayRole, int(results["rank"][index]))
+				self.dialog.history.setItem(rowPosition, 0, item)
+
+				index += 1
+			self.dialog.history.resizeColumnsToContents()
 
 		self.dialog.country_label.setText(f"Country: {data[0]}")
 		self.dialog.group_label.setText(f"Group: {data[1]}")
@@ -85,6 +123,4 @@ class start_user_info(QDialog):
 			else:
 				showWarning(str(x.text))
 		except:
-			showWarning("Timeout error [banUser] - No internet connection, or server response took too long.", title="Leaderboard error")		
-
-
+			showWarning("Timeout error [banUser] - No internet connection, or server response took too long.", title="Leaderboard error")
