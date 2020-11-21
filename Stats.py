@@ -18,7 +18,6 @@ def Stats(season_start, season_end):
 	league_reviews, league_retention = league_reviews_and_retention(season_start, season_end)
 	league_time = league_time_spend(season_start, season_end)
 
-	print(Streak, total_cards, time_today, cards_past_30_days, retention, league_reviews, league_time, league_retention)
 	return(Streak, total_cards, time_today, cards_past_30_days, retention, league_reviews, league_time, league_retention)
 
 
