@@ -49,7 +49,7 @@ def streak(config, new_day, time_now):
 	date_list = []
 	Streak = 0
 
-	date_list = mw.col.db.list("SELECT DISTINCT strftime('%Y-%m-%d %H',datetime((id-?)/1000, 'unixepoch')) FROM revlog ORDER BY id DESC;", new_day_shift_in_ms)
+	date_list = mw.col.db.list("SELECT DISTINCT strftime('%Y-%m-%d', datetime((id-?)/1000, 'unixepoch')) FROM revlog ORDER BY id DESC;", new_day_shift_in_ms)
 	
 	if time_now < new_day:
 		start_date = date.today() - timedelta(days=1)
@@ -59,28 +59,8 @@ def streak(config, new_day, time_now):
 	end_date = date(2006, 10, 15)
 	delta = timedelta(days=1)
 	while start_date >= end_date:
-		# The Anki day does not match the date day. For example the user might have set the next Anki day
-		# to be at 2 AM their local time. This has edge cases like the following:
-		#
-		# Reviews:           X     X
-		# Anki day:     [   day 0   ][   day 1   ][   day 2   ]
-		# Date day:  [   day 0   ][   day 1   ][   day2   ]
-		#
-		#
-		# Reviews:            X                 X
-		# Anki day:     [   day 0   ][   day 1   ][   day 2   ]
-		# Date day:  [   day 0   ][   day 1   ][   day2   ]
-		#
-		# As currently only an hourly offset can be selected, not only the date, but 
-		# the hours have to be considered
-		base = datetime.datetime.combine(start_date, new_day)
-		for hours in range(24):
-			if (base+timedelta(hours=hours)).strftime("%Y-%m-%d %H") in date_list:
-				break
-		else:
-			#Nothing in list for 24 hours? Streak ends here
-			break
-
+		if not start_date.strftime("%Y-%m-%d") in date_list:
+			break	
 		Streak = Streak + 1
 		start_date -= delta
 
