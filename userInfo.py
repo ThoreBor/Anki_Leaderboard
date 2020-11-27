@@ -45,6 +45,12 @@ class start_user_info(QDialog):
 			data = []
 			showWarning("Timeout error [user_info] - No internet connection, or server response took too long.", title="Leaderboard error")
 
+		header = self.dialog.history.horizontalHeader()   
+		header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+		header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+		header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+		header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+
 		if data[0] == "Country":
 			data[0] = None
 		if data[1] == "Custom":
@@ -80,7 +86,6 @@ class start_user_info(QDialog):
 				self.dialog.history.setItem(rowPosition, 0, item)
 
 				index += 1
-			self.dialog.history.resizeColumnsToContents()
 
 		self.dialog.country_label.setText(f"Country: {data[0]}")
 		self.dialog.group_label.setText(f"Group: {data[1]}")
