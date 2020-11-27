@@ -239,6 +239,7 @@ def on_deck_browser_will_render_content(overview, content):
 				<th>Minutes</th>
 				<th>Reviews</th>
 				<th>Retention</th>
+				<th>Days learned</th>
 			</tr>
 		"""
 		table_content = ""

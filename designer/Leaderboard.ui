@@ -69,6 +69,9 @@
           <property name="text">
            <string>Reviews today</string>
           </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
          </column>
          <column>
           <property name="text">
@@ -82,7 +85,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 31 days</string>
+           <string>Past 31 days</string>
           </property>
          </column>
          <column>
@@ -144,7 +147,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 31 days</string>
+           <string>Past 31 days</string>
           </property>
          </column>
          <column>
@@ -206,7 +209,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 31 days</string>
+           <string>Past 31 days</string>
           </property>
          </column>
          <column>
@@ -268,7 +271,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Reviews past 31 days</string>
+           <string>Past 31 days</string>
           </property>
          </column>
          <column>
@@ -357,7 +360,12 @@
            </column>
            <column>
             <property name="text">
-             <string>Retention</string>
+             <string>Retention %</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Days learned %</string>
             </property>
            </column>
           </widget>

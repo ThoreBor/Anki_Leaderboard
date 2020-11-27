@@ -55,14 +55,20 @@ def load_league(self, colors):
 			counter += 1
 
 			rowPosition = self.dialog.League.rowCount()
-			self.dialog.League.setColumnCount(5)
+			self.dialog.League.setColumnCount(6)
 			self.dialog.League.insertRow(rowPosition)
 
-			self.dialog.League.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
-			self.dialog.League.setItem(rowPosition , 1, QtWidgets.QTableWidgetItem(str(xp)))
-			self.dialog.League.setItem(rowPosition , 2, QtWidgets.QTableWidgetItem(str(reviews)))
-			self.dialog.League.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(str(time_spend)))
-			self.dialog.League.setItem(rowPosition , 4, QtWidgets.QTableWidgetItem(str(retention)))
+			self.dialog.League.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(str(username)))
+			self.dialog.League.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(str(xp)))
+			self.dialog.League.item(rowPosition, 1).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(str(reviews)))
+			self.dialog.League.item(rowPosition, 2).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(str(time_spend)))
+			self.dialog.League.item(rowPosition, 3).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(retention)))
+			self.dialog.League.item(rowPosition, 4).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str("N/A")))
+			self.dialog.League.item(rowPosition, 5).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 			if username.split(" |")[0] in config['friends']:
 				for j in range(self.dialog.League.columnCount()):

@@ -80,15 +80,15 @@ class start_main(QDialog):
 		self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
 
 		### RESIZE ###
-		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard]
+		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 		for l in lb_list:
 			header = l.horizontalHeader()   
 			header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-			header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-			header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
-			header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-			header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-			header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+			header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+			header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+			header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+			header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
+			header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
 		
 		self.load_leaderboard()
 
@@ -102,22 +102,27 @@ class start_main(QDialog):
 		item = QtWidgets.QTableWidgetItem()
 		item.setData(QtCore.Qt.DisplayRole, int(cards))
 		tab.setItem(rowPosition, 1, item)
+		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
 		item.setData(QtCore.Qt.DisplayRole, float(time))
 		tab.setItem(rowPosition, 2, item)
+		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
 		item.setData(QtCore.Qt.DisplayRole, int(streak))
 		tab.setItem(rowPosition, 3, item)
+		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
 		item.setData(QtCore.Qt.DisplayRole, month)
 		tab.setItem(rowPosition, 4, item)
+		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
 		item.setData(QtCore.Qt.DisplayRole, retention)
 		tab.setItem(rowPosition, 5, item)
+		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		
 	def load_leaderboard(self):
 
