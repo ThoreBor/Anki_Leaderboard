@@ -83,7 +83,7 @@ class start_main(QDialog):
 		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 		for l in lb_list:
 			header = l.horizontalHeader()   
-			header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+			header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
 			header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
 			header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
 			header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
@@ -133,12 +133,12 @@ class start_main(QDialog):
 		config5 = config['subject'].replace(" ", "")
 		config6 = config['country'].replace(" ", "")
 
-		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention = Stats(self.season_start, self.season_end)
+		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(self.season_start, self.season_end)
 
 		if datetime.datetime.now() < self.season_end:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 			"Month": cards_past_30_days, "Country": config6, "Retention": retention,
-			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
+			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
 			"Token_v3": config["token"], "Version": config["version"]}
 		else:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),

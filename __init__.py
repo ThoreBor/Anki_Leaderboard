@@ -78,12 +78,12 @@ def background_sync():
 	config5 = config['subject'].replace(" ", "")
 	config6 = config['country'].replace(" ", "")
 
-	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention = Stats(season_start, season_end)
+	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(season_start, season_end)
 
 	if datetime.datetime.now() < season_end:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config6, "Retention": retention,
-		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention,
+		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
 		"Token_v3": config["token"], "Version": config["version"]}
 	else:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),

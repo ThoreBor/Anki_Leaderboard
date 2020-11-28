@@ -105,6 +105,9 @@ def getData():
 			time_spend = i[3]
 			retention = i[4]
 			league_name = i[5]
+			if i[7]:
+				days_learned = i[7]
+			else: days_learned = "n/a"
 
 			for i in medal_users:
 				if username in i:
@@ -118,7 +121,7 @@ def getData():
 
 			if league_name == user_league_name and xp != 0:
 				counter += 1
-				lb_list.append([counter, username, xp, reviews, time_spend, retention])
+				lb_list.append([counter, username, xp, reviews, time_spend, retention, days_learned])
 
 	write_config("homescreen_data", lb_list)
 	return lb_list
@@ -253,7 +256,7 @@ def on_deck_browser_will_render_content(overview, content):
 				<td style="text-align:right">{i[3]}</td>
 				<td style="text-align:right">{i[4]}</td>
 				<td style="text-align:right">{i[5]}%</td>
-				<td style="text-align:right">N/A</td>
+				<td style="text-align:right">{i[6]}%</td>
 			</tr>
 			"""
 

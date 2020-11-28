@@ -141,13 +141,14 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 		else:
 			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 
-			streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention = Stats(self.season_start, self.season_end)
+			streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(self.season_start, self.season_end)
 			config5 = config['subject'].replace(" ", "")
 			config6 = config['country'].replace(" ", "")
 
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), 
 			"Month": cards_past_30_days, "Country": config["country"], "Retention": retention,
-			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "Version": config["version"]}
+			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
+			"Version": config["version"]}
 			
 			try:
 				x = requests.post(url, data = data)

@@ -37,6 +37,9 @@ def load_league(self, colors):
 		time_spend = i[3]
 		retention = i[4]
 		league_name = i[5]
+		if i[7]:
+			days_learned = i[7]
+		else: days_learned = "n/a"
 
 		if i[6]:
 			history = json.loads(i[6])
@@ -67,7 +70,7 @@ def load_league(self, colors):
 			self.dialog.League.item(rowPosition, 3).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 			self.dialog.League.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(retention)))
 			self.dialog.League.item(rowPosition, 4).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
-			self.dialog.League.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str("N/A")))
+			self.dialog.League.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str(days_learned)))
 			self.dialog.League.item(rowPosition, 5).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 			if username.split(" |")[0] in config['friends']:

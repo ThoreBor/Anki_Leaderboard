@@ -22,6 +22,7 @@ def sync(request):
 	league_reviews = request.POST.get("league_reviews", 0)
 	league_time = request.POST.get("league_time", 0)
 	league_retention = request.POST.get("league_retention", 0)
+	league_days_learned = request.POST.get("league_days_percent", 0)
 	Update_League = request.POST.get("Update_League", True)
 
 	Token = request.POST.get("Token_v3", None)
@@ -79,6 +80,11 @@ def sync(request):
 	except:
 		return HttpResponse("Error - invalid league_retention value")
 
+	try:
+		float(league_days_learned)
+	except:
+		return HttpResponse("Error - invalid league_days_learned value")
+
 	xp = int((4 * float(league_time) + 2 * int(league_reviews)) * float(league_retention))
 
 	### Commit to database ###
@@ -91,10 +97,10 @@ def sync(request):
 
 			if Update_League == True:
 				if c.execute("SELECT username FROM League WHERE username = (?)", (User,)).fetchone():
-				    c.execute("UPDATE League SET xp = (?), time_spend = (?), reviews = (?), retention = (?) WHERE username = (?) ", (xp, league_time, league_reviews, league_retention, User))
+				    c.execute("UPDATE League SET xp = (?), time_spend = (?), reviews = (?), retention = (?), days_learned = (?) WHERE username = (?) ", (xp, league_time, league_reviews, league_retention, league_days_learned, User))
 				    conn.commit()
 				else:
-				    c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league) VALUES(?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta"))
+				    c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league, days_learned) VALUES(?, ?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta", league_days_learned))
 				    conn.commit()
 
 			print("Updated entry: " + str(User) + " (" + str(Version) + ")")
@@ -110,7 +116,7 @@ def sync(request):
 		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token, Version))
 		conn.commit()
 		if Update_League == True:
-			c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league) VALUES(?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta"))
+			c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league, days_learned) VALUES(?, ?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta", league_days_learned))
 			conn.commit()
 		print("Created new entry: " + str(User))
 		return HttpResponse("Done!")
@@ -139,7 +145,7 @@ def get_data(request):
 def league_data(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, history, days_learned FROM League ORDER BY xp DESC")
 	return HttpResponse(json.dumps(c.fetchall()))
 
 @csrf_exempt
@@ -319,4 +325,4 @@ def getUserinfo(request):
     return HttpResponse(json.dumps(u1 + u2))
 
 def season(request):
-	return HttpResponse(json.dumps([[2020,11,13,0,0,0],[2020,11,27,0,0,0]]))
+	return HttpResponse(json.dumps([[2020,11,27,0,0,0],[2020,12,11,0,0,0]]))
