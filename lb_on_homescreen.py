@@ -208,11 +208,11 @@ def on_deck_browser_will_render_content(overview, content):
 			<tr>
 				<th>#</th>
 				<th>Username</th>
-				<th>Reviews</th>
-				<th>Minutes</th>
-				<th>Streak</th>
-				<th>Past 31 days</th>
-				<th>Retention</th>
+				<th style="text-align:right">Reviews</th>
+				<th style="text-align:right">Minutes</th>
+				<th style="text-align:right">Streak</th>
+				<th style="text-align:right">Past 31 days</th>
+				<th style="text-align:right">Retention</th>
 			</tr>
 		"""
 		table_content = ""
@@ -221,11 +221,11 @@ def on_deck_browser_will_render_content(overview, content):
 			<tr>
 				<td>{i[0]}</td>
 				<td><button style="outline:0 !important; cursor:pointer; border: none; background: none;" type="button" onclick="pycmd('userinfo:{i[1]}')"><b>{i[1]}</b></button></td>
-				<td>{i[2]}</td>
-				<td>{i[3]}</td>
-				<td>{i[4]}</td>
-				<td>{i[5]}</td>
-				<td>{i[6]}%</td>
+				<td style="text-align:right">{i[2]}</td>
+				<td style="text-align:right">{i[3]}</td>
+				<td style="text-align:right">{i[4]}</td>
+				<td style="text-align:right">{i[5]}</td>
+				<td style="text-align:right">{i[6]}%</td>
 			</tr>
 			"""
 	if config["tab"] == 4:
@@ -235,11 +235,11 @@ def on_deck_browser_will_render_content(overview, content):
 			<tr>
 				<th>#</th>
 				<th>Username</th>
-				<th>XP</th>
-				<th>Minutes</th>
-				<th>Reviews</th>
-				<th>Retention</th>
-				<th>Days learned</th>
+				<th style="text-align:right">XP</th>
+				<th style="text-align:right">Minutes</th>
+				<th style="text-align:right">Reviews</th>
+				<th style="text-align:right">Retention</th>
+				<th style="text-align:right">Days learned</th>
 			</tr>
 		"""
 		table_content = ""
@@ -249,10 +249,11 @@ def on_deck_browser_will_render_content(overview, content):
 			<tr>
 				<td>{i[0]}</td>
 				<td><button style="outline:0 !important; cursor:pointer; border: none; background: none;" type="button" onclick="pycmd('userinfo:{i[1]}')"><b>{i[1]}</b></button></td>
-				<td>{i[2]}</td>
-				<td>{i[3]}</td>
-				<td>{i[4]}</td>
-				<td>{i[5]}%</td>
+				<td style="text-align:right">{i[2]}</td>
+				<td style="text-align:right">{i[3]}</td>
+				<td style="text-align:right">{i[4]}</td>
+				<td style="text-align:right">{i[5]}%</td>
+				<td style="text-align:right">N/A</td>
 			</tr>
 			"""
 
