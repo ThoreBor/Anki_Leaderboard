@@ -39,7 +39,8 @@ def load_league(self, colors):
 		league_name = i[5]
 		if i[7]:
 			days_learned = i[7]
-		else: days_learned = "n/a"
+		else:
+			days_learned = "n/a"
 
 		if i[6]:
 			history = json.loads(i[6])

@@ -6,6 +6,10 @@ beta_ranking = []
 gamma_ranking = []
 delta_ranking = []
 
+alpha_zero = []
+beta_zero = []
+gamma_zero = []
+
 SEASON = int(input("Past season:"))
 
 conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
@@ -45,14 +49,24 @@ for row in c.fetchall():
 	xp = row[2]
 
 
-	if league_name == "Alpha" and xp != 0:
-		alpha_ranking.append(user)
-	if league_name == "Beta" and xp != 0:
-		beta_ranking.append(user)
-	if league_name == "Gamma" and xp != 0:
-		gamma_ranking.append(user)
-	if league_name == "Delta" and xp != 0:
-		delta_ranking.append(user)
+	if league_name == "Alpha":
+		if xp != 0:
+			alpha_ranking.append(user)
+		else:
+			alpha_zero.append(user)
+	if league_name == "Beta":
+		if xp != 0:
+			beta_ranking.append(user)
+		else:
+			beta_zero.append(user)
+	if league_name == "Gamma":
+		if xp != 0:
+			gamma_ranking.append(user)
+		else:
+			gamma_zero.append(user)
+	if league_name == "Delta":
+		if xp != 0:
+			delta_ranking.append(user)
 
 counter = 1
 for i in alpha_ranking:
@@ -77,15 +91,21 @@ for i in delta_ranking:
 
 for i in alpha_ranking[-int((len(alpha_ranking) / 100) * 20):]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Beta", i))
+for i in alpha_zero:
+	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Beta", i))
 
 for i in beta_ranking[:int((len(beta_ranking) / 100) * 20)]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Alpha", i))
 for i in beta_ranking[-int((len(beta_ranking) / 100) * 20):]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Gamma", i))
+for i in beta_zero:
+	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Gamma", i))
 
 for i in gamma_ranking[:int((len(gamma_ranking) / 100) * 20)]:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Beta", i))
 for i in gamma_ranking[-int((len(gamma_ranking) / 100) * 20):]:
+	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Delta", i))
+for i in gamma_zero:
 	c.execute("UPDATE League SET league = (?) WHERE username = (?) ", ("Delta", i))
 
 for i in delta_ranking[:int((len(delta_ranking) / 100) * 20)]:
