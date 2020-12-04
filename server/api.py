@@ -38,6 +38,14 @@ def sync(request):
 	if User == "" or len(User) > 15:
 		return HttpResponse("Error - invalid username")
 
+	if "🥇" in User or "🥈" in User or "🥉" in User or "|" in User:
+		print(User)
+		return HttpResponse("""<h3>Error - invalid username</h3>
+			Due to an upcoming update 🥇, 🥈, 🥉 and | aren't allowed in usernames anymore.<br><br>
+			If you already have an account that is affected by this, please write an e-mail
+			to leaderboard_support@protonmail.com or dm me on <a href="https://www.reddit.com/user/Ttime5">Reddit</a> so we can sort this out.
+			Alternatively, you can also create a new account, but keep in mind that this would reset your league progress.""")
+
 	if not Streak.isdigit():
 		return HttpResponse("Error - invalid streak value")
 
