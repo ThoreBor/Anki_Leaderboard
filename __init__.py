@@ -49,6 +49,7 @@ def create_token():
 		write_config("token", token)
 
 def check_info():
+	config = mw.addonManager.getConfig(__name__)
 	try:
 		url = 'https://ankileaderboardinfo.netlify.app'
 		headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 OPR/62.0.3331.116'}
@@ -56,9 +57,10 @@ def check_info():
 		soup = BeautifulSoup(page.content, 'html.parser')
 		if soup.find(id='show_message').get_text() == "True":
 			info = soup.find("div", id="Message")
-			showInfo(str(info), title="Leaderboard")
-		else:
-			pass
+			notification_id = soup.find("div", id="id").get_text()
+			if config["notification_id"] != notification_id:
+				showInfo(str(info), title="Leaderboard")
+				write_config("notification_id", notification_id)
 	except:
 		showWarning("Timeout error [check_info] - No internet connection, or server response took too long.", title="Leaderboard error")
 

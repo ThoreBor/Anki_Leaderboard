@@ -18,7 +18,8 @@
 	"maxUsers": 5, 
 	"focus_on_user": false, 
 	"import_error": true, 
+	"show_medals": true,
+	"notification_id": null,
 	"homescreen_data": [],
-	"medal_users": [],
-	"show_medals": true
+	"medal_users": []
 }
