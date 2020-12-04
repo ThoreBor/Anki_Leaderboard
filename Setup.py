@@ -13,6 +13,7 @@ from .forms import setup
 from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
+from .version import version
 
 class start_setup(QDialog):
 	def __init__(self, season_start, season_end, parent=None):
@@ -100,14 +101,14 @@ class start_setup(QDialog):
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
 
 		about_text = f"""
-<h2>Anki Leaderboard {config["version"]}</h2>
+<h2>Anki Leaderboard {version}</h2>
 This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, 
 current streak, reviews in the past 31 days, and retention. You can also compete against friends, join a group, 
 and join a country leaderboard. You'll only see users, that synced on the same day as you.<br><br>
-In the leagues' tab you see everyone that synced at least once during the current season. There are four leagues
-(Alpha, Beta, Gamma, and Delta let me know if you think of something better). A season lasts two weeks. You don't have to sync every day.
-XP are being calculated based on the number of reviews, time spend studying, and average retention since the start of the season. At the end of each
-season, the first 20% of each league will get to the next league, the last 20% will drop a league.<br><br>
+In the league tab you see everyone that synced at least once during the current season. There are four leagues
+(Alpha, Beta, Gamma, and Delta). A season lasts two weeks. You don't have to sync every day.
+The XP formula is:<br><code>XP = days studied percentage x ((6 x time) + (2 x reviews x retention))</code><br>
+At the end of each season the top 20% will be promoted, and the last 20% will be relegated.<br><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
 It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">Anki Web.</a><br><br>
@@ -115,14 +116,26 @@ You can also check the leaderboard (past 24 hours) on this <a href="https://anki
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Person icon made by <a href="https://www.flaticon.com/de/autoren/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
 <div>Confetti gif from <a href="https://giphy.com/stickers/giphycam-rainbow-WNJATm9pwnjpjI1i0g">Giphy</a></div>
-<h3>Change Log:</h3>
-- join group bug fix
-<br><br>
+<br>
 <b>© Thore Tyborski 2020<br><br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
 <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.</b><br><br>
 Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/user/Ttime5">Reddit</a> or 
 <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a>.
+<br>
+<h3>Change Log:</h3>
+- fix odd number bug on home screen leaderboard<br>
+- reduced home screen leaderboard server requests (improves performance)<br>
+- home screen leaderboard users are clickable (for more info about user)<br>
+- top three users of each league will get a medal that can be shown next to username (optional) and will appear in the profile (starting from season 4)<br>
+- season results are being saved now for each user and appears in their profile (starting from season 4)<br>
+- "🥇", "🥈", "🥉" and "|" aren't allowed in usernames anymore<br>
+- minor ui changes<br>
+- improve efficiency of statistical calculations (improves performance)<br>
+- added "days studied" (in current season) to league tab (a day counts when the user studied for at least 10 minutes)<br>
+- users with 0 XP will be relegated in addition to the last 20%<br>
+- notifications (server downtime, updates etc.) will only be shown once<br>
+- new XP formula: <code>XP = days studied percentage x ((6 x time) + (2 x reviews x retention))</code> <b>starting from season 6<b>
 """
 
 		self.dialog.about_text.setHtml(about_text)
@@ -148,7 +161,7 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), 
 			"Month": cards_past_30_days, "Country": config["country"], "Retention": retention,
 			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-			"Version": config["version"]}
+			"Version": version}
 			
 			try:
 				x = requests.post(url, data = data)

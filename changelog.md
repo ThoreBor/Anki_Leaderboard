@@ -11,7 +11,7 @@
 - added "days studied" (in current season) to league tab (a day counts when the user studied for at least 10 minutes)
 - users with 0 XP will be relegated in addition to the last 20%
 - notifications (server downtime, updates etc.) will only be shown once
-- new XP formula: `XP = days studied percentage x ((6 x Time) + (2 x Reviews x retention))` __starting from season 6__
+- new XP formula: `XP = days studied percentage x ((6 x time) + (2 x reviews x retention))` __starting from season 6__
 
 ## v1.6.2
 - join group bug fix

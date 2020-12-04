@@ -17,6 +17,7 @@ from .config_manager import write_config
 from .League import load_league
 from .userInfo import start_user_info
 from .lb_on_homescreen import leaderboard_on_deck_browser
+from .version import version
 
 try:
 	nightmode = mw.pm.night_mode()
@@ -140,11 +141,11 @@ class start_main(QDialog):
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 			"Month": cards_past_30_days, "Country": config6, "Retention": retention,
 			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-			"Token_v3": config["token"], "Version": config["version"]}
+			"Token_v3": config["token"], "Version": version}
 		else:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 			"Month": cards_past_30_days, "Country": config6, "Retention": retention, "Update_League": False,
-			"Token_v3": config["token"], "Version": config["version"]}
+			"Token_v3": config["token"], "Version": version}
 
 		try:
 			x = requests.post(url, data = data, timeout=20)

@@ -14,6 +14,7 @@ from .Setup import start_setup
 from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
+from .version import version
 
 def Main():
 	check_info()
@@ -86,11 +87,11 @@ def background_sync():
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config6, "Retention": retention,
 		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-		"Token_v3": config["token"], "Version": config["version"]}
+		"Token_v3": config["token"], "Version": version}
 	else:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config6, "Retention": retention, "Update_League": False,
-		"Token_v3": config["token"], "Version": config["version"]}
+		"Token_v3": config["token"], "Version": version}
 
 	try:
 		x = requests.post(url, data = data, timeout=20)
@@ -99,7 +100,6 @@ def background_sync():
 		else:
 			showWarning(str(x.text))
 	except:
-		mw.progress.finish()
 		showWarning("Timeout error [background_sync] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	if config["homescreen"] == True:
