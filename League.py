@@ -24,7 +24,7 @@ def load_league(self, colors):
 	for i in data:
 		if config["username"] in i:
 			user_league_name = i[5]
-			self.dialog.league_label.setText(user_league_name)
+			self.dialog.league_label.setText(f"{user_league_name}: {self.current_season}")
 
 	### BUILD TABLE ###
 

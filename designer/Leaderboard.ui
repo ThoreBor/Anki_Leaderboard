@@ -365,7 +365,7 @@
            </column>
            <column>
             <property name="text">
-             <string>Days learned %</string>
+             <string>Days studied %</string>
             </property>
            </column>
           </widget>

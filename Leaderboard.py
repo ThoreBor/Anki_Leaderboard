@@ -30,10 +30,11 @@ colors = colors_themes["dark"] if nightmode else colors_themes["light"]
 
 
 class start_main(QDialog):
-	def __init__(self, season_start, season_end, parent=None):
+	def __init__(self, season_start, season_end, current_season, parent=None):
 		self.parent = parent
 		self.season_start = season_start
 		self.season_end = season_end
+		self.current_season = current_season
 		self.first_three_global = []
 		self.first_three_friends = []
 		self.first_three_country = []

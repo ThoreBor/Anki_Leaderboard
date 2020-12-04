@@ -22,7 +22,7 @@ def Main():
 	if config["username"] == "":
 		invoke_setup()
 	else:
-		mw.leaderboard = start_main(season_start, season_end)
+		mw.leaderboard = start_main(season_start, season_end, current_season)
 		mw.leaderboard.show()
 		mw.leaderboard.raise_()
 		mw.leaderboard.activateWindow()
@@ -116,6 +116,8 @@ def season():
 		global season_end
 		season_end = season[1]
 		season_end = datetime.datetime(season_end[0],season_end[1],season_end[2],season_end[3],season_end[4],season_end[5])
+		global current_season
+		current_season = season[2]
 	except:
 		season_start = datetime.datetime.now()
 		season_end = datetime.datetime.now()

@@ -325,4 +325,4 @@ def getUserinfo(request):
     return HttpResponse(json.dumps(u1 + u2))
 
 def season(request):
-	return HttpResponse(json.dumps([[2020,11,27,0,0,0],[2020,12,11,0,0,0]]))
+	return HttpResponse(json.dumps([[2020,11,27,0,0,0],[2020,12,11,0,0,0], "Season 5"]))

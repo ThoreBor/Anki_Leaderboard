@@ -1,6 +1,21 @@
 # Change Log
+## v1.6.3
+- fix odd number bug on home screen leaderboard
+- reduced home screen leaderboard server requests (improves performance)
+- home screen leaderboard users are clickable (for more info about user)
+- top three users of each league will get a medal that can be shown next to username (optional) and will appear in the profile (starting from season 4)
+- season results are being saved now for each user and appears in their profile (starting from season 4)
+- "🥇", "🥈", "🥉" and "|" aren't allowed in usernames anymore
+- minor ui changes
+- improve efficiency of statistical calculations (improves performance)
+- added "days studied" (in current season) to league tab (a day counts when the user studied for at least 10 minutes)
+- users with 0 XP will be relegated in addition to the last 20%
+- notifications (server downtime, updates etc.) will only be shown once
+- new XP formula: `XP = days studied percentage x ((6 x Time) + (2 x Reviews x retention))` __starting from season 6__
+
 ## v1.6.2
 - join group bug fix
+
 ## v1.6.1
 - added # column to home screen leaderboard
 - leagues also work on home screen leaderboard now
@@ -9,6 +24,7 @@
 - added password protected groups (Users that requested a new group in v1.6.0 are automatically admins. Groups can only be
 changed in v1.6.1 and future versions. Older versions won't be supported anymore)
 - fixed various bugs
+
 ## v1.6.0
 - added leagues
 - added option to request groups from config
@@ -22,10 +38,12 @@ changed in v1.6.1 and future versions. Older versions won't be supported anymore
 - better timeout error handling
 - more info in about tab
 - display html in notification properly
+
 ## v1.5.4
 - store verification token in config.json
 - fixed delete account bug
 - added "sort by..." to config
+
 ## v1.5.3:
 - fixed verification issue
 - sync version number
