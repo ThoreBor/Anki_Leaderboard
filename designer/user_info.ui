@@ -91,6 +91,17 @@
        </property>
        <column>
         <property name="text">
+         <string>Season</string>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Rank</string>
         </property>
         <property name="font">
@@ -103,17 +114,6 @@
        <column>
         <property name="text">
          <string>XP</string>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Season</string>
         </property>
         <property name="font">
          <font>

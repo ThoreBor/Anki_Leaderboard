@@ -75,15 +75,18 @@ class start_user_info(QDialog):
 
 				item = QtWidgets.QTableWidgetItem()
 				item.setData(QtCore.Qt.DisplayRole, int(results["seasons"][index]))
-				self.dialog.history.setItem(rowPosition, 2, item)
+				self.dialog.history.setItem(rowPosition, 0, item)
+				item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 				item = QtWidgets.QTableWidgetItem()
 				item.setData(QtCore.Qt.DisplayRole, int(results["xp"][index]))
-				self.dialog.history.setItem(rowPosition, 1, item)
+				self.dialog.history.setItem(rowPosition, 2, item)
+				item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 				item = QtWidgets.QTableWidgetItem()
 				item.setData(QtCore.Qt.DisplayRole, int(results["rank"][index]))
-				self.dialog.history.setItem(rowPosition, 0, item)
+				self.dialog.history.setItem(rowPosition, 1, item)
+				item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 				index += 1
 

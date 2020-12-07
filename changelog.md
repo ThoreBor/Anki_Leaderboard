@@ -3,12 +3,12 @@
 - fix odd number bug on home screen leaderboard
 - reduced home screen leaderboard server requests (improves performance)
 - home screen leaderboard users are clickable (for more info about user)
-- top three users of each league will get a medal that can be shown next to username (optional) and will appear in the profile (starting from season 4)
-- season results are being saved now for each user and appears in their profile (starting from season 4)
+- top three users of each league will get a medal that can be shown next to the username (optional) and will appear in the profile (starting from season 4)
+- season results are being saved now for each user and appear in their profile (starting from season 4)
 - "🥇", "🥈", "🥉" and "|" aren't allowed in usernames anymore
 - minor ui changes
-- improve efficiency of statistical calculations (improves performance)
-- added "days studied" (in current season) to league tab (a day counts when the user studied for at least 10 minutes)
+- improve the efficiency of statistical calculations (improves performance)
+- added "days studied" (in the current season) to league tab (a day counts when the user studied for at least 10 minutes)
 - users with 0 XP will be relegated in addition to the last 20%
 - notifications (server downtime, updates etc.) will only be shown once
 - new XP formula: `XP = days studied percentage x ((6 x time) + (2 x reviews x retention))` __starting from season 6__

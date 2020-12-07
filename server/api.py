@@ -39,7 +39,6 @@ def sync(request):
 		return HttpResponse("Error - invalid username")
 
 	if "🥇" in User or "🥈" in User or "🥉" in User or "|" in User:
-		print(User)
 		return HttpResponse("""<h3>Error - invalid username</h3>
 			Due to an upcoming update 🥇, 🥈, 🥉 and | aren't allowed in usernames anymore.<br><br>
 			If you already have an account that is affected by this, please write an e-mail
