@@ -125,7 +125,11 @@ Also thank you to everyone who reported bugs and suggested new features!</b><br>
 Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/user/Ttime5">Reddit</a> or 
 <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a>.
 <h3>Change Log:</h3>
-- fix odd number bug on home screen leaderboard<br>
+<b>{version}:</b><br>
+- streak hotfix<br>
+- increased window width<br>
+<b>v1.6.3:</b><br>
+- fixed odd number bug on home screen leaderboard<br>
 - reduced home screen leaderboard server requests (improves performance)<br>
 - home screen leaderboard users are clickable (for more info about user)<br>
 - top three users of each league will get a medal that can be shown next to the username (optional) and will appear in the profile (starting from season 4)<br>

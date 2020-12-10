@@ -50,7 +50,18 @@ def streak(config, new_day, time_now):
 	date_list = []
 	Streak = 0
 
-	date_list = mw.col.db.list("SELECT DISTINCT strftime('%Y-%m-%d', datetime((id-?)/1000, 'unixepoch')) FROM revlog ORDER BY id DESC;", new_day_shift_in_ms)
+	date_list = mw.col.db.list("SELECT DISTINCT strftime('%Y-%m-%d', datetime((id - ?) / 1000, 'unixepoch', 'localtime')) FROM revlog ORDER BY id DESC;", new_day_shift_in_ms)
+	
+	# Alternative if above doesn't work?
+	# date_list = mw.col.db.list("SELECT DISTINCT strftime('%Y-%m-%d-%H', datetime(id / 1000, 'unixepoch', 'localtime')) FROM revlog ORDER BY id DESC")
+	# for i in date_list:
+	# 	date_split = i.split("-")
+	# 	if int(date_split[3]) < config["newday"]:
+	# 		old_date = datetime.date(int(date_split[0]), int(date_split[1]), int(date_split[2]))
+	# 		new_date = old_date - datetime.timedelta(1)
+	# 		date_list[date_list.index(i)] = str(new_date)
+	# 	else:
+	# 		date_list[date_list.index(i)] = str(datetime.date(int(date_split[0]), int(date_split[1]), int(date_split[2])))
 	
 	if time_now < new_day:
 		start_date = date.today() - timedelta(days=1)

@@ -1,6 +1,10 @@
 # Change Log
+## v1.6.3.1
+- streak hotfix
+- increased window width
+
 ## v1.6.3
-- fix odd number bug on home screen leaderboard
+- fixed odd number bug on home screen leaderboard
 - reduced home screen leaderboard server requests (improves performance)
 - home screen leaderboard users are clickable (for more info about user)
 - top three users of each league will get a medal that can be shown next to the username (optional) and will appear in the profile (starting from season 4)
