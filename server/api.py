@@ -94,22 +94,22 @@ def sync(request):
 
 	### XP ###
 
-	if league_retention >= 85:
-		retention_bonus = 100
-	if league_retention < 85 and league_retention >= 70:
+	if float(league_retention) >= 85:
+	    retention_bonus = 100
+	if float(league_retention) < 85 and float(league_retention) >= 70:
 		retention_bonus = 85
-	if league_retention < 70 and league_retention >= 55:
+	if float(league_retention) < 70 and float(league_retention) >= 55:
 		retention_bonus = 70
-	if league_retention < 55 and league_retention >= 40:
+	if float(league_retention) < 55 and float(league_retention) >= 40:
 		retention_bonus = 55
-	if league_retention < 40 and league_retention >= 25:
+	if float(league_retention) < 40 and float(league_retention) >= 25:
 		retention_bonus = 40
-	if league_retention < 25 and league_retention >= 10:
+	if float(league_retention) < 25 and float(league_retention) >= 10:
 		retention_bonus = 25
-	else:
+	if float(league_retention) < 10:
 		retention_bonus = 0
-	
-	xp = int(float(league_days_learned) * ((6 * float(league_time)) + (2 * int(league_reviews) * int(retention_bonus))))
+
+	xp = int(float(league_days_learned) * ((6 * float(league_time)) + (2 * int(league_reviews) * float(retention_bonus))))
 
 	### Commit to database ###
 
@@ -353,4 +353,4 @@ def getUserinfo(request):
     return HttpResponse(json.dumps(u1 + u2))
 
 def season(request):
-	return HttpResponse(json.dumps([[2020,11,27,0,0,0],[2020,12,11,0,0,0], "Season 5"]))
+	return HttpResponse(json.dumps([[2020,12,11,0,0,0],[2020,12,25,0,0,0], "Season 6"]))
