@@ -16,6 +16,14 @@ conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Le
 #conn = sqlite3.connect('Leaderboard.db')
 c = conn.cursor()
 
+alpha = c.execute("SELECT * FROM League WHERE league = 'Alpha' ").fetchall()
+beta = c.execute("SELECT * FROM League WHERE league = 'Beta' ").fetchall()
+gamma = c.execute("SELECT * FROM League WHERE league = 'Gamma' ").fetchall()
+delta = c.execute("SELECT * FROM League WHERE league = 'Delta' ").fetchall()
+
+print(f"Alpha: {len(alpha)} \nBeta: {len(beta)} \nGamma: {len(gamma)} \nDelta: {len(delta)}")
+print("")
+
 def rewrite_history(username, league, counter):
 	data = c.execute("SELECT xp, history FROM League WHERE username = (?)", (username,)).fetchone()
 	xp = data[0]

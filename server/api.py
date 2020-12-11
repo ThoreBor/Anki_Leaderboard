@@ -92,7 +92,24 @@ def sync(request):
 	except:
 		return HttpResponse("Error - invalid league_days_learned value")
 
-	xp = int((4 * float(league_time) + 2 * int(league_reviews)) * float(league_retention))
+	### XP ###
+
+	if league_retention >= 85:
+		retention_bonus = 100
+	if league_retention < 85 and league_retention >= 70:
+		retention_bonus = 85
+	if league_retention < 70 and league_retention >= 55:
+		retention_bonus = 70
+	if league_retention < 55 and league_retention >= 40:
+		retention_bonus = 55
+	if league_retention < 40 and league_retention >= 25:
+		retention_bonus = 40
+	if league_retention < 25 and league_retention >= 10:
+		retention_bonus = 25
+	else:
+		retention_bonus = 0
+	
+	xp = int(float(league_days_learned) * ((6 * float(league_time)) + (2 * int(league_reviews) * int(retention_bonus))))
 
 	### Commit to database ###
 
@@ -118,7 +135,11 @@ def sync(request):
 			r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
 			r.redditor('Ttime5').message('Verification Error', "Username: " + str(User) + "\n" + "Token: " + str(Token) + "\n" + str(t[1]) + "\n" + "Version: " + str(Version))
 			print("Verification error: " + str(User))
-			return HttpResponse("<h3>Error - invalid token</h3>The verification token you send doesn't match the one in the database. Make sure that you're using the newest version. <br><br>If you recently changed devices, you need to copy your old meta.json file into the leaderboard add-on folder of your new device.<br><br>If you think that this error is a bug, please open a new issue on <a href='https://github.com/ThoreBor/Anki_Leaderboard/issues'>GitHub</a>, contact me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a> or send an email to leaderboard_support@protonmail.com.")
+			return HttpResponse("""<h3>Error - invalid token</h3>
+			The verification token you sent doesn't match the one in the database.
+			Make sure that you're using the newest version.<br><br>
+			If you recently changed devices, you need to copy your old meta.json file into the leaderboard add-on folder of your new device.<br><br>
+			If you need help, please contact me via <a href='https://www.reddit.com/user/Ttime5'>Reddit</a> or send an email to leaderboard_support@protonmail.com.""")
 	else:
 		c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (User, Streak, Cards, Time, Sync_Date, Month, Country, Retention, Token, Version))
 		conn.commit()
@@ -176,7 +197,7 @@ def delete(request):
 def create_group(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	Group_Name = request.POST.get("Group_Name", None)
+	Group_Name = request.POST.get("Group_Name", None).strip()
 	User = request.POST.get("User", None)
 	Pwd = request.POST.get("Pwd", None)
 	Mail = request.POST.get("Mail", None)
