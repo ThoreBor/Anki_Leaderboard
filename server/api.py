@@ -95,21 +95,21 @@ def sync(request):
 	### XP ###
 
 	if float(league_retention) >= 85:
-	    retention_bonus = 100
+	    retention_bonus = 1
 	if float(league_retention) < 85 and float(league_retention) >= 70:
-		retention_bonus = 85
+		retention_bonus = 0.85
 	if float(league_retention) < 70 and float(league_retention) >= 55:
-		retention_bonus = 70
+		retention_bonus = 0.70
 	if float(league_retention) < 55 and float(league_retention) >= 40:
-		retention_bonus = 55
+		retention_bonus = 0.55
 	if float(league_retention) < 40 and float(league_retention) >= 25:
-		retention_bonus = 40
+		retention_bonus = 0.40
 	if float(league_retention) < 25 and float(league_retention) >= 10:
-		retention_bonus = 25
+		retention_bonus = 0.25
 	if float(league_retention) < 10:
 		retention_bonus = 0
 
-	xp = int(float(league_days_learned) * ((6 * float(league_time)) + (2 * int(league_reviews) * float(retention_bonus))))
+	xp = int(float(league_days_learned) * ((6 * float(league_time) * 1) + (2 * int(league_reviews) * float(retention_bonus))))
 
 	### Commit to database ###
 
