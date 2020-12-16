@@ -222,6 +222,7 @@ Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/use
 				write_config("username", "")
 				tooltip("Successfully deleted account.")
 				self.dialog.delete_username.setText("")
+				write_config("token", None)
 			else:
 				tooltip("Error")
 		except:
