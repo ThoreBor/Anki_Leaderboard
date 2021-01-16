@@ -121,6 +121,7 @@ def season():
 	except:
 		season_start = datetime.datetime.now()
 		season_end = datetime.datetime.now()
+		current_season = ""
 		showWarning("Timeout error [season] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 def add_menu(Name, Button, exe, *sc):

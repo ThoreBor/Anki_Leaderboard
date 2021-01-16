@@ -352,5 +352,17 @@ def getUserinfo(request):
     u2 = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
     return HttpResponse(json.dumps(u1 + u2))
 
+@csrf_exempt
+def reportUser(request):
+    user = request.POST.get("user", "")
+    report_user = request.POST.get("reportUser", "")
+    message = request.POST.get("message", "")
+
+    with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
+        data = json.load(json_file)
+    r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
+    r.redditor('Ttime5').message('Report', f"{user} reported {report_user}. \n Message: {message}")
+    return HttpResponse("Done!")
+
 def season(request):
-	return HttpResponse(json.dumps([[2020,12,11,0,0,0],[2020,12,25,0,0,0], "Season 6"]))
+	return HttpResponse(json.dumps([[2021,1,8,0,0,0],[2021,1,22,0,0,0], "Season 8"]))

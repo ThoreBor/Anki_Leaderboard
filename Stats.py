@@ -31,7 +31,7 @@ def get_reviews_and_retention(start_date, end_date):
     if reviews == 0:
         return 0, 0
     
-    retention = round((100 / reviews) * (reviews - flunked_total) ,1)
+    retention = round((100 / reviews) * (reviews - flunked_total), 1)
     return reviews, retention
 
 def get_time_spend(start_date, end_date):

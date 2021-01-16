@@ -7,6 +7,7 @@ import json
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .forms import user_info
+from .reportUser import start_report
 from .config_manager import write_config
 
 class start_user_info(QDialog):
@@ -96,6 +97,7 @@ class start_user_info(QDialog):
 		self.dialog.hideUser.clicked.connect(self.hideUser)
 		self.dialog.addFriend.clicked.connect(self.addFriend)
 		self.dialog.banUser.clicked.connect(self.banUser)
+		self.dialog.reportUser.clicked.connect(self.reportUser)
 
 	def hideUser(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -132,3 +134,8 @@ class start_user_info(QDialog):
 				showWarning(str(x.text))
 		except:
 			showWarning("Timeout error [banUser] - No internet connection, or server response took too long.", title="Leaderboard error")
+
+	def reportUser(self):
+		s = start_report(self.user_clicked)
+		if s.exec():
+			pass
