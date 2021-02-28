@@ -15,5 +15,5 @@ The newest stable version can also be downloaded from GitHub. Just download the 
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE) file for details
 
-© Thore Tyborski 2020 
+© Thore Tyborski 2021 
 See also the list of [contributors](https://github.com/ThoreBor/Anki_Leaderboard/contributors) who participated in this project.
