@@ -9,7 +9,7 @@ You can download the newest stable release from [AnkiWeb](https://ankiweb.net/sh
 
 If you want to test the newest, potentially unstable version from GitHub, clone this repository into the addons21 folder and run /tools/build_ui.sh from the root directory. If you already have an account, you have to copy the meta.json file into the cloned folder.
 
-The newest stable version can also be downloaded from GitHub. Just download the.ankiaddon file from releases and open it.
+The newest stable version can also be downloaded from GitHub. Just download the .ankiaddon file from releases and open it.
 
 ## License
 

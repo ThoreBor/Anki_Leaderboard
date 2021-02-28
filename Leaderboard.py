@@ -219,8 +219,7 @@ class start_main(QDialog):
 			cards = i[2]
 			time = i[3]
 			sync_date = i[4]
-			sync_date = sync_date.replace(" ", "")
-			sync_date = datetime.datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+			sync_date = datetime.datetime.strptime(sync_date, '%Y-%m-%d %H:%M:%S.%f')
 			try:
 				month = int(i[5])
 			except:

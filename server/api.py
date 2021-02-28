@@ -40,7 +40,7 @@ def sync(request):
 
 	if "🥇" in User or "🥈" in User or "🥉" in User or "|" in User:
 		return HttpResponse("""<h3>Error - invalid username</h3>
-			Due to an upcoming update 🥇, 🥈, 🥉 and | aren't allowed in usernames anymore.<br><br>
+			🥇, 🥈, 🥉 and | aren't allowed in usernames anymore.<br><br>
 			If you already have an account that is affected by this, please write an e-mail
 			to leaderboard_support@protonmail.com or dm me on <a href="https://www.reddit.com/user/Ttime5">Reddit</a> so we can sort this out.
 			Alternatively, you can also create a new account, but keep in mind that this would reset your league progress.""")
@@ -57,8 +57,7 @@ def sync(request):
 		return HttpResponse("Error - invalid time value")
 
 	try:
-		check_sync_date = Sync_Date.replace(" ", "")
-		check_sync_date = datetime(int(check_sync_date[0:4]),int(check_sync_date[5:7]), int(check_sync_date[8:10]), int(check_sync_date[10:12]), int(check_sync_date[13:15]), int(check_sync_date[16:18]))
+		check_sync_date = datetime.strptime(Sync_Date, '%Y-%m-%d %H:%M:%S.%f')
 	except:
 		return HttpResponse("Error invalid timestamp")
 
@@ -130,10 +129,10 @@ def sync(request):
 			print("Updated entry: " + str(User) + " (" + str(Version) + ")")
 			return HttpResponse("Done!")
 		else:
-			with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
-				data = json.load(json_file)
-			r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
-			r.redditor('Ttime5').message('Verification Error', "Username: " + str(User) + "\n" + "Token: " + str(Token) + "\n" + str(t[1]) + "\n" + "Version: " + str(Version))
+			#with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
+			#	data = json.load(json_file)
+			#r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
+			#r.redditor('Ttime5').message('Verification Error', "Username: " + str(User) + "\n" + "Token: " + str(Token) + "\n" + str(t[1]) + "\n" + "Version: " + str(Version))
 			print("Verification error: " + str(User))
 			return HttpResponse("""<h3>Error - invalid token</h3>
 			The verification token you sent doesn't match the one in the database.
@@ -365,4 +364,4 @@ def reportUser(request):
     return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,1,8,0,0,0],[2021,1,22,0,0,0], "Season 8"]))
+	return HttpResponse(json.dumps([[2021,2,19,0,0,0],[2021,3,5,0,0,0], "Season 11"]))

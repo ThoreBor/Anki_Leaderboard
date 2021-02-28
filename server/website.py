@@ -16,8 +16,7 @@ def reviews(request):
 
 	for row in c.fetchall():
 		sync_date = row[2]
-		sync_date = sync_date.replace(" ", "")
-		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+		sync_date = datetime.strptime(sync_date, '%Y-%m-%d %H:%M:%S.%f')
 
 		if sync_date > start_day:
 			x = {"place": counter, "username": row[0], "value": row[1]}
@@ -35,8 +34,7 @@ def time(request):
 
 	for row in c.fetchall():
 		sync_date = row[2]
-		sync_date = sync_date.replace(" ", "")
-		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+		sync_date = datetime.strptime(sync_date, '%Y-%m-%d %H:%M:%S.%f')
 
 		if sync_date > start_day:
 			x = {"place": counter, "username": row[0], "value": row[1]}
@@ -54,8 +52,7 @@ def streak(request):
 
 	for row in c.fetchall():
 		sync_date = row[2]
-		sync_date = sync_date.replace(" ", "")
-		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+		sync_date = datetime.strptime(sync_date, '%Y-%m-%d %H:%M:%S.%f')
 
 		if sync_date > start_day:
 			x = {"place": counter, "username": row[0], "value": row[1]}
@@ -73,8 +70,7 @@ def retention(request):
 
 	for row in c.fetchall():
 		sync_date = row[2]
-		sync_date = sync_date.replace(" ", "")
-		sync_date = datetime(int(sync_date[0:4]),int(sync_date[5:7]), int(sync_date[8:10]), int(sync_date[10:12]), int(sync_date[13:15]), int(sync_date[16:18]))
+		sync_date = datetime.strptime(sync_date, '%Y-%m-%d %H:%M:%S.%f')
 
 		if sync_date > start_day and row[1] != "N/A" and row[1] != "":
 			x = {"place": counter, "username": row[0], "value": row[1]}
@@ -86,7 +82,7 @@ def user(request, username):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
 	user_data = c.execute("SELECT * FROM Leaderboard WHERE Username = (?)",(username,)).fetchone()
-	league = c.execute("SELECT league FROM League WHERE Username = (?)",(username,)).fetchone()
+	league = c.execute("SELECT league, history FROM League WHERE Username = (?)",(username,)).fetchone()
 	if user_data[7] == "Country" or "":
 		country = "-"
 	else:
@@ -95,8 +91,8 @@ def user(request, username):
 		subject = "-"
 	else:
 		subject = user_data[6]
-	data = [{"username": username, "streak": user_data[1], "cards": user_data[2], "time": user_data[3], "sync": user_data[4][:19], "month": user_data[5],
-	"subject": subject, "country": country, "retention": user_data[8], "status": user_data[10], "league": league[0]}]
+	data = [{"username": username, "streak": user_data[1], "cards": user_data[2], "time": user_data[3], "month": user_data[5],
+	"subject": subject, "country": country, "retention": user_data[8], "status": user_data[10], "league": league[0], "history": league[1]}]
 
 	return render(request, "user.html", {"data": data})
 
