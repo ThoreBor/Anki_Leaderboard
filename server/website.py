@@ -101,11 +101,11 @@ def alpha(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Alpha" and row[1] != 0:
-			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4], "days_learned": row[6]}
 			data.append(x)
 			counter += 1
 	return render(request, "leagues.html", {"data": data})
@@ -115,11 +115,11 @@ def beta(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Beta" and row[1] != 0:
-			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4], "days_learned": row[6]}
 			data.append(x)
 			counter += 1
 	return render(request, "leagues.html", {"data": data})
@@ -129,11 +129,11 @@ def gamma(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Gamma" and row[1] != 0:
-			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4], "days_learned": row[6]}
 			data.append(x)
 			counter += 1
 	return render(request, "leagues.html", {"data": data})
@@ -143,11 +143,11 @@ def delta(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Delta" and row[1] != 0:
-			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4]}
+			x = {"place": counter, "username": row[0], "xp": row[1], "time": row[2], "reviews": row[3], "retention": row[4], "days_learned": row[6]}
 			data.append(x)
 			counter += 1
 	return render(request, "leagues.html", {"data": data})

@@ -26,23 +26,23 @@
 		<table class="user">
 			<tr>
 			    <td><b>Reviews</b></td>
-				<td>{{i.cards}}</td>
+				<td style="text-align:right">{{i.cards}}</td>
 			</tr>
 			<tr>
 			    <td><b>Streak</b></td>
-				<td>{{i.streak}}</td>
+				<td style="text-align:right">{{i.streak}}</td>
 			</tr>
 			<tr>
 			    <td><b>Minutes</b></td>
-				<td>{{i.time}}</td>
+				<td style="text-align:right">{{i.time}}</td>
 			</tr>
 			<tr>
 			    <td><b>Retention</b></td>
-				<td>{{i.retention}}%</td>
+				<td style="text-align:right">{{i.retention}}%</td>
 			</tr>
 			<tr>
 			    <td><b>Reviews past 31 days</b></td>
-				<td>{{i.month}}</td>
+				<td style="text-align:right">{{i.month}}</td>
 			</tr>
 			<tr>
 			    <td><b>Country</b></td>
@@ -53,17 +53,21 @@
 				<td>{{i.subject}}</td>
 			</tr>
 			<tr>
-			    <td><b>League</b></td>
-				<td>{{i.league}}</td>
-			</tr>
-			<tr>
 			    <td><b>Status message</b></td>
 				<td>{{i.status}}</td>
 			</tr>
 			<tr>
-			    <td><b>Last sync</b></td>
-				<td>{{i.sync}}</td>
+			    <td><b>League</b></td>
+				<td>{{i.league}}</td>
 			</tr>
 		</table>
+		<!--<h3>League history</h3>
+		<table class="user">
+			<tr>
+				<th>Season</th>
+				<th>XP</th>
+				<th>Rank</th>
+				<th>League</th>
+			</tr>-->
 	{% endfor %}
 {% endblock %}
