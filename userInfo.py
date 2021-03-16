@@ -119,8 +119,8 @@ class start_user_info(QDialog):
 	def banUser(self):
 		config = mw.addonManager.getConfig(__name__)
 		toBan = self.user_clicked
-		group = config["subject"]
-		pwd = config["group_pwd"]
+		group = config["current_group"]
+		pwd = config["group_pwd"][config["groups"].index(config["current_group"])]
 		token = config["token"]
 		user = config["username"]
 		url = 'https://ankileaderboard.pythonanywhere.com/banUser/'

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>612</height>
+    <width>759</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -229,162 +229,8 @@
       <attribute name="title">
        <string>Settings</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QGridLayout" name="gl2">
-         <item row="1" column="0" colspan="2">
-          <layout class="QGridLayout" name="gl3">
-           <item row="0" column="0">
-            <widget class="QLabel" name="next_day_info1">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Next day starts</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="next_day_info2">
-             <property name="text">
-              <string>hours past midnight</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="newday">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximum">
-              <number>23</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="sortby_label">
-             <property name="text">
-              <string>Sort by:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="Defaul_Tab_Label">
-             <property name="text">
-              <string>Default Leaderboard:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" colspan="2">
-            <widget class="QComboBox" name="sortby">
-             <item>
-              <property name="text">
-               <string>Reviews</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Time</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Streak</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Reviews past 31 days</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Retention</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="2" column="1" colspan="2">
-            <widget class="QComboBox" name="Default_Tab">
-             <item>
-              <property name="text">
-               <string>Global</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Friends</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Country</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Group</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>League</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0" colspan="2">
-          <widget class="QComboBox" name="country">
-           <item>
-            <property name="text">
-             <string>Country</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="scroll">
-         <property name="text">
-          <string>Automatically scroll to user</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="refresh">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
-Sorting will be disabled</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="autosync">
-         <property name="text">
-          <string>Sync when deck is finished (only works with Anki 2.1.20+)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="medals">
-         <property name="text">
-          <string>Show league medals next to username</string>
-         </property>
-        </widget>
-       </item>
-       <item>
+      <layout class="QGridLayout" name="gridLayout_9">
+       <item row="1" column="0" rowspan="2" colspan="2">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string>Home screen</string>
@@ -429,7 +275,166 @@ Sorting will be disabled</string>
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox_5">
+         <property name="title">
+          <string>General</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QComboBox" name="country">
+            <item>
+             <property name="text">
+              <string>Country</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <layout class="QGridLayout" name="gl3">
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="newday">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximum">
+               <number>23</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="2">
+             <widget class="QComboBox" name="Default_Tab">
+              <item>
+               <property name="text">
+                <string>Global</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Friends</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Country</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Group</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>League</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="sortby_label">
+              <property name="text">
+               <string>Sort by:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" colspan="2">
+             <widget class="QComboBox" name="sortby">
+              <item>
+               <property name="text">
+                <string>Reviews</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Time</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Streak</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Reviews past 31 days</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Retention</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="next_day_info2">
+              <property name="text">
+               <string>hours past midnight</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="next_day_info1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Next day starts</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="Defaul_Tab_Label">
+              <property name="text">
+               <string>Default Leaderboard:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="scroll">
+            <property name="text">
+             <string>Automatically scroll to user</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="refresh">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
+Sorting will be disabled</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="autosync">
+            <property name="text">
+             <string>Sync when deck is finished (only works with Anki 2.1.20+)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QCheckBox" name="medals">
+            <property name="text">
+             <string>Show league medals next to username</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -451,11 +456,11 @@ Sorting will be disabled</string>
       <attribute name="title">
        <string>Group</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_10">
-       <item>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="0" rowspan="2">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Join</string>
+          <string>Join/Leave group</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>
@@ -496,15 +501,32 @@ Sorting will be disabled</string>
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QListWidget" name="group_list">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="leaveGroup">
+              <property name="text">
+               <string>Leave group</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="0" column="1">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>New</string>
+          <string>Request new group</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
@@ -567,7 +589,7 @@ Sorting will be disabled</string>
             <item row="6" column="0" colspan="2">
              <widget class="QPushButton" name="add_newGroup">
               <property name="text">
-               <string>Request Group</string>
+               <string>Request group</string>
               </property>
               <property name="checkable">
                <bool>false</bool>
@@ -585,10 +607,10 @@ Sorting will be disabled</string>
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="1" column="1">
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>Manage</string>
+          <string>Manage groups</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
@@ -687,7 +709,7 @@ Sorting will be disabled</string>
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="2" column="0" colspan="2">
         <spacer name="verticalSpacer_4">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -899,7 +921,6 @@ Sorting will be disabled</string>
   <tabstop>export_friends</tabstop>
   <tabstop>hiddenUsers</tabstop>
   <tabstop>unhideButton</tabstop>
-  <tabstop>tabWidget</tabstop>
   <tabstop>about_text</tabstop>
  </tabstops>
  <resources>

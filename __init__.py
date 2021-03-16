@@ -78,19 +78,17 @@ def background_sync():
 	config = mw.addonManager.getConfig(__name__)
 	token = config["token"]
 	url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-	config5 = config['subject'].replace(" ", "")
-	config6 = config['country'].replace(" ", "")
 
 	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(season_start, season_end)
 
 	if datetime.datetime.now() < season_end:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-		"Month": cards_past_30_days, "Country": config6, "Retention": retention,
+		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention,
 		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
 		"Token_v3": config["token"], "Version": version}
 	else:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-		"Month": cards_past_30_days, "Country": config6, "Retention": retention, "Update_League": False,
+		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
 		"Token_v3": config["token"], "Version": version}
 
 	try:

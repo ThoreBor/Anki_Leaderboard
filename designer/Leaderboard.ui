@@ -223,9 +223,12 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string>Custom</string>
+       <string>Groups</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QComboBox" name="groups"/>
+       </item>
        <item>
         <widget class="QTableWidget" name="Custom_Leaderboard">
          <property name="sizeAdjustPolicy">

@@ -48,5 +48,6 @@ urlpatterns = [
 	path('joinGroup/', api.joinGroup, name="joinGroup"),
 	path('manageGroup/', api.manageGroup, name="manageGroup"),
 	path('banUser/', api.banUser, name="banUser"),
+	path('leaveGroup/', api.leaveGroup, name="leaveGroup"),
 	path('reportUser/', api.reportUser, name="reportUser"),
 ]

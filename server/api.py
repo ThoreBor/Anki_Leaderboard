@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import sqlite3
 import json
+import pickle
 from datetime import datetime
 import praw
 
@@ -94,7 +95,7 @@ def sync(request):
 	### XP ###
 
 	if float(league_retention) >= 85:
-	    retention_bonus = 1
+		retention_bonus = 1
 	if float(league_retention) < 85 and float(league_retention) >= 70:
 		retention_bonus = 0.85
 	if float(league_retention) < 70 and float(league_retention) >= 55:
@@ -120,11 +121,11 @@ def sync(request):
 
 			if Update_League == True:
 				if c.execute("SELECT username FROM League WHERE username = (?)", (User,)).fetchone():
-				    c.execute("UPDATE League SET xp = (?), time_spend = (?), reviews = (?), retention = (?), days_learned = (?) WHERE username = (?) ", (xp, league_time, league_reviews, league_retention, league_days_learned, User))
-				    conn.commit()
+					c.execute("UPDATE League SET xp = (?), time_spend = (?), reviews = (?), retention = (?), days_learned = (?) WHERE username = (?) ", (xp, league_time, league_reviews, league_retention, league_days_learned, User))
+					conn.commit()
 				else:
-				    c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league, days_learned) VALUES(?, ?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta", league_days_learned))
-				    conn.commit()
+					c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league, days_learned) VALUES(?, ?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta", league_days_learned))
+					conn.commit()
 
 			print("Updated entry: " + str(User) + " (" + str(Version) + ")")
 			return HttpResponse("Done!")
@@ -165,8 +166,14 @@ def get_data(request):
 	sortby = request.POST.get("sortby", "Cards")
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT Username, Streak, Cards , Time_Spend, Sync_Date, Month, Subject, Country, Retention FROM Leaderboard ORDER BY {} DESC".format(sortby))
-	return HttpResponse(json.dumps(c.fetchall()))
+	c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard ORDER BY {} DESC".format(sortby))
+	data = []
+	for row in c.fetchall():
+		if row[9]:
+			data.append([row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], pickle.loads(row[9])])
+		else:
+			data.append([row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], []])
+	return HttpResponse(json.dumps(data))
 
 @csrf_exempt
 def league_data(request):
@@ -208,7 +215,7 @@ def create_group(request):
 			c.execute('INSERT INTO Groups (Group_Name, pwd, admins) VALUES(?, ?, ?)', (Group_Name, Pwd, f"{User},"))
 			conn.commit()
 			with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
-			    data = json.load(json_file)
+				data = json.load(json_file)
 			r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
 			r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}\nE-Mail: {Mail}")
 			print(f"{User} requested a new group: {Group_Name}")
@@ -225,6 +232,11 @@ def joinGroup(request):
 	check_pwd = c.execute("SELECT pwd FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
 	check_token = c.execute("SELECT Token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()
 	check_banned = c.execute("SELECT banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
+	group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+	if not group_list:
+		group_list = []
+	else:
+		group_list = pickle.loads(group_list)
 
 	try:
 		if username in check_banned[0]:
@@ -234,6 +246,9 @@ def joinGroup(request):
 
 	if check_pwd[0]:
 		if check_pwd[0] == pwd and check_token[0] == token:
+			group_list.append(group.replace(" ", ""))
+			c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?)", (pickle.dumps(group_list), username))
+			conn.commit()
 			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
 			conn.commit()
 			return HttpResponse("Done!")
@@ -241,6 +256,9 @@ def joinGroup(request):
 			return HttpResponse("<h3>Something went wrong</h3>Wrong password or verification token.")
 	else:
 		if check_token[0] == token:
+			group_list.append(group.replace(" ", ""))
+			c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?)", (pickle.dumps(group_list), username))
+			conn.commit()
 			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
 			conn.commit()
 			return HttpResponse("Done!")
@@ -260,9 +278,9 @@ def manageGroup(request):
 	check_pwd_admins = c.execute("SELECT pwd, admins FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
 	check_token = c.execute("SELECT Token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()
 	if addAdmin:
-	    newAdmin = f"{check_pwd_admins[1]} {addAdmin},"
+		newAdmin = f"{check_pwd_admins[1]} {addAdmin},"
 	else:
-	    newAdmin = check_pwd_admins[1]
+		newAdmin = check_pwd_admins[1]
 
 
 	if check_pwd_admins[0]:
@@ -291,23 +309,63 @@ def banUser(request):
 	user = request.POST.get("user", None)
 	check_group = c.execute("SELECT pwd, admins, banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
 	check_token = c.execute("SELECT Token FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
+	toBan_groups = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0]
+	if not toBan_groups:
+		toBan_groups = []
+	else:
+		toBan_groups = pickle.loads(toBan_groups)
 
 	if check_group[0]:
 		if check_group[0] == pwd and user in check_group[1] and check_token[0] == token:
-			c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
-			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
-			conn.commit()
+			if toBan_groups:
+				toBan_groups.remove(group.replace(" ", ""))
+				c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?) ", (pickle.dumps(toBan_groups), toBan))
+				conn.commit()
+				c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
+				conn.commit()
+			else:
+				c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
+				conn.commit()
+				c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
+				conn.commit()
 			return HttpResponse("Done!")
 		else:
 			return HttpResponse("<h3>Something went wrong</h3>You're either not an admin of this group, or the password is wrong.")
 	else:
 		if user in check_group[1] and check_token[0] == token:
-			c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
-			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
-			conn.commit()
+			if toBan_groups:
+				toBan_groups.remove(group.replace(" ", ""))
+				c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?) ", (pickle.dumps(toBan_groups), toBan))
+				conn.commit()
+				c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
+				conn.commit()
+			else:
+				c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
+				conn.commit()
+				c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
+				conn.commit()
 			return HttpResponse("Done!")
 		else:
 			return HttpResponse("<h3>Something went wrong</h3>You're not an admin of this group.")
+
+@csrf_exempt
+def leaveGroup(request):
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	group = request.POST.get("group", None)
+	token = request.POST.get("token", None)
+	user = request.POST.get("user", None)
+	check_token = c.execute("SELECT Token FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0]
+	group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0]
+	group_list = pickle.loads(group_list)
+	if check_token == token:
+		group_list.remove(group.replace(" ", ""))
+		c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?) ", (pickle.dumps(group_list), user))
+		conn.commit()
+		return HttpResponse("Done!")
+	else:
+		return HttpResponse("<h3>Something went wrong</h3>Wrong verification token.")
+
 
 @csrf_exempt
 def groups(request):
@@ -326,14 +384,14 @@ def setStatus(request):
 	c = conn.cursor()
 	statusMsg = request.POST.get("status", None)
 	if len(statusMsg) > 280:
-	    statusMsg = None
+		statusMsg = None
 	username = request.POST.get("username", None)
 	Token = request.POST.get("Token_v3", None)
 	t = c.execute("SELECT Username, Token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()
 	if t[1] == Token or t[1] is None:
-	    c.execute("UPDATE Leaderboard SET Status = (?) WHERE username = (?) ", (statusMsg, username))
-	    conn.commit()
-	    return HttpResponse("Done!")
+		c.execute("UPDATE Leaderboard SET Status = (?) WHERE username = (?) ", (statusMsg, username))
+		conn.commit()
+		return HttpResponse("Done!")
 
 @csrf_exempt
 def getStatus(request):
@@ -344,24 +402,24 @@ def getStatus(request):
 
 @csrf_exempt
 def getUserinfo(request):
-    conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
-    c = conn.cursor()
-    user = request.POST.get("user", None)
-    u1 = c.execute("SELECT Country, Subject FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
-    u2 = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
-    return HttpResponse(json.dumps(u1 + u2))
+	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
+	c = conn.cursor()
+	user = request.POST.get("user", None)
+	u1 = c.execute("SELECT Country, Subject FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
+	u2 = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
+	return HttpResponse(json.dumps(u1 + u2))
 
 @csrf_exempt
 def reportUser(request):
-    user = request.POST.get("user", "")
-    report_user = request.POST.get("reportUser", "")
-    message = request.POST.get("message", "")
+	user = request.POST.get("user", "")
+	report_user = request.POST.get("reportUser", "")
+	message = request.POST.get("message", "")
 
-    with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
-        data = json.load(json_file)
-    r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
-    r.redditor('Ttime5').message('Report', f"{user} reported {report_user}. \n Message: {message}")
-    return HttpResponse("Done!")
+	with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
+		data = json.load(json_file)
+	r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
+	r.redditor('Ttime5').message('Report', f"{user} reported {report_user}. \n Message: {message}")
+	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,2,19,0,0,0],[2021,3,5,0,0,0], "Season 11"]))
+	return HttpResponse(json.dumps([[2021,3,5,0,0,0],[2021,3,19,0,0,0], "Season 12"]))

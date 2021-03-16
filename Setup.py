@@ -35,6 +35,7 @@ class start_setup(QDialog):
 		self.dialog.refresh.setChecked(bool(config["refresh"]))
 		self.update_friends_list(sorted(config["friends"], key=str.lower))
 		self.update_hidden_list(sorted(config["hidden_users"], key=str.lower))
+		self.update_group_list(sorted(config["groups"], key=str.lower))
 		self.dialog.LB_DeckBrowser.setChecked(bool(config["homescreen"]))
 		self.dialog.autosync.setChecked(bool(config["autosync"]))
 		self.dialog.maxUsers.setValue(config["maxUsers"])
@@ -46,6 +47,7 @@ class start_setup(QDialog):
 			self.dialog.sortby.setCurrentText("Reviews past 30 days")
 		else:
 			self.dialog.sortby.setCurrentText(config["sortby"])
+
 
 		self.dialog.Default_Tab.setToolTip("This affects the Leaderboard and, if enabled, the home screen leaderboard.")
 		self.dialog.sortby.setToolTip("This affects the Leaderboard and, if enabled, the home screen leaderboard.")
@@ -81,6 +83,7 @@ class start_setup(QDialog):
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
 		self.dialog.newday.valueChanged.connect(self.set_time)
 		self.dialog.joinGroup.clicked.connect(self.join_group)
+		self.dialog.leaveGroup.clicked.connect(self.leave_group)
 		self.dialog.add_newGroup.clicked.connect(self.create_new_group)
 		self.dialog.manageSave.clicked.connect(self.manage_group)
 		self.dialog.country.currentTextChanged.connect(self.set_country)
@@ -117,8 +120,6 @@ class start_setup(QDialog):
 			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
 
 			streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(self.season_start, self.season_end)
-			config5 = config['subject'].replace(" ", "")
-			config6 = config['country'].replace(" ", "")
 
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), 
 			"Month": cards_past_30_days, "Country": config["country"], "Retention": retention,
@@ -151,6 +152,12 @@ class start_setup(QDialog):
 		for friend in friends:
 			if friend != config['username']:
 				friends_list.addItem(friend)
+
+	def update_group_list(self, groups):
+		group_list = self.dialog.group_list
+		group_list.clear()
+		for group in groups:
+			group_list.addItem(group)
 
 	def login(self):
 		username = self.dialog.login_username.text()
@@ -212,7 +219,7 @@ class start_setup(QDialog):
 			config['friends'].remove(username)
 			write_config("friends", config["friends"])
 			tooltip(f"{username} was removed from your friendlist")
-			self.update_friends_list(config["friends"])
+			self.update_friends_list(sorted(config["friends"], key=str.lower))
 
 	def set_time(self):
 		beginning_of_new_day = self.dialog.newday.value()
@@ -353,6 +360,7 @@ class start_setup(QDialog):
 	def join_group(self):
 		group = self.dialog.subject.currentText()
 		config = mw.addonManager.getConfig(__name__)
+		group_list = config["groups"]
 		if group == "Join a group":
 			group = "Custom"
 		pwd = self.dialog.joinPwd.text()
@@ -363,17 +371,48 @@ class start_setup(QDialog):
 
 		url = 'https://ankileaderboard.pythonanywhere.com/joinGroup/'
 		data = {"username": config["username"], "group": group, "pwd": pwd, "token": config["token"]}
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Done!":
-				tooltip(f"You joined {group}")
-				write_config("subject", group)
-				write_config("group_pwd", pwd)
-				self.dialog.joinPwd.clear()
+		x = requests.post(url, data = data, timeout=20)
+		if x.text == "Done!":
+			tooltip(f"You joined {group}")
+			if not config["current_group"]:
+				write_config("current_group", group.replace(" ", ""))
+			group_pwds = config["group_pwds"]
+			if pwd:
+				group_pwds.append(pwd)
+				write_config("group_pwds", group_pwds)
 			else:
-				showWarning(str(x.text))
-		except:
-			showWarning("Timeout error [join_group] - No internet connection, or server response took too long.", title="Leaderboard error")
+				group_pwds.append(None)
+				write_config("group_pwds", group_pwds)
+			if group not in group_list:
+				group_list.append(group.replace(" ", ""))
+				write_config("groups", group_list)
+				self.update_group_list(sorted(group_list, key=str.lower))
+			self.dialog.joinPwd.clear()
+		else:
+			showWarning(str(x.text))
+		# try:
+			
+		# except:
+		# 	showWarning("Timeout error [join_group] - No internet connection, or server response took too long.", title="Leaderboard error")
+
+	def leave_group(self):
+		for item in self.dialog.group_list.selectedItems():
+			group = item.text()
+			config = mw.addonManager.getConfig(__name__)
+			url = 'https://ankileaderboard.pythonanywhere.com/leaveGroup/'
+			data = {"user": config["username"], "group": group, "token": config["token"]}
+			try:
+				x = requests.post(url, data = data, timeout=20)
+				if x.text == "Done!":
+					config['groups'].remove(group)
+					write_config("groups", config["groups"])
+					write_config("current_group", config["groups"][0])
+					self.update_group_list(sorted(config["groups"], key=str.lower))
+					tooltip(f"You left {group}.")
+				else:
+					showWarning(str(x.text))
+			except:
+				showWarning("Timeout error [join_group] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	def create_new_group(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -436,7 +475,8 @@ class start_setup(QDialog):
 			x = requests.post(url, data = data, timeout=20)
 			if x.text == "Done!":
 				tooltip(f"{group} was updated successfully.")
-				write_config("group_pwd", newPwd) if oldPwd != newPwd else write_config("group_pwd", oldPwd)
+				config["group_pwds"][config["groups"].index(group)] = newPwd if oldPwd != newPwd else oldPwd
+				write_config("group_pwds", config["group_pwds"])
 			else:
 				showWarning(str(x.text))
 		except:
@@ -463,7 +503,7 @@ class start_setup(QDialog):
 			self.dialog.manageGroup.setItemText(index, _translate("Dialog", i))
 			index += 1
 
-		self.dialog.subject.setCurrentText(config["subject"])
+		self.dialog.subject.setCurrentText(config["current_group"])
 
 	def status(self):
 		config = mw.addonManager.getConfig(__name__)

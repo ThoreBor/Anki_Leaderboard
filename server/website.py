@@ -83,17 +83,18 @@ def user(request, username):
 	c = conn.cursor()
 	user_data = c.execute("SELECT * FROM Leaderboard WHERE Username = (?)",(username,)).fetchone()
 	league = c.execute("SELECT league, history FROM League WHERE Username = (?)",(username,)).fetchone()
+	if not league:
+	    league = ["None", "None"]
 	if user_data[7] == "Country" or "":
 		country = "-"
 	else:
 		country = user_data[7]
-	if user_data[6] == "Custom" or "":
+	if user_data[6] == "Custom" or "" or None:
 		subject = "-"
 	else:
 		subject = user_data[6]
 	data = [{"username": username, "streak": user_data[1], "cards": user_data[2], "time": user_data[3], "month": user_data[5],
-	"subject": subject, "country": country, "retention": user_data[8], "status": user_data[10], "league": league[0], "history": league[1]}]
-
+	"subject": subject, "country": country, "retention": user_data[8], "status": user_data[10], "league": league[0]}]
 	return render(request, "user.html", {"data": data})
 
 def alpha(request):

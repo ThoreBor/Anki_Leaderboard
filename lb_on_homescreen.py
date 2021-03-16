@@ -35,6 +35,7 @@ def getData():
 			showWarning("Timeout error [getdata] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 		lb_list = []
+		group_lb = []
 		counter = 0
 
 		for i in data:
@@ -48,9 +49,10 @@ def getData():
 				month = int(i[5])
 			except:
 				month = ""
-			subject = i[6]
 			country = i[7]
 			retention = i[8]
+			groups = i[9]
+			groups.append(i[6])
 			try:
 				retention = float(retention)
 			except:
@@ -77,7 +79,7 @@ def getData():
 				if config["tab"] == 2 and country == config["country"].replace(" ", ""):
 					counter += 1
 					lb_list.append([counter, username, cards, time, streak, month, retention])
-				if config["tab"] == 3 and subject == config["subject"].replace(" ", ""):
+				if config["tab"] == 3 and config["current_group"] in groups:
 					counter += 1
 					lb_list.append([counter, username, cards, time, streak, month, retention])
 

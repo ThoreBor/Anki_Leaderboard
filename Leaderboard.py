@@ -39,7 +39,8 @@ class start_main(QDialog):
 		self.first_three_global = []
 		self.first_three_friends = []
 		self.first_three_country = []
-		self.first_three_custom =[]
+		self.first_three_custom = []
+		self.groups_lb = []
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
@@ -47,6 +48,7 @@ class start_main(QDialog):
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
+		_translate = QtCore.QCoreApplication.translate
 		if config["refresh"] == True:
 			self.dialog.Global_Leaderboard.setSortingEnabled(False)
 			self.dialog.Friends_Leaderboard.setSortingEnabled(False)
@@ -66,7 +68,11 @@ class start_main(QDialog):
 		country_tab = tab_widget.indexOf(self.dialog.tab_3)
 		subject_tab = tab_widget.indexOf(self.dialog.tab_4)
 		tab_widget.setTabText(country_tab, config["country"])
-		tab_widget.setTabText(subject_tab, config["subject"])
+		for i in range(0, len(config["groups"])):
+			self.dialog.groups.addItem("")
+			self.dialog.groups.setItemText(i, _translate("Dialog", config["groups"][i]))
+		self.dialog.groups.setCurrentText(config["current_group"])
+		self.dialog.groups.currentTextChanged.connect(self.switchGroup)
 		self.dialog.Parent.setCurrentIndex(config['tab'])
 
 		self.dialog.Global_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Global_Leaderboard))
@@ -125,6 +131,23 @@ class start_main(QDialog):
 		item.setData(QtCore.Qt.DisplayRole, retention)
 		tab.setItem(rowPosition, 5, item)
 		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+
+	def switchGroup(self):
+		config = mw.addonManager.getConfig(__name__)
+		custom_counter = 0
+		write_config("current_group", self.dialog.groups.currentText().replace(" ", ""))
+		self.dialog.Custom_Leaderboard.setRowCount(0)
+		for i in self.groups_lb:
+			if self.dialog.groups.currentText().replace(" ", "") in i[6]:
+				custom_counter += 1
+				self.add_row(self.dialog.Custom_Leaderboard, i[0], i[1], i[2], i[3], i[4], i[5])
+				if i[0].split(" |")[0] in config['friends']:
+					for j in range(self.dialog.Custom_Leaderboard.columnCount()):
+						self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
+				if i[0].split(" |")[0] == config['username']:
+					for j in range(self.dialog.Custom_Leaderboard.columnCount()):
+						self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
+
 		
 	def load_leaderboard(self):
 
@@ -132,19 +155,17 @@ class start_main(QDialog):
 
 		config = mw.addonManager.getConfig(__name__)
 		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-		config5 = config['subject'].replace(" ", "")
-		config6 = config['country'].replace(" ", "")
 
 		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(self.season_start, self.season_end)
 
 		if datetime.datetime.now() < self.season_end:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-			"Month": cards_past_30_days, "Country": config6, "Retention": retention,
+			"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention,
 			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
 			"Token_v3": config["token"], "Version": version}
 		else:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-			"Month": cards_past_30_days, "Country": config6, "Retention": retention, "Update_League": False,
+			"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
 			"Token_v3": config["token"], "Version": version}
 
 		try:
@@ -224,7 +245,9 @@ class start_main(QDialog):
 				month = int(i[5])
 			except:
 				month = ""
-			subject = i[6]
+			groups = i[9]
+			if i[6]:
+				groups.append(i[6].replace(" ", ""))
 			country = i[7]
 			retention = i[8]
 			try:
@@ -247,7 +270,7 @@ class start_main(QDialog):
 				counter += 1
 				self.add_row(self.dialog.Global_Leaderboard, username, cards, time, streak, month, retention)
 
-				if country == config6 and country != "Country":
+				if country == config['country'].replace(" ", "") and country != "Country":
 					country_counter += 1
 					self.add_row(self.dialog.Country_Leaderboard, username, cards, time, streak, month, retention)
 
@@ -255,13 +278,15 @@ class start_main(QDialog):
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
 							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
-				if subject == config5 and subject != "Custom":
-					custom_counter += 1
-					self.add_row(self.dialog.Custom_Leaderboard, username, cards, time, streak, month, retention)
+				if any(i in config["groups"] for i in groups):
+					self.groups_lb.append([username, cards, time, streak, month, retention, groups])
+					if config["current_group"] in groups:
+						custom_counter += 1
+						self.add_row(self.dialog.Custom_Leaderboard, username, cards, time, streak, month, retention)
 
-					if username.split(" |")[0] in config['friends']:
-						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
-							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
+						if username.split(" |")[0] in config['friends']:
+							for j in range(self.dialog.Custom_Leaderboard.columnCount()):
+								self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
 				if username.split(" |")[0] in config['friends']:
 					friend_counter += 1
@@ -279,7 +304,7 @@ class start_main(QDialog):
 					if config['country'] != "Country":
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
 							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
-					if config["subject"] != "Custom":
+					if config["current_group"] != "":
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
