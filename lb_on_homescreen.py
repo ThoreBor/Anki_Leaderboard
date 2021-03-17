@@ -1,6 +1,5 @@
 import datetime
 from datetime import date, timedelta
-import requests
 
 try:
 	from aqt import gui_hooks
@@ -14,6 +13,7 @@ from anki.hooks import wrap
 
 from .userInfo import start_user_info
 from .config_manager import write_config
+from .api_connect import connectToAPI
 
 def getData():
 	config = mw.addonManager.getConfig(__name__)
@@ -26,13 +26,8 @@ def getData():
 		else:
 			start_day = datetime.datetime.combine(date.today(), new_day)
 
-		url = 'https://ankileaderboard.pythonanywhere.com/getdata/'
 		sortby = {"sortby": config["sortby"]}
-		try:
-			data = requests.post(url, data = sortby, timeout=20).json()
-		except:
-			data = []
-			showWarning("Timeout error [getdata] - No internet connection, or server response took too long.", title="Leaderboard error")
+		data = connectToAPI("getdata/", True, sortby, False, "getData")
 
 		lb_list = []
 		group_lb = []
@@ -52,7 +47,8 @@ def getData():
 			country = i[7]
 			retention = i[8]
 			groups = i[9]
-			groups.append(i[6])
+			if i[6]:
+				groups.append(i[6].replace(" ", ""))
 			try:
 				retention = float(retention)
 			except:
@@ -79,19 +75,12 @@ def getData():
 				if config["tab"] == 2 and country == config["country"].replace(" ", ""):
 					counter += 1
 					lb_list.append([counter, username, cards, time, streak, month, retention])
-				if config["tab"] == 3 and config["current_group"] in groups:
+				if config["tab"] == 3 and config["current_group"].replace(" ", "") in groups:
 					counter += 1
 					lb_list.append([counter, username, cards, time, streak, month, retention])
 
 	if config["tab"] == 4:
-		url = 'https://ankileaderboard.pythonanywhere.com/league/'
-		try:
-			data = requests.get(url, timeout=20).json()
-		except:
-			data = []
-			showWarning("Timeout error [load_league] - No internet connection, or server response took too long.", title="Leaderboard error")
-
-		user_league_name = "Alpha"
+		data = connectToAPI("league/", True, {}, False, "load_league")
 		for i in data:
 			if config["username"] in i:
 				user_league_name = i[5]

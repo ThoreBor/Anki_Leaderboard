@@ -253,7 +253,7 @@ def joinGroup(request):
 
 	if check_pwd[0]:
 		if check_pwd[0] == pwd and check_token[0] == token:
-			group_list.append(group.replace(" ", ""))
+			group_list.append(group)
 			c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?)", (pickle.dumps(group_list), username))
 			conn.commit()
 			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
@@ -263,7 +263,7 @@ def joinGroup(request):
 			return HttpResponse("<h3>Something went wrong</h3>Wrong password or verification token.")
 	else:
 		if check_token[0] == token:
-			group_list.append(group.replace(" ", ""))
+			group_list.append(group)
 			c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?)", (pickle.dumps(group_list), username))
 			conn.commit()
 			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
@@ -325,10 +325,12 @@ def banUser(request):
 	if check_group[0]:
 		if check_group[0] == pwd and user in check_group[1] and check_token[0] == token:
 			if toBan_groups:
-				toBan_groups.remove(group.replace(" ", ""))
+				toBan_groups.remove(group)
 				c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?) ", (pickle.dumps(toBan_groups), toBan))
 				conn.commit()
 				c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
+				conn.commit()
+				c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
 				conn.commit()
 			else:
 				c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))
@@ -341,7 +343,7 @@ def banUser(request):
 	else:
 		if user in check_group[1] and check_token[0] == token:
 			if toBan_groups:
-				toBan_groups.remove(group.replace(" ", ""))
+				toBan_groups.remove(group)
 				c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?) ", (pickle.dumps(toBan_groups), toBan))
 				conn.commit()
 				c.execute("UPDATE Groups SET banned = (?) WHERE Group_Name = (?) ", (f"{check_group[2]}, {toBan}", group))

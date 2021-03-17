@@ -15,6 +15,7 @@ from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version
+from .api_connect import connectToAPI
 
 def Main():
 	check_info()
@@ -77,8 +78,6 @@ def background_sync():
 	check_info()
 	config = mw.addonManager.getConfig(__name__)
 	token = config["token"]
-	url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-
 	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(season_start, season_end)
 
 	if datetime.datetime.now() < season_end:
@@ -91,15 +90,10 @@ def background_sync():
 		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
 		"Token_v3": config["token"], "Version": version}
 
-	try:
-		x = requests.post(url, data = data, timeout=20)
-		if x.text == "Done!":
-			tooltip("Synced leaderboard successfully.")
-		else:
-			showWarning(str(x.text))
-	except:
-		showWarning("Timeout error [background_sync] - No internet connection, or server response took too long.", title="Leaderboard error")
-
+	x = connectToAPI("sync/", False, data, "Done!", "background_sync")
+	if x.text == "Done!":
+		tooltip("Synced leaderboard successfully.")
+	
 	if config["homescreen"] == True:
 		write_config("homescreen_data", [])
 		leaderboard_on_deck_browser()

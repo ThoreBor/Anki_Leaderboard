@@ -14,6 +14,7 @@ from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version, about_text
+from .api_connect import connectToAPI
 
 class start_setup(QDialog):
 	def __init__(self, season_start, season_end, parent=None):
@@ -108,35 +109,25 @@ class start_setup(QDialog):
 	def create_account(self):
 		username = self.dialog.create_username.text()
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
-		try:
-			username_list = requests.get(url, timeout=20).json()
-		except:
-			showWarning("Timeout error [create_account] - No internet connection, or server response took too long.", title="Leaderboard error")
+		username_list = connectToAPI("allusers/", True, {}, False, "create_account")
 
 		if username in username_list:
 			tooltip("Username already taken")
 		else:
-			url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-
 			streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(self.season_start, self.season_end)
 
 			data = {'Username': username , "Streak": streak, "Cards": cards , "Time": time , "Sync_Date": datetime.now(), 
 			"Month": cards_past_30_days, "Country": config["country"], "Retention": retention,
 			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
 			"Version": version}
-			
-			try:
-				x = requests.post(url, data = data)
-				if x.text == "Done!":
-					tooltip("Successfully created account.")
-				else:
-					showWarning(str(x.text))
+
+			x = connectToAPI("sync/", False, data, "Done!", "create_account")
+			if x.text == "Done!":
+				tooltip("Successfully created account.")
 				write_config("username", username)
 				self.dialog.create_username.setText("")
 				self.update_login_info(username)
-			except:
-				showWarning("Timeout error [create_account] - No internet connection, or server response took too long.", title="Leaderboard error")
+			
 
 	def update_login_info(self, username):
 		login_info = self.dialog.login_info_2
@@ -162,55 +153,42 @@ class start_setup(QDialog):
 	def login(self):
 		username = self.dialog.login_username.text()
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
-		try:
-			username_list = requests.get(url, timeout=20).json()
-			if username in username_list:
-				write_config("username", username)
-				tooltip("Successfully logged in.")
-				self.dialog.login_username.setText("")
-				self.update_login_info(username)
-			else:
-				tooltip("Account doesn't exist.")
-		except:
-			showWarning("Timeout error [login] - No internet connection, or server response took too long.", title="Leaderboard error")
+		username_list = connectToAPI("allusers/", True, {}, False, "login")
+		if username in username_list:
+			write_config("username", username)
+			tooltip("Successfully logged in.")
+			self.dialog.login_username.setText("")
+			self.update_login_info(username)
+		else:
+			tooltip("Account doesn't exist.")
 
 	def delete(self):
 		username = self.dialog.delete_username.text()
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/delete/'
 		data = {'Username': username, "Token_v3": config["token"]}
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Deleted":
-				write_config("username", "")
-				tooltip("Successfully deleted account.")
-				self.dialog.delete_username.setText("")
-				write_config("token", None)
-			else:
-				tooltip("Error")
-		except:
-			showWarning("Timeout error [delete] - No internet connection, or server response took too long.", title="Leaderboard error")
+		x = connectToAPI("delete/", False, data, "Deleted", "delete")
+		if x.text == "Deleted":
+			write_config("username", "")
+			tooltip("Successfully deleted account.")
+			self.dialog.delete_username.setText("")
+			write_config("token", None)
 
 	def add_friend(self):
 		username = self.dialog.friend_username.text()
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
-		try:
-			username_list = requests.get(url).json()
-			if config['username'] and config['username'] not in config['friends']:
-				config['friends'].append(config['username'])
-			
-			if username in username_list and username not in config['friends']:
-				config['friends'].append(username)
-				write_config("friends", config['friends'])
-				tooltip(username + " is now your friend.")
-				self.dialog.friend_username.setText("")
-				self.update_friends_list(sorted(config["friends"], key=str.lower))
-			else:
-				tooltip("Couldn't find friend")
-		except:
-			showWarning("Timeout error [add_friend] - No internet connection, or server response took too long.", title="Leaderboard error")
+		username_list = connectToAPI("allusers/", True, {}, False, "add_friend")
+		
+		if config['username'] and config['username'] not in config['friends']:
+			config['friends'].append(config['username'])
+		
+		if username in username_list and username not in config['friends']:
+			config['friends'].append(username)
+			write_config("friends", config['friends'])
+			tooltip(username + " is now your friend.")
+			self.dialog.friend_username.setText("")
+			self.update_friends_list(sorted(config["friends"], key=str.lower))
+		else:
+			tooltip("Couldn't find friend")
 
 	def remove_friend(self):
 		for item in self.dialog.friends_list.selectedItems():
@@ -328,12 +306,7 @@ class start_setup(QDialog):
 		try:
 			file = open(fname[0], "r", encoding= "utf-8")
 			friends_list = config["friends"]
-			url = 'https://ankileaderboard.pythonanywhere.com/allusers/'
-			try:
-				username_list = requests.get(url).json()
-			except:
-				username_list = []
-				showWarning("Timeout error [import_list] - No internet connection, or server response took too long.", title="Leaderboard error")
+			username_list = connectToAPI("allusers/", True, {}, False, "import_list")
 			
 			for name in file:
 				name = name.replace("\n", "")
@@ -369,50 +342,43 @@ class start_setup(QDialog):
 		else:
 			pwd = None
 
-		url = 'https://ankileaderboard.pythonanywhere.com/joinGroup/'
 		data = {"username": config["username"], "group": group, "pwd": pwd, "token": config["token"]}
-		x = requests.post(url, data = data, timeout=20)
+		x = connectToAPI("joinGroup/", False, data, "Done!", "join_group")
 		if x.text == "Done!":
 			tooltip(f"You joined {group}")
 			if not config["current_group"]:
-				write_config("current_group", group.replace(" ", ""))
-			group_pwds = config["group_pwds"]
-			if pwd:
-				group_pwds.append(pwd)
-				write_config("group_pwds", group_pwds)
-			else:
-				group_pwds.append(None)
-				write_config("group_pwds", group_pwds)
+				write_config("current_group", group)
 			if group not in group_list:
-				group_list.append(group.replace(" ", ""))
+				group_pwds = config["group_pwds"]
+				if pwd:
+					group_pwds.append(pwd)
+					write_config("group_pwds", group_pwds)
+				else:
+					group_pwds.append(None)
+				write_config("group_pwds", group_pwds)
+				group_list.append(group)
 				write_config("groups", group_list)
 				self.update_group_list(sorted(group_list, key=str.lower))
 			self.dialog.joinPwd.clear()
-		else:
-			showWarning(str(x.text))
-		# try:
-			
-		# except:
-		# 	showWarning("Timeout error [join_group] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 	def leave_group(self):
 		for item in self.dialog.group_list.selectedItems():
 			group = item.text()
 			config = mw.addonManager.getConfig(__name__)
-			url = 'https://ankileaderboard.pythonanywhere.com/leaveGroup/'
+			group_pwds = config["group_pwds"]
 			data = {"user": config["username"], "group": group, "token": config["token"]}
-			try:
-				x = requests.post(url, data = data, timeout=20)
-				if x.text == "Done!":
-					config['groups'].remove(group)
-					write_config("groups", config["groups"])
+			x = connectToAPI("leaveGroup/", False, data, "Done!", "leave_group")
+			if x.text == "Done!":
+				group_pwds.remove(group_pwds[config["groups"].index(group)])
+				write_config("group_pwds", group_pwds)
+				config['groups'].remove(group)
+				write_config("groups", config["groups"])
+				if len(config['groups']) > 0:
 					write_config("current_group", config["groups"][0])
-					self.update_group_list(sorted(config["groups"], key=str.lower))
-					tooltip(f"You left {group}.")
 				else:
-					showWarning(str(x.text))
-			except:
-				showWarning("Timeout error [join_group] - No internet connection, or server response took too long.", title="Leaderboard error")
+					write_config("current_group", None)
+				self.update_group_list(sorted(config["groups"], key=str.lower))
+				tooltip(f"You left {group}.")
 
 	def create_new_group(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -432,17 +398,11 @@ class start_setup(QDialog):
 			else:
 				pwd = None
 
-		url = 'https://ankileaderboard.pythonanywhere.com/create_group/'
 		data = {'Group_Name': Group_Name, "User": config['username'], "Mail": mail, "Pwd": pwd}
-		
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Done!":
-				showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
-			else:
-				showWarning(str(x.text))
-		except:
-			showWarning("Timeout error [create_new_group] - No internet connection, or server response took too long.", title="Leaderboard error")		
+		x = connectToAPI("create_group/", False, data, "Done!", "create_new_group")
+		if x.text == "Done!":
+			showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
+
 
 	def manage_group(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -467,30 +427,19 @@ class start_setup(QDialog):
 				newPwd = oldPwd
 			else:
 				newPwd = hashlib.sha1(newPwd.encode('utf-8')).hexdigest().upper()
-			
-		url = 'https://ankileaderboard.pythonanywhere.com/manageGroup/'
-		data = {'group': group, "user": config["username"], "token": config["token"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
 
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Done!":
-				tooltip(f"{group} was updated successfully.")
-				config["group_pwds"][config["groups"].index(group)] = newPwd if oldPwd != newPwd else oldPwd
-				write_config("group_pwds", config["group_pwds"])
-			else:
-				showWarning(str(x.text))
-		except:
-			showWarning("Timeout error [manage_group] - No internet connection, or server response took too long.", title="Leaderboard error")		
+		data = {'group': group, "user": config["username"], "token": config["token"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
+		x = connectToAPI("manageGroup/", False, data, "Done!", "manage_group")
+		if x.text == "Done!":
+			tooltip(f"{group} was updated successfully.")
+			config["group_pwds"][config["groups"].index(group)] = newPwd if oldPwd != newPwd else oldPwd
+			write_config("group_pwds", config["group_pwds"])
+			
 
 	def load_Group(self):
 		config = mw.addonManager.getConfig(__name__)
 		_translate = QtCore.QCoreApplication.translate
-		url = 'https://ankileaderboard.pythonanywhere.com/groups/'
-		try:
-			Group_List = requests.get(url, timeout=20).json()
-		except:
-			Group_List = []
-			showWarning("Timeout error [load_Group] - No internet connection, or server response took too long.", title="Leaderboard error")
+		Group_List = connectToAPI("groups/", True, {}, False, "load_Group")
 		
 		# item 0 is set by pyuic from the .ui file
 		for i in range(1, len(Group_List) + 1):
@@ -502,24 +451,16 @@ class start_setup(QDialog):
 			self.dialog.subject.setItemText(index, _translate("Dialog", i))
 			self.dialog.manageGroup.setItemText(index, _translate("Dialog", i))
 			index += 1
-
 		self.dialog.subject.setCurrentText(config["current_group"])
 
 	def status(self):
 		config = mw.addonManager.getConfig(__name__)
 		statusMsg = self.dialog.statusMsg.text()
-		url = 'https://ankileaderboard.pythonanywhere.com/setStatus/'
 		data = {"status": statusMsg, "username": config["username"], "Token_v3": config["token"]}
-		
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Done!":
-				tooltip("Done")
-			else:
-				tooltip(str(x.text))
-		except:
-			showWarning("Timeout error [status] - No internet connection, or server response took too long.", title="Leaderboard error")
-
+		x = connectToAPI("setStatus/", False, data, "Done!", "status")
+		if x.text == "Done!":
+			tooltip("Done")
+			
 	def update_hidden_list(self, hidden):
 		config = mw.addonManager.getConfig(__name__)
 		hiddenUsers = self.dialog.hiddenUsers

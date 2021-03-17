@@ -49,7 +49,7 @@ def rewrite_history(username, league, counter):
 	c.execute("""UPDATE League SET history = (?) WHERE username = (?) """, (json.dumps(new_history), username))
 
 
-c.execute("SELECT username, league, xp FROM League ORDER BY xp DESC")
+c.execute("SELECT username, league, xp FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 
 for row in c.fetchall():
 	user = row[0]

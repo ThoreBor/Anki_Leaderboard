@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import requests
 import json
 
 from aqt import mw
@@ -7,20 +6,15 @@ from aqt.qt import *
 from aqt.utils import showWarning, showInfo
 
 from .config_manager import write_config
+from .api_connect import connectToAPI
 
 def load_league(self, colors):
 
 	### GET DATA ###
 
 	config = mw.addonManager.getConfig(__name__)
-	url = 'https://ankileaderboard.pythonanywhere.com/league/'
-	try:
-		data = requests.get(url, timeout=20).json()
-	except:
-		data = []
-		showWarning("Timeout error [load_league] - No internet connection, or server response took too long.", title="Leaderboard error")
+	data = connectToAPI("league/", True, {}, False, "load_league")
 
-	user_league_name = "Alpha"
 	for i in data:
 		if config["username"] in i:
 			user_league_name = i[5]

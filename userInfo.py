@@ -9,6 +9,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from .forms import user_info
 from .reportUser import start_report
 from .config_manager import write_config
+from .api_connect import connectToAPI
 
 class start_user_info(QDialog):
 	def __init__(self, user_clicked, enabled, parent=None):
@@ -25,26 +26,16 @@ class start_user_info(QDialog):
 		if self.enabled == True:
 			self.dialog.banUser.setEnabled(True)
 
-		url = 'https://ankileaderboard.pythonanywhere.com/getStatus/'
 		data = {"username": self.user_clicked}
-		try:
-			data = requests.post(url, data = data, timeout=20).json()
-		except:
-			data = []
-			showWarning("Timeout error [user_info] - No internet connection, or server response took too long.", title="Leaderboard error")
+		data = connectToAPI("getStatus/", True, data, False, "getStatus")
 
 		if data[0]:
 			self.dialog.status_message.setMarkdown(data[0])
 		else:
 			pass
 
-		url = 'https://ankileaderboard.pythonanywhere.com/getUserinfo/'
 		data = {"user": self.user_clicked}
-		try:
-			data = requests.post(url, data = data, timeout=20).json()
-		except:
-			data = []
-			showWarning("Timeout error [user_info] - No internet connection, or server response took too long.", title="Leaderboard error")
+		data = connectToAPI("getUserinfo/", True, data, False, "getUserinfo")
 
 		header = self.dialog.history.horizontalHeader()   
 		header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
@@ -120,20 +111,14 @@ class start_user_info(QDialog):
 		config = mw.addonManager.getConfig(__name__)
 		toBan = self.user_clicked
 		group = config["current_group"]
-		pwd = config["group_pwd"][config["groups"].index(config["current_group"])]
+		pwd = config["group_pwds"][config["groups"].index(config["current_group"])]
 		token = config["token"]
 		user = config["username"]
-		url = 'https://ankileaderboard.pythonanywhere.com/banUser/'
 		data = {"toBan": toBan, "group": group, "pwd": pwd, "token": token, "user": user}
-
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Done!":
-				tooltip(f"{toBan} is now banned from {group}")
-			else:
-				showWarning(str(x.text))
-		except:
-			showWarning("Timeout error [banUser] - No internet connection, or server response took too long.", title="Leaderboard error")
+		x = connectToAPI("banUser/", False, data, "Done!", "banUser")
+		if x.text == "Done!":
+			tooltip(f"{toBan} is now banned from {group}")
+			
 
 	def reportUser(self):
 		s = start_report(self.user_clicked)

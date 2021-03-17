@@ -1,7 +1,6 @@
 import datetime
 from datetime import date, timedelta
 import threading
-import requests
 import json
 from os.path import dirname, join, realpath
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -18,6 +17,7 @@ from .League import load_league
 from .userInfo import start_user_info
 from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version
+from .api_connect import connectToAPI
 
 try:
 	nightmode = mw.pm.night_mode()
@@ -135,7 +135,7 @@ class start_main(QDialog):
 	def switchGroup(self):
 		config = mw.addonManager.getConfig(__name__)
 		custom_counter = 0
-		write_config("current_group", self.dialog.groups.currentText().replace(" ", ""))
+		write_config("current_group", self.dialog.groups.currentText())
 		self.dialog.Custom_Leaderboard.setRowCount(0)
 		for i in self.groups_lb:
 			if self.dialog.groups.currentText().replace(" ", "") in i[6]:
@@ -158,8 +158,6 @@ class start_main(QDialog):
 		### SYNC ###
 
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/sync/'
-
 		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(self.season_start, self.season_end)
 
 		if datetime.datetime.now() < self.season_end:
@@ -172,14 +170,7 @@ class start_main(QDialog):
 			"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
 			"Token_v3": config["token"], "Version": version}
 
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Done!":
-				pass
-			else:
-				showWarning(str(x.text))
-		except:
-			showWarning("Timeout error [load_leaderboard sync] - No internet connection, or server response took too long.", title="Leaderboard error")
+		x = connectToAPI("sync/", False, data, "Done!", "load_leaderboard sync")
 
 		### ACHIEVEMENT ###
 
@@ -207,14 +198,8 @@ class start_main(QDialog):
 			start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
 		else:
 			start_day = datetime.datetime.combine(date.today(), new_day)
-
-		url = 'https://ankileaderboard.pythonanywhere.com/getdata/'
 		sortby = {"sortby": config["sortby"]}
-		try:
-			data = requests.post(url, data = sortby, timeout=20).json()
-		except:
-			data = []
-			showWarning("Timeout error [load_leaderboard getData] - No internet connection, or server response took too long.", title="Leaderboard error")
+		data = connectToAPI("getdata/", True, sortby, False, "load_leaderboard getdata")
 
 		### LEAGUE ###
 
@@ -237,6 +222,7 @@ class start_main(QDialog):
 		friend_counter = 0
 		country_counter = 0
 		custom_counter = 0
+		c_groups = [x.replace(" ", "") for x in config["groups"]]
 
 		for i in data:
 			username = i[0]
@@ -252,6 +238,7 @@ class start_main(QDialog):
 			groups = i[9]
 			if i[6]:
 				groups.append(i[6].replace(" ", ""))
+			groups = [x.replace(" ", "") for x in groups]
 			country = i[7]
 			retention = i[8]
 			try:
@@ -282,9 +269,10 @@ class start_main(QDialog):
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
 							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 
-				if any(i in config["groups"] for i in groups):
+				c_groups = [x.replace(" ", "") for x in config["groups"]]
+				if any(i in c_groups for i in groups):
 					self.groups_lb.append([username, cards, time, streak, month, retention, groups])
-					if config["current_group"] in groups:
+					if config["current_group"].replace(" ", "") in groups:
 						custom_counter += 1
 						self.add_row(self.dialog.Custom_Leaderboard, username, cards, time, streak, month, retention)
 
@@ -308,7 +296,7 @@ class start_main(QDialog):
 					if config['country'] != "Country":
 						for j in range(self.dialog.Country_Leaderboard.columnCount()):
 							self.dialog.Country_Leaderboard.item(country_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
-					if config["current_group"] != "":
+					if config["current_group"]:
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
@@ -316,9 +304,8 @@ class start_main(QDialog):
 		self.scroll()
 
 	def podium(self):
-		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
-
-		for index, l in zip(range(4), lb_list):
+		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard]
+		for l in lb_list:
 			if l.rowCount() >= 3:
 				if l == self.dialog.Global_Leaderboard:
 					for i in range(3):

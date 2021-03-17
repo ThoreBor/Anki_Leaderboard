@@ -7,6 +7,7 @@ import json
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .forms import report
+from .api_connect import connectToAPI
 
 class start_report(QDialog):
 	def __init__(self, user_clicked, parent=None):
@@ -23,14 +24,7 @@ class start_report(QDialog):
 
 	def sendReport(self):
 		config = mw.addonManager.getConfig(__name__)
-		url = 'https://ankileaderboard.pythonanywhere.com/reportUser/'
 		data = {"user": config["username"], "reportUser": self.user_clicked, "message": self.dialog.reportReason.toPlainText()}
-
-		try:
-			x = requests.post(url, data = data, timeout=20)
-			if x.text == "Done!":
-				tooltip(f"{self.user_clicked} was succsessfully reported")
-			else:
-				showWarning(str(x.text))
-		except:
-			showWarning("Timeout error [sendReport] - No internet connection, or server response took too long.", title="Leaderboard error")
+		x = connectToAPI("reportUser/", False, data, "Done!", "sendReport")
+		if x.text == "Done!":
+			tooltip(f"{self.user_clicked} was succsessfully reported")
