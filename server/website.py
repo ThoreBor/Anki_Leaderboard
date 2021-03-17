@@ -12,7 +12,7 @@ def reviews(request):
 	start_day = datetime.now() - timedelta(days=1)
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT Username, Cards, Sync_Date FROM Leaderboard ORDER BY Cards DESC")
+	c.execute("SELECT Username, Cards, Sync_Date FROM Leaderboard WHERE suspended IS NULL ORDER BY Cards DESC")
 
 	for row in c.fetchall():
 		sync_date = row[2]
@@ -30,7 +30,7 @@ def time(request):
 	start_day = datetime.now() - timedelta(days=1)
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT Username, Time_Spend, Sync_Date FROM Leaderboard ORDER BY Time_Spend DESC")
+	c.execute("SELECT Username, Time_Spend, Sync_Date FROM Leaderboard WHERE suspended IS NULL ORDER BY Time_Spend DESC")
 
 	for row in c.fetchall():
 		sync_date = row[2]
@@ -48,7 +48,7 @@ def streak(request):
 	start_day = datetime.now() - timedelta(days=1)
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT Username, Streak, Sync_Date FROM Leaderboard ORDER BY Streak DESC")
+	c.execute("SELECT Username, Streak, Sync_Date FROM Leaderboard WHERE suspended IS NULL ORDER BY Streak DESC")
 
 	for row in c.fetchall():
 		sync_date = row[2]
@@ -66,7 +66,7 @@ def retention(request):
 	start_day = datetime.now() - timedelta(days=1)
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT Username, Retention, Sync_Date FROM Leaderboard ORDER BY Retention DESC")
+	c.execute("SELECT Username, Retention, Sync_Date FROM Leaderboard WHERE suspended IS NULL ORDER BY Retention DESC")
 
 	for row in c.fetchall():
 		sync_date = row[2]
@@ -102,7 +102,7 @@ def alpha(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Alpha" and row[1] != 0:
@@ -116,7 +116,7 @@ def beta(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Beta" and row[1] != 0:
@@ -130,7 +130,7 @@ def gamma(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Gamma" and row[1] != 0:
@@ -144,7 +144,7 @@ def delta(request):
 	counter = 1
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, days_learned FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 
 	for row in c.fetchall():
 		if row[5] == "Delta" and row[1] != 0:

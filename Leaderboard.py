@@ -147,6 +147,10 @@ class start_main(QDialog):
 				if i[0].split(" |")[0] == config['username']:
 					for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 						self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
+		self.first_three_custom = []
+		self.podium()
+		self.scroll()
+		#showWarning(str(self.first_three_custom))
 
 		
 	def load_leaderboard(self):
@@ -308,8 +312,10 @@ class start_main(QDialog):
 						for j in range(self.dialog.Custom_Leaderboard.columnCount()):
 							self.dialog.Custom_Leaderboard.item(custom_counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
 
-		### Highlight first three places###
+		self.podium()
+		self.scroll()
 
+	def podium(self):
 		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 
 		for index, l in zip(range(4), lb_list):
@@ -336,8 +342,9 @@ class start_main(QDialog):
 					l.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
 					l.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
 
-		### SCROLL ###
-
+	def scroll(self):
+		config = mw.addonManager.getConfig(__name__)
+		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 		if config["scroll"] == True:
 			for l in lb_list:
 				for i in range(l.rowCount()):

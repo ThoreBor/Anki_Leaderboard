@@ -29,6 +29,13 @@ def sync(request):
 	Token = request.POST.get("Token_v3", None)
 	Version = request.POST.get("Version", None)
 
+	try:
+		sus = c.execute("SELECT suspended FROM Leaderboard WHERE Username = (?)", (User,)).fetchone()[0]
+		if sus:
+			return HttpResponse(f"<h3>Account suspended</h3>This account was suspended due to the following reason:<br><br>{sus}<br><br>Please write an e-mail to leaderboard_support@protonmail.com or a message me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a>, if you think that this was a mistake.")
+	except:
+		pass
+
 	if Retention == "":
 		Retention = 0
 	if Month == "":
@@ -166,7 +173,7 @@ def get_data(request):
 	sortby = request.POST.get("sortby", "Cards")
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard ORDER BY {} DESC".format(sortby))
+	c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard WHERE suspended IS NULL ORDER BY {} DESC".format(sortby))
 	data = []
 	for row in c.fetchall():
 		if row[9]:
@@ -179,7 +186,7 @@ def get_data(request):
 def league_data(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	c.execute("SELECT username, xp, time_spend, reviews, retention, league, history, days_learned FROM League ORDER BY xp DESC")
+	c.execute("SELECT username, xp, time_spend, reviews, retention, league, history, days_learned FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 	return HttpResponse(json.dumps(c.fetchall()))
 
 @csrf_exempt
