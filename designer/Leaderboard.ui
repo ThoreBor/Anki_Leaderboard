@@ -227,7 +227,11 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QComboBox" name="groups"/>
+        <widget class="QComboBox" name="groups">
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QTableWidget" name="Custom_Leaderboard">

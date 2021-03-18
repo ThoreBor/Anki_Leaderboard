@@ -112,4 +112,14 @@ def load_league(self, colors):
 				else:
 					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))
 	
+	### SCROLL ###
+
+	for i in range(self.dialog.League.rowCount()):
+		item = self.dialog.League.item(i, 0).text().split(" |")[0]
+		if item == config['username']:
+			userposition = self.dialog.League.item(i, 0)
+			self.dialog.League.selectRow(i)
+			self.dialog.League.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+			self.dialog.League.clearSelection()
+	
 	write_config("medal_users", medal_users)

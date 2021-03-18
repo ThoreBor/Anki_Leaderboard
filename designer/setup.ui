@@ -454,7 +454,7 @@ Sorting will be disabled</string>
      </widget>
      <widget class="QWidget" name="tabGroup">
       <attribute name="title">
-       <string>Group</string>
+       <string>Groups</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0" rowspan="2">
@@ -515,6 +515,9 @@ Sorting will be disabled</string>
              <widget class="QPushButton" name="leaveGroup">
               <property name="text">
                <string>Leave group</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
