@@ -36,10 +36,6 @@ class start_main(QDialog):
 		self.season_start = season_start
 		self.season_end = season_end
 		self.current_season = current_season
-		self.global_old = []
-		self.friends_old = []
-		self.country_old = []
-		self.custom_old = []
 		self.groups_lb = []
 		QDialog.__init__(self, parent, Qt.Window)
 		self.dialog = Leaderboard.Ui_dialog()
@@ -72,7 +68,7 @@ class start_main(QDialog):
 			self.dialog.groups.addItem("")
 			self.dialog.groups.setItemText(i, _translate("Dialog", config["groups"][i]))
 		self.dialog.groups.setCurrentText(config["current_group"])
-		self.dialog.groups.currentTextChanged.connect(self.switchGroup)
+		self.dialog.groups.currentTextChanged.connect(lambda: self.highlight(self.dialog.Custom_Leaderboard))
 		self.dialog.Parent.setCurrentIndex(config['tab'])
 
 		self.dialog.Global_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Global_Leaderboard))
@@ -134,14 +130,13 @@ class start_main(QDialog):
 		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 	def switchGroup(self):
-		self.dialog.Custom_Leaderboard.setRowCount(0)
 		self.dialog.Custom_Leaderboard.setSortingEnabled(False)
 		config = mw.addonManager.getConfig(__name__)
 		write_config("current_group", self.dialog.groups.currentText())
+		self.dialog.Custom_Leaderboard.setRowCount(0)
 		for i in self.groups_lb:
 			if self.dialog.groups.currentText().replace(" ", "") in i[6]:
 				self.add_row(self.dialog.Custom_Leaderboard, i[0], i[1], i[2], i[3], i[4], i[5])
-		self.highlight(self.dialog.Custom_Leaderboard)
 		self.dialog.Custom_Leaderboard.setSortingEnabled(True)
 		
 	def load_leaderboard(self):
@@ -274,6 +269,8 @@ class start_main(QDialog):
 			pass
 
 	def highlight(self, tab):
+		if tab == self.dialog.Custom_Leaderboard:
+			self.switchGroup()
 		config = mw.addonManager.getConfig(__name__)
 		for i in range(tab.rowCount()):
 			item = tab.item(i, 0).text().split(" |")[0]
@@ -283,7 +280,7 @@ class start_main(QDialog):
 			else:
 				for j in range(tab.columnCount()):
 					tab.item(i, j).setBackground(QtGui.QColor(colors['ROW_DARK']))
-			if item in config['friends']:
+			if item in config['friends'] and tab != self.dialog.Friends_Leaderboard:
 				for j in range(tab.columnCount()):
 					tab.item(i, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
 			if item == config['username']:
