@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>358</width>
-    <height>448</height>
+    <width>355</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,33 +23,7 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="username_label">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Username</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="medals_label">
-       <property name="font">
-        <font>
-         <pointsize>9</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Medals: None</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0" colspan="2">
+     <item row="10" column="0" colspan="2">
       <widget class="QTextBrowser" name="status_message">
        <property name="font">
         <font>
@@ -68,6 +42,19 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
+     <item row="12" column="0">
+      <widget class="QPushButton" name="banUser">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Ban from group</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="country_label">
        <property name="font">
@@ -80,21 +67,61 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="histor_label">
+     <item row="0" column="0">
+      <widget class="QLabel" name="username_label">
        <property name="font">
         <font>
-         <pointsize>9</pointsize>
+         <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>History:</string>
+        <string>Username</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="2" column="0">
+      <widget class="QLabel" name="group_label">
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Groups:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="league_label">
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>League: None</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="2">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::MinimumExpanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>335</width>
+         <height>13</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="9" column="0">
       <widget class="QLabel" name="label">
        <property name="font">
         <font>
@@ -108,7 +135,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="11" column="1">
+     <item row="12" column="1">
       <widget class="QPushButton" name="reportUser">
        <property name="text">
         <string>Report</string>
@@ -118,31 +145,17 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="league_label">
-       <property name="font">
-        <font>
-         <pointsize>9</pointsize>
-        </font>
-       </property>
+     <item row="11" column="0">
+      <widget class="QPushButton" name="hideUser">
        <property name="text">
-        <string>League: None</string>
+        <string>Hide user</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="group_label">
-       <property name="font">
-        <font>
-         <pointsize>9</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Group: None</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0" colspan="2">
+     <item row="8" column="0" colspan="2">
       <widget class="QTableWidget" name="history">
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
@@ -202,20 +215,7 @@ p, li { white-space: pre-wrap; }
        </column>
       </widget>
      </item>
-     <item row="11" column="0">
-      <widget class="QPushButton" name="banUser">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Ban from group</string>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="1">
+     <item row="11" column="1">
       <widget class="QPushButton" name="addFriend">
        <property name="text">
         <string>Add friend</string>
@@ -225,31 +225,41 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
-      <widget class="QPushButton" name="hideUser">
-       <property name="text">
-        <string>Hide user</string>
+     <item row="5" column="0">
+      <widget class="QLabel" name="medals_label">
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
        </property>
-       <property name="autoDefault">
-        <bool>false</bool>
+       <property name="text">
+        <string>Medals: None</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0" colspan="2">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+     <item row="7" column="0">
+      <widget class="QLabel" name="histor_label">
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
        </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::MinimumExpanding</enum>
+       <property name="text">
+        <string>History:</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>3</height>
-        </size>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QListWidget" name="group_list">
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
-      </spacer>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::NoSelection</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

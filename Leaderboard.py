@@ -85,7 +85,8 @@ class start_main(QDialog):
 
 		### RESIZE ###
 
-		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
+		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, 
+		self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 		for l in lb_list:
 			header = l.horizontalHeader()   
 			header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
@@ -137,7 +138,10 @@ class start_main(QDialog):
 		for i in self.groups_lb:
 			if self.dialog.groups.currentText().replace(" ", "") in i[6]:
 				self.add_row(self.dialog.Custom_Leaderboard, i[0], i[1], i[2], i[3], i[4], i[5])
-		self.dialog.Custom_Leaderboard.setSortingEnabled(True)
+		if config["refresh"] == True:
+			self.dialog.Custom_Leaderboard.setSortingEnabled(False)
+		else:
+			self.dialog.Custom_Leaderboard.setSortingEnabled(True)
 		
 	def load_leaderboard(self):
 

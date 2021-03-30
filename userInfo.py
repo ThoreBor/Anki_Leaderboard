@@ -26,16 +26,13 @@ class start_user_info(QDialog):
 		if self.enabled == True:
 			self.dialog.banUser.setEnabled(True)
 
-		data = {"username": self.user_clicked}
-		data = connectToAPI("getStatus/", True, data, False, "getStatus")
+		data = {"user": self.user_clicked, "a": True}
+		data = connectToAPI("getUserinfo/", True, data, False, "getUserinfo")
 
-		if data[0]:
-			self.dialog.status_message.setMarkdown(data[0])
+		if data[4]:
+			self.dialog.status_message.setMarkdown(data[4])
 		else:
 			pass
-
-		data = {"user": self.user_clicked}
-		data = connectToAPI("getUserinfo/", True, data, False, "getUserinfo")
 
 		header = self.dialog.history.horizontalHeader()   
 		header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
@@ -45,8 +42,6 @@ class start_user_info(QDialog):
 
 		if data[0] == "Country":
 			data[0] = None
-		if data[1] == "Custom":
-			data[1] = None
 		if data[3]:
 			medals = ""
 			history = json.loads(data[3])
@@ -81,9 +76,9 @@ class start_user_info(QDialog):
 				item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 
 				index += 1
-
+		for i in data[1]:
+			self.dialog.group_list.addItem(i)
 		self.dialog.country_label.setText(f"Country: {data[0]}")
-		self.dialog.group_label.setText(f"Group: {data[1]}")
 		self.dialog.league_label.setText(f"League: {data[2]}")
 		self.dialog.hideUser.clicked.connect(self.hideUser)
 		self.dialog.addFriend.clicked.connect(self.addFriend)
@@ -119,7 +114,6 @@ class start_user_info(QDialog):
 		if x.text == "Done!":
 			tooltip(f"{toBan} is now banned from {group}")
 			
-
 	def reportUser(self):
 		s = start_report(self.user_clicked)
 		if s.exec():

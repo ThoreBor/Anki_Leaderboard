@@ -193,7 +193,7 @@ def league_data(request):
 def delete(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
-	User = request.POST.get("Username", "")
+	User = request.POST.get("Username", None)
 	Token = request.POST.get("Token_v3", None)
 
 	if c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (User,)).fetchone():
@@ -206,6 +206,8 @@ def delete(request):
 			print("Deleted account: " + str(User))
 			return HttpResponse("Deleted")
 		return HttpResponse("Failed")
+	else:
+	    return HttpResponse("<h3>Error</h3>Couldn't find user")
 @csrf_exempt
 def create_group(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
@@ -253,7 +255,8 @@ def joinGroup(request):
 
 	if check_pwd[0]:
 		if check_pwd[0] == pwd and check_token[0] == token:
-			group_list.append(group)
+			if group not in group_list:
+				group_list.append(group)
 			c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?)", (pickle.dumps(group_list), username))
 			conn.commit()
 			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
@@ -263,7 +266,8 @@ def joinGroup(request):
 			return HttpResponse("<h3>Something went wrong</h3>Wrong password or verification token.")
 	else:
 		if check_token[0] == token:
-			group_list.append(group)
+			if group not in group_list:
+				group_list.append(group)
 			c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?)", (pickle.dumps(group_list), username))
 			conn.commit()
 			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
@@ -414,9 +418,24 @@ def getUserinfo(request):
 	conn = sqlite3.connect('/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db')
 	c = conn.cursor()
 	user = request.POST.get("user", None)
-	u1 = c.execute("SELECT Country, Subject FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
-	u2 = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
-	return HttpResponse(json.dumps(u1 + u2))
+	a = request.POST.get("a", False)
+	if a:
+		country = c.execute("SELECT Country FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0]
+		group = c.execute("SELECT Subject, groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
+		g_old = group[0]
+		if not group[1]:
+			g_new = []
+		else:
+			g_new = pickle.loads(group[1])
+		if g_old not in g_new:
+		    g_new.append(g_old)
+		league = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
+		status = c.execute("SELECT Status FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0]
+		return HttpResponse(json.dumps([country, g_new, league[0], league[1], status]))
+	else:
+		u1 = c.execute("SELECT Country, Subject FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()
+		u2 = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
+		return HttpResponse(json.dumps(u1 + u2))
 
 @csrf_exempt
 def reportUser(request):
@@ -431,4 +450,4 @@ def reportUser(request):
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,3,5,0,0,0],[2021,3,19,0,0,0], "Season 12"]))
+	return HttpResponse(json.dumps([[2021,3,19,0,0,0],[2021,4,2,0,0,0], "Season 13"]))

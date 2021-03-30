@@ -49,13 +49,15 @@ def create_token():
 		token = str(mw.col.db.list("SELECT id FROM revlog LIMIT 1"))
 		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
 		write_config("token", token)
+	if "Leaderboard_Token_v3" not in mw.col.conf:
+		ids = mw.col.db.list("SELECT id FROM revlog")
+		mw.col.conf['Leaderboard_Token_v3'] = config["token"]
 
 def check_info():
 	config = mw.addonManager.getConfig(__name__)
 	try:
 		url = 'https://ankileaderboardinfo.netlify.app'
-		headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 OPR/62.0.3331.116'}
-		page = requests.get(url, headers=headers)
+		page = requests.get(url, timeout=30)
 		soup = BeautifulSoup(page.content, 'html.parser')
 		if soup.find(id='show_message').get_text() == "True":
 			info = soup.find("div", id="Message")

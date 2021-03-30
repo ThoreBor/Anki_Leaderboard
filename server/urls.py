@@ -17,10 +17,13 @@ from . import views
 from . import website
 from . import api
 from django.urls import path
+from django.conf.urls import url
+from django.http import HttpResponse
 
 app_name = "main"
 #path('upload/', website.upload, name="upload"),
 urlpatterns = [
+    url(r'^robots.txt', lambda x: HttpResponse("User-Agent: *\nDisallow: /", content_type="text/plain"), name="robots_file"),
 	path("", website.reviews, name="reviews"),
     path("time/", website.time, name="time"),
     path("streak/", website.streak, name="streak"),

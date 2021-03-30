@@ -6,9 +6,9 @@ def connectToAPI(url, jsn, data, response, function):
 	url = f"https://ankileaderboard.pythonanywhere.com/{url}"
 	try:
 		if jsn:
-			x = requests.post(url, data=data).json()
+			x = requests.post(url, data=data, timeout=30).json()
 		else:
-			x = requests.post(url, data=data)
+			x = requests.post(url, data=data, timeout=30)
 		if response:	
 			if x.text == response:
 				return x
