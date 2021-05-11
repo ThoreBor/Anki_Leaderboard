@@ -383,7 +383,6 @@ class start_setup(QDialog):
 	def create_new_group(self):
 		config = mw.addonManager.getConfig(__name__)
 		Group_Name = self.dialog.newGroup.text()
-		mail = self.dialog.mailGroup.text()
 		pwd = self.dialog.newPwd.text()
 		r_pwd = self.dialog.newRepeat.text()
 
@@ -398,7 +397,7 @@ class start_setup(QDialog):
 			else:
 				pwd = None
 
-		data = {'Group_Name': Group_Name, "User": config['username'], "Mail": mail, "Pwd": pwd}
+		data = {'Group_Name': Group_Name, "User": config['username'], "Pwd": pwd}
 		x = connectToAPI("create_group/", False, data, "Done!", "create_new_group")
 		if x.text == "Done!":
 			showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")

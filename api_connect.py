@@ -3,6 +3,7 @@ import requests
 from aqt.utils import tooltip, showWarning
 
 def connectToAPI(url, jsn, data, response, function):
+	#url = f"http://127.0.0.1:8000/{url}"
 	url = f"https://ankileaderboard.pythonanywhere.com/{url}"
 	try:
 		if jsn:

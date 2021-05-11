@@ -154,6 +154,6 @@ except:
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Sync and update the homescreen leaderboard", background_sync, "Shift+S")
-add_menu('&Leaderboard',"&Config", invoke_setup)
+add_menu('&Leaderboard',"&Config", invoke_setup, "Alt+C")
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 mw.addonManager.setConfigAction(__name__, config_setup)
