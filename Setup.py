@@ -52,11 +52,11 @@ class start_setup(QDialog):
 
 		self.dialog.Default_Tab.setToolTip("This affects the Leaderboard and, if enabled, the home screen leaderboard.")
 		self.dialog.sortby.setToolTip("This affects the Leaderboard and, if enabled, the home screen leaderboard.")
-		self.dialog.statusMsg.setToolTip("Message that everyone can see when clicking on your username (max. 280 characters). You can use markdown to embed links.")
 		self.dialog.create_button.setToolTip("This might take a few seconds.")
 		self.dialog.newday.setToolTip("This needs to be the same as in Ankis' preferences.")
 		self.dialog.autosync.setToolTip("It will take a few extra seconds before you return to the homescreen after answering the last due card in a deck.")
 		self.load_Group()
+		self.load_status()
 
 		_translate = QtCore.QCoreApplication.translate
 
@@ -78,7 +78,6 @@ class start_setup(QDialog):
 		self.dialog.delete_username.returnPressed.connect(self.delete)
 		self.dialog.delete_button.clicked.connect(self.delete)
 		self.dialog.statusButton.clicked.connect(self.status)
-		self.dialog.statusMsg.returnPressed.connect(self.status)
 		self.dialog.friend_username.returnPressed.connect(self.add_friend)
 		self.dialog.add_friends_button.clicked.connect(self.add_friend)
 		self.dialog.remove_friend_button.clicked.connect(self.remove_friend)
@@ -454,11 +453,18 @@ class start_setup(QDialog):
 
 	def status(self):
 		config = mw.addonManager.getConfig(__name__)
-		statusMsg = self.dialog.statusMsg.text()
+		statusMsg = self.dialog.statusMsg.toPlainText()
+		if len(statusMsg) > 280:
+			showWarning("The message can only be 280 characters long.")
 		data = {"status": statusMsg, "username": config["username"], "Token_v3": config["token"]}
 		x = connectToAPI("setStatus/", False, data, "Done!", "status")
 		if x.text == "Done!":
 			tooltip("Done")
+
+	def load_status(self):
+		config = mw.addonManager.getConfig(__name__)
+		status = connectToAPI("getStatus/", True, {"username": config["username"]}, False, "set_status")
+		self.dialog.statusMsg.setText(status[0])
 			
 	def update_hidden_list(self, hidden):
 		config = mw.addonManager.getConfig(__name__)
