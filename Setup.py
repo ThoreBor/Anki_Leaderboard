@@ -463,8 +463,10 @@ class start_setup(QDialog):
 
 	def load_status(self):
 		config = mw.addonManager.getConfig(__name__)
-		status = connectToAPI("getStatus/", True, {"username": config["username"]}, False, "set_status")
-		self.dialog.statusMsg.setText(status[0])
+		if config["username"]:
+			status = connectToAPI("getStatus/", True, {"username": config["username"]}, False, "set_status")
+			self.dialog.statusMsg.setText(status[0])
+
 			
 	def update_hidden_list(self, hidden):
 		config = mw.addonManager.getConfig(__name__)
