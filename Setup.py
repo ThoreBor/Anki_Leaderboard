@@ -400,7 +400,9 @@ class start_setup(QDialog):
 		x = connectToAPI("create_group/", False, data, "Done!", "create_new_group")
 		if x.text == "Done!":
 			showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
-
+			self.dialog.newGroup.setText("")
+			self.dialog.newPwd.setText("")
+			self.dialog.newRepeat.setText("")
 
 	def manage_group(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -432,6 +434,10 @@ class start_setup(QDialog):
 			tooltip(f"{group} was updated successfully.")
 			config["group_pwds"][config["groups"].index(group)] = newPwd if oldPwd != newPwd else oldPwd
 			write_config("group_pwds", config["group_pwds"])
+			self.dialog.oldPwd.setText("")
+			self.dialog.manage_newPwd.setText("")
+			self.dialog.manage_newRepeat.setText("")
+			self.dialog.newAdmin.setText("")
 			
 
 	def load_Group(self):
