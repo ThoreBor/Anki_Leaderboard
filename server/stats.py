@@ -77,8 +77,9 @@ def Stats(fname, timestamp, nextday, offset):
 	for i in data:
 		id_time = i[0]
 		flunked = i[3]
+		type    = i[8]
 		id_time = datetime.datetime.fromtimestamp(int(id_time)/1000.0) - timedelta(minutes=offset)
-		if id_time > start_day:
+		if id_time > start_day and type != 0:
 			total_cards += 1
 			###RETENTION###
 			if flunked == 1:
