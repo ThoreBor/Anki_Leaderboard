@@ -25,9 +25,9 @@ def Stats(season_start, season_end):
 def get_reviews_and_retention(start_date, end_date):
     start = int(start_date.timestamp() * 1000)
     end = int(end_date.timestamp() * 1000)
-    reviews = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE id >= ? AND id < ?", start, end) 
-    true_reviews = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE id >= ? AND id < ? AND type <> 0", start, end) 
-    true_flunked = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE ease == 1 AND id >= ? AND id < ? AND type <> 0", start, end) 
+    reviews = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE id >= ? AND id < ? AND time != 0", start, end) 
+    true_reviews = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE id >= ? AND id < ? AND type <> 0 AND time != 0", start, end) 
+    true_flunked = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE ease == 1 AND id >= ? AND id < ? AND type <> 0 AND time != 0", start, end) 
     
     if reviews == 0:
         return 0, 0
