@@ -73,7 +73,7 @@ def Stats(fname, timestamp, nextday, offset):
 
 	total_cards = 0
 	flunked_total = 0
-	data = c.execute("SELECT * FROM revlog").fetchall()
+	data = c.execute("SELECT * FROM revlog WHERE time != 0").fetchall()
 	for i in data:
 		id_time = i[0]
 		flunked = i[3]
