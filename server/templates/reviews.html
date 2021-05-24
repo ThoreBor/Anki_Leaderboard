@@ -7,15 +7,15 @@
   <a href="/streak/">Streak</a>
   <a href="/retention/">Retention</a>
   <div class="dropdown">
-    <button class="dropbtn">Leagues
-      <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-content">
-      <a href="/alpha/">Alpha</a>
-      <a href="/beta/">Beta</a>
-      <a href="/gamma/">Gamma</a>
-      <a href="/delta/">Delta</a>
-    </div>
+	<button class="dropbtn">Leagues
+	  <i class="fa fa-caret-down"></i>
+	</button>
+	<div class="dropdown-content">
+	  <a href="/alpha/">Alpha</a>
+	  <a href="/beta/">Beta</a>
+	  <a href="/gamma/">Gamma</a>
+	  <a href="/delta/">Delta</a>
+	</div>
   </div>
 </div>
 {% endblock %}
@@ -24,16 +24,16 @@
 	<br>
 	<table class="lb">
 		<tr>
-		    <th>#</th>
-		    <th>Username</th>
-		    <th>Reviews</th>
+			<th>#</th>
+			<th>Username</th>
+			<th>Reviews</th>
 		 </tr>
 		{% for i in  data %}
 			<tr>
-			    <td>{{i.place}}</td>
+				<td>{{i.place}}</td>
 				<td><a class="user_link" href="https://ankileaderboard.pythonanywhere.com/user/{{i.username}}" target="_blank">{{i.username}}</a></td>
 				<td style="text-align:right">{{i.value}}</td>
-			 </tr>
+			</tr>
 		{% endfor %}
 	</table>
 {% endblock %}

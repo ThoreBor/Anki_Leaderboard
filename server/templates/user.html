@@ -7,15 +7,15 @@
   <a href="/streak/">Streak</a>
   <a href="/retention/">Retention</a>
   <div class="dropdown">
-    <button class="dropbtn">Leagues
-      <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-content">
-      <a href="/alpha/">Alpha</a>
-      <a href="/beta/">Beta</a>
-      <a href="/gamma/">Gamma</a>
-      <a href="/delta/">Delta</a>
-    </div>
+	<button class="dropbtn">Leagues
+	  <i class="fa fa-caret-down"></i>
+	</button>
+	<div class="dropdown-content">
+	  <a href="/alpha/">Alpha</a>
+	  <a href="/beta/">Beta</a>
+	  <a href="/gamma/">Gamma</a>
+	  <a href="/delta/">Delta</a>
+	</div>
   </div>
 </div>
 {% endblock %}
@@ -25,49 +25,37 @@
 		<h1 style="font-family: arial, sans-serif">{{i.username}}</h1>
 		<table class="user">
 			<tr>
-			    <td><b>Reviews</b></td>
+				<td><b>Reviews</b></td>
 				<td style="text-align:right">{{i.cards}}</td>
 			</tr>
 			<tr>
-			    <td><b>Streak</b></td>
+				<td><b>Streak</b></td>
 				<td style="text-align:right">{{i.streak}}</td>
 			</tr>
 			<tr>
-			    <td><b>Minutes</b></td>
+				<td><b>Minutes</b></td>
 				<td style="text-align:right">{{i.time}}</td>
 			</tr>
 			<tr>
-			    <td><b>Retention</b></td>
+				<td><b>Retention</b></td>
 				<td style="text-align:right">{{i.retention}}%</td>
 			</tr>
 			<tr>
-			    <td><b>Reviews past 31 days</b></td>
+				<td><b>Reviews past 31 days</b></td>
 				<td style="text-align:right">{{i.month}}</td>
 			</tr>
 			<tr>
-			    <td><b>Country</b></td>
+				<td><b>Country</b></td>
 				<td style="text-align:right">{{i.country}}</td>
 			</tr>
 			<tr>
-			    <td><b>Group</b></td>
+				<td><b>Group</b></td>
 				<td style="text-align:right">{{i.subject}}</td>
 			</tr>
 			<tr>
-			    <td><b>Status message</b></td>
-				<td style="text-align:right">{{i.status}}</td>
-			</tr>
-			<tr>
-			    <td><b>League</b></td>
+				<td><b>League</b></td>
 				<td style="text-align:right">{{i.league}}</td>
 			</tr>
 		</table>
-		<!--<h3>League history</h3>
-		<table class="user">
-			<tr>
-				<th>Season</th>
-				<th>XP</th>
-				<th>Rank</th>
-				<th>League</th>
-			</tr>-->
 	{% endfor %}
 {% endblock %}

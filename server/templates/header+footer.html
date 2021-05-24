@@ -3,11 +3,12 @@
 <head>
 	<title>Leaderboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
+	<style type="text/css">
 		.navbar {
 			overflow: hidden;
-			background-color: #275ae6;
+			background-color: #274788;
 			width: 100%;
+			border-radius: 10px;
 		}
 
 		.navbar a {
@@ -21,7 +22,7 @@
 		}
 
 		.active {
-			background-color: #214dc4;
+			background-color: #6079b6;
 		}
 
 		.dropdown {
@@ -42,7 +43,7 @@
 		}
 
 		.navbar a:hover, .dropdown:hover .dropbtn {
-			background-color: #214dc4;
+			background-color: #6079b6;
 		}
 
 		.dropdown-content {
@@ -82,13 +83,15 @@
 		table.user {
 			font-family: arial, sans-serif;
 			border-collapse: collapse;
-			width: 100%;
+			width: 90%;
 			margin-left:auto;
 			margin-right:auto;
+			overflow:hidden;
 		}
 
 		table.user td{
 			white-space: nowrap;
+			background-color: #c7d7ff
 		}
 
 		table.user td, th {
@@ -101,7 +104,7 @@
 			font-family: arial, sans-serif;
 			text-align: center;
 			padding: 3px;
-			background-color: #275ae6;
+			background-color: #274788;
 			color: white;
 			position: fixed;
 			left: 0;
@@ -112,9 +115,15 @@
 		table.lb {
 			font-family: arial, sans-serif;
 			border-collapse: collapse;
-			width: 100%;
+			width: 90%;
 			margin-left:auto;
 			margin-right:auto;
+		}
+		table.lb th {
+			position: sticky;
+			top: 0;
+			background-color: #274788;
+			color: white;
 		}
 
 		table.lb td{
@@ -128,44 +137,29 @@
 		}
 
 		table.lb tr:nth-child(even) {
-			background-color: #dddddd;
+			background-color: #c7d7ff;
 		}
-		table.lb tr:nth-child(2) {
-			background-color: #FFDF00;
+		table.lb tr:nth-child(odd) {
+			background-color: #FFFFFF;
+		}
+		/*table.lb tr:nth-child(2) {
+			background-color: #E7D27C;
 			font-weight: bold;
 		}
 		table.lb tr:nth-child(3) {
-			background-color: #c0c0c0;
+			background-color: #DBDBDC;
 			font-weight: bold;
 		}
 		table.lb tr:nth-child(4) {
-			background-color: #cd7f32;
+			background-color: #ff9100;
 			font-weight: bold;
-		}
-		.loader {
-			border: 16px solid #f3f3f3;
-			border-radius: 50%;
-			border-top: 16px solid #3498db;
-			width: 60px;
-			height: 60px;
-			-webkit-animation: spin 2s linear infinite; /* Safari */
-			animation: spin 2s linear infinite;
-		}
-
-		/* Safari */
-		@-webkit-keyframes spin {
-			0% { -webkit-transform: rotate(0deg); }
-			100% { -webkit-transform: rotate(360deg); }
-		}
-
-		@keyframes spin {
-			0% { transform: rotate(0deg); }
-			100% { transform: rotate(360deg); }
+		}*/
+		table.lb tr:hover {
+			background-color: #6079b6;
 		}
 	</style>
 </head>
-
-<body>
+<body style="background-color: #87aaff">
 
 {% block nav %}
 {% endblock %}
@@ -176,16 +170,11 @@
 {% block user_info %}
 {% endblock %}
 
-{% block upload %}
-{% endblock %}
 <br><br><br><br><br>
 <footer>
   <p>© Thore Tyborski 2021 |
   <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a> |<br>
   Download the add-on from <a href="https://ankiweb.net/shared/info/41708974">Anki Web</a></p>
 </footer>
-
 </body>
-
-
 </html>

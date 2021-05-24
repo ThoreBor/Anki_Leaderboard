@@ -7,41 +7,43 @@
   <a href="/streak/">Streak</a>
   <a href="/retention/">Retention</a>
   <div class="active dropdown">
-    <button class="dropbtn">Leagues
-      <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-content">
-      <a href="/alpha/">Alpha</a>
-      <a href="/beta/">Beta</a>
-      <a href="/gamma/">Gamma</a>
-      <a href="/delta/">Delta</a>
-    </div>
+	<button class="dropbtn">Leagues
+	  <i class="fa fa-caret-down"></i>
+	</button>
+	<div class="dropdown-content">
+	  <a href="/alpha/">Alpha</a>
+	  <a href="/beta/">Beta</a>
+	  <a href="/gamma/">Gamma</a>
+	  <a href="/delta/">Delta</a>
+	</div>
   </div>
 </div>
 {% endblock %}
 
 {% block table %}
-	<br>
-	<table class="lb">
-		<tr>
-		    <th>#</th>
-		    <th>Username</th>
-		    <th>XP</th>
-		    <th>Time</th>
-		    <th>Reviews</th>
-		    <th>Retention</th>
-		    <th>Days studied</th>
-		 </tr>
-		{% for i in  data %}
+	<div style="overflow-x:auto;">
+		<br>
+		<table class="lb">
 			<tr>
-			    <td>{{i.place}}</td>
-				<td><a class="user_link" href="https://ankileaderboard.pythonanywhere.com/user/{{i.username}}" target="_blank">{{i.username}}</a></td>
-				<td style="text-align:right">{{i.xp}}</td>
-				<td style="text-align:right">{{i.time}}</td>
-				<td style="text-align:right">{{i.reviews}}</td>
-				<td style="text-align:right">{{i.retention}}%</td>
-				<td style="text-align:right">{{i.days_learned}}%</td>
+				<th>#</th>
+				<th>Username</th>
+				<th>XP</th>
+				<th>Time</th>
+				<th>Reviews</th>
+				<th>Retention</th>
+				<th>Days studied</th>
 			 </tr>
-		{% endfor %}
-	</table>
+			{% for i in  data %}
+				<tr>
+					<td>{{i.place}}</td>
+					<td><a class="user_link" href="https://ankileaderboard.pythonanywhere.com/user/{{i.username}}" target="_blank">{{i.username}}</a></td>
+					<td style="text-align:right">{{i.xp}}</td>
+					<td style="text-align:right">{{i.time}}</td>
+					<td style="text-align:right">{{i.reviews}}</td>
+					<td style="text-align:right">{{i.retention}}%</td>
+					<td style="text-align:right">{{i.days_learned}}%</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
 {% endblock %}
