@@ -102,7 +102,7 @@ def background_sync():
 def season():
 	url = 'https://ankileaderboard.pythonanywhere.com/season/'
 	try:
-		season = requests.get(url, timeout=20).json()
+		season = requests.get(url, timeout=30).json()
 		global season_start
 		season_start = season[0]
 		season_start = datetime.datetime(season_start[0],season_start[1],season_start[2],season_start[3],season_start[4],season_start[5])
@@ -152,7 +152,7 @@ except:
 		write_config("import_error", False)
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
-add_menu('&Leaderboard',"&Sync and update the homescreen leaderboard", background_sync, "Shift+S")
+add_menu('&Leaderboard',"&Sync and update the home screen leaderboard", background_sync, "Shift+S")
 add_menu('&Leaderboard',"&Config", invoke_setup, "Alt+C")
 add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
 mw.addonManager.setConfigAction(__name__, config_setup)
