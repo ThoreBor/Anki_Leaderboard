@@ -1,10 +1,6 @@
 from aqt.qt import *
-from aqt.utils import showWarning, tooltip
+from aqt.utils import tooltip
 from aqt import mw
-
-import requests
-import json
-from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .forms import report
 from .api_connect import connectToAPI

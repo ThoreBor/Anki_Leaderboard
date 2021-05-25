@@ -3,7 +3,6 @@ from datetime import date, timedelta
 import datetime
 
 from aqt import mw
-from aqt.utils import showInfo
 
 def Stats(season_start, season_end):
 	config = mw.addonManager.getConfig(__name__)

@@ -1,13 +1,11 @@
 import datetime
 from datetime import date, timedelta
-
 try:
 	from aqt import gui_hooks
 except:
 	pass
 from aqt.deckbrowser import DeckBrowser
 from aqt import mw
-from aqt.utils import showWarning
 from aqt.deckbrowser import DeckBrowser
 from anki.hooks import wrap
 
@@ -30,7 +28,6 @@ def getData():
 		data = connectToAPI("getdata/", True, sortby, False, "getData")
 
 		lb_list = []
-		group_lb = []
 		counter = 0
 
 		for i in data:

@@ -1,7 +1,6 @@
 from datetime import datetime
 from os.path import dirname, join, realpath
 
-import requests
 import hashlib
 from PyQt5 import QtCore
 

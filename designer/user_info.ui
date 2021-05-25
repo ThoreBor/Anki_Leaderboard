@@ -255,8 +255,9 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>hideUser</tabstop>
   <tabstop>addFriend</tabstop>
-  <tabstop>banUser</tabstop>
   <tabstop>reportUser</tabstop>
+  <tabstop>banUser</tabstop>
+  <tabstop>group_list</tabstop>
   <tabstop>history</tabstop>
   <tabstop>status_message</tabstop>
  </tabstops>

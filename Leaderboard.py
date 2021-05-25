@@ -7,7 +7,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from aqt import mw
 from aqt.qt import *
-from aqt.utils import showWarning
 
 from .forms import Leaderboard
 from .Stats import Stats
@@ -15,7 +14,6 @@ from .Achievement import start_achievement
 from .config_manager import write_config
 from .League import load_league
 from .userInfo import start_user_info
-from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version
 from .api_connect import connectToAPI
 

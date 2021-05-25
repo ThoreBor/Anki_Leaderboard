@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>759</width>
-    <height>469</height>
+    <height>478</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -248,7 +248,7 @@ p, li { white-space: pre-wrap; }
             <item>
              <widget class="QCheckBox" name="LB_DeckBrowser">
               <property name="text">
-               <string>Show leaderboard on home screen (only works with Anki 2.1.20+)</string>
+               <string>Show Leaderboard on home screen (only works with Anki 2.1.20+)</string>
               </property>
              </widget>
             </item>
@@ -264,7 +264,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QLabel" name="maxUsers_Label">
                 <property name="text">
-                 <string>Maximum number of users on home screen leaderboard:</string>
+                 <string>Maximum number of users on home screen Leaderboard:</string>
                 </property>
                </widget>
               </item>
@@ -393,7 +393,7 @@ p, li { white-space: pre-wrap; }
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Next day starts</string>
+               <string>The next day starts</string>
               </property>
              </widget>
             </item>
@@ -896,6 +896,8 @@ Sorting will be disabled</string>
   <tabstop>login_button</tabstop>
   <tabstop>delete_username</tabstop>
   <tabstop>delete_button</tabstop>
+  <tabstop>statusMsg</tabstop>
+  <tabstop>statusButton</tabstop>
   <tabstop>country</tabstop>
   <tabstop>newday</tabstop>
   <tabstop>sortby</tabstop>
@@ -903,12 +905,15 @@ Sorting will be disabled</string>
   <tabstop>scroll</tabstop>
   <tabstop>refresh</tabstop>
   <tabstop>autosync</tabstop>
+  <tabstop>medals</tabstop>
   <tabstop>LB_DeckBrowser</tabstop>
   <tabstop>lb_focus</tabstop>
   <tabstop>maxUsers</tabstop>
   <tabstop>subject</tabstop>
   <tabstop>joinPwd</tabstop>
   <tabstop>joinGroup</tabstop>
+  <tabstop>group_list</tabstop>
+  <tabstop>leaveGroup</tabstop>
   <tabstop>newGroup</tabstop>
   <tabstop>newPwd</tabstop>
   <tabstop>newRepeat</tabstop>
@@ -928,6 +933,7 @@ Sorting will be disabled</string>
   <tabstop>hiddenUsers</tabstop>
   <tabstop>unhideButton</tabstop>
   <tabstop>about_text</tabstop>
+  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>

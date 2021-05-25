@@ -50,7 +50,6 @@ def create_token():
 		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
 		write_config("token", token)
 	if "Leaderboard_Token_v3" not in mw.col.conf:
-		ids = mw.col.db.list("SELECT id FROM revlog")
 		mw.col.conf['Leaderboard_Token_v3'] = config["token"]
 
 def check_info():

@@ -3,7 +3,6 @@ import json
 
 from aqt import mw
 from aqt.qt import *
-from aqt.utils import showWarning, showInfo
 
 from .config_manager import write_config
 from .api_connect import connectToAPI
