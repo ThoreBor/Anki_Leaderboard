@@ -460,7 +460,8 @@ class start_setup(QDialog):
 		config = mw.addonManager.getConfig(__name__)
 		statusMsg = self.dialog.statusMsg.toPlainText()
 		if len(statusMsg) > 280:
-			showWarning("The message can only be 280 characters long.")
+			showWarning("The message can only be 280 characters long.", title="Leaderboard")
+			return
 		data = {"status": statusMsg, "username": config["username"], "Token_v3": config["token"]}
 		x = connectToAPI("setStatus/", False, data, "Done!", "status")
 		if x.text == "Done!":
