@@ -16,7 +16,7 @@ def Stats(season_start, season_end):
 
 	league_reviews, league_retention = league_reviews_and_retention(season_start, season_end)
 	league_time = league_time_spend(season_start, season_end)
-	league_days_percent = league_days_learned(season_start, season_end, new_day)
+	league_days_percent = league_days_learned(season_start, season_end, new_day, time_now)
 
 	return(Streak, total_cards, time_today, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent)
 
@@ -97,14 +97,17 @@ def league_reviews_and_retention(season_start, season_end):
 def league_time_spend(season_start, season_end):
 	return get_time_spend(season_start, season_end)
 
-def league_days_learned(season_start, season_end, new_day):
+def league_days_learned(season_start, season_end, new_day, time_now):
 	date_list = [datetime.datetime.combine(season_start, new_day) + timedelta(days=x) for x in range((season_end - season_start).days + 1)]
 	days_learned = 0
 	days_over = 0
 	for i in date_list:
 		time = get_time_spend(i, i + timedelta(days=1))
-		if time >= 10:
+		if time >= 5:
 			days_learned += 1
+		if i.date() == date.today() and time_now < new_day:
+			continue
 		if i.date() <= date.today():
 			days_over += 1
+
 	return round((100 / days_over) * days_learned, 1)
