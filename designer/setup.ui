@@ -248,7 +248,7 @@ p, li { white-space: pre-wrap; }
             <item>
              <widget class="QCheckBox" name="LB_DeckBrowser">
               <property name="text">
-               <string>Show Leaderboard on home screen (only works with Anki 2.1.20+)</string>
+               <string>Show the home screen leaderboard (only works with Anki 2.1.20+)</string>
               </property>
              </widget>
             </item>
@@ -264,7 +264,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QLabel" name="maxUsers_Label">
                 <property name="text">
-                 <string>Maximum number of users on home screen Leaderboard:</string>
+                 <string>Maximum number of users on the home screen Leaderboard:</string>
                 </property>
                </widget>
               </item>
