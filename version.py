@@ -8,7 +8,7 @@ and join a country leaderboard. You'll only see users, that synced on the same d
 In the league tab, you see everyone that synced at least once during the current season. There are four leagues
 (Alpha, Beta, Gamma, and Delta). A season lasts two weeks. You don't have to sync every day.
 The XP formula is:<br><b>XP = days studied percentage x ((6 x time) + (2 x reviews x retention))</b>.<br>
-You have to study at least 5 minutes per day, otherwise those days won't be count as "studied"
+You have to study at least 5 minutes per day, otherwise this day won't be counted as "studied"
 (<i><a href="https://github.com/ThoreBor/Anki_Leaderboard/issues/122">See this issue for more info<a/></i>).
 At the end of each season, the top 20% will be promoted, and the last 20% will be relegated.<br><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
@@ -27,7 +27,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 Also thank you to everyone who reported bugs and suggested new features!</b>
 <h3>Change Log:</h3>
 - added option to join multiple groups <b>(you have to rejoin the group you previously joined)</b><br>
-- added option to report users<br>
+- added option to report and suspend users<br>
 - added config shortcut<br>
 - removed E-Mail from group request<br>
 - fixed stats bug (rescheduled cards were counted as reviews)<br>
