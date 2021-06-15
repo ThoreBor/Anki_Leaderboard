@@ -322,7 +322,7 @@ class start_setup(QDialog):
 	def export_list(self):
 		config = mw.addonManager.getConfig(__name__)
 		friends_list = config["friends"]
-		export_file = open(join(dirname(realpath(__file__)), "Friends.txt"), "w", encoding="utf-8" ) 
+		export_file = open(join(dirname(realpath(__file__)), "Friends.txt"), "w", encoding="utf-8") 
 		for i in friends_list:
 			export_file.write(i+"\n")
 		export_file.close()

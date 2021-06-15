@@ -1,13 +1,15 @@
 from aqt import mw
 from PyQt5.QtWidgets import QAction, QMenu
 from aqt.qt import *
-from aqt.utils import showInfo, showWarning, tooltip
+from aqt.utils import showInfo, showWarning, tooltip, askUser
 
+from os.path import dirname, join, realpath
 import webbrowser
 import requests
 from bs4 import BeautifulSoup
 import datetime
 import hashlib
+import json
 
 from .Leaderboard import start_main
 from .Setup import start_setup
@@ -117,6 +119,50 @@ def season():
 		current_season = ""
 		showWarning("Timeout error [season] - No internet connection, or server response took too long.", title="Leaderboard error")
 
+def profileHook():
+	config = mw.addonManager.getConfig(__name__)
+	if config["autosync"] == True:
+		gui_hooks.reviewer_will_end.append(background_sync)
+	if config["homescreen"] == True:
+		leaderboard_on_deck_browser()
+
+def deleteHook(dialog, ids):
+	config = mw.addonManager.getConfig(__name__)
+	askUserDeleteAccount = """<h3>Deleting Leaderboard Account</h3>
+	Keep in mind that deleting the add-on only removes the local files. Do you also want to delete your account (username, league history)?
+	"""
+	askUserCreateMetaBackup = """<h3>Leaderboard configuration backup</h3>
+	If you want to reinstall this add-on in the future, creating a backup of the configurations is recommended. Do you want to create a backup?
+	"""
+	if "41708974" in ids or "Anki_Leaderboard" in ids:
+		if askUser(askUserDeleteAccount):
+			data = {'Username': config["username"], "Token_v3": config["token"]}
+			x = connectToAPI("delete/", False, data, "Deleted", "deleteHook")
+			if x.text == "Deleted":
+				write_config("username", "")
+				tooltip("Successfully deleted account.")
+				write_config("token", None)
+		if askUser(askUserCreateMetaBackup):
+			config = mw.addonManager.getConfig(__name__)
+			meta_backup = open(join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json"), "w", encoding="utf-8")
+			meta_backup.write(json.dumps({"config": config}))
+			meta_backup.close()
+			tooltip("Successfully created a backup")
+
+def checkBackup():
+	askUserRestoreFromBackup = """<h3>Leaderboard configuration backup found</h3>
+	Do you want to restore your configurations?
+	"""
+	backup_path = join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json")
+	if os.path.exists(backup_path):
+		meta_backup = open(backup_path, "r", encoding="utf-8")
+		if askUser(askUserRestoreFromBackup):
+			new_meta = open(join(dirname(realpath(__file__)), "meta.json"), "w", encoding="utf-8") 
+			new_meta.write(json.dumps(json.loads(meta_backup.read())))
+			new_meta.close()
+			meta_backup.close()
+		os.remove(backup_path)
+
 def add_menu(Name, Button, exe, *sc):
 	action = QAction(Button, mw)
 	action.triggered.connect(exe)
@@ -130,26 +176,25 @@ def add_menu(Name, Button, exe, *sc):
 	for i in sc:
 		action.setShortcut(QKeySequence(i))
 
-def initialize():
-	config = mw.addonManager.getConfig(__name__)
-	if config["autosync"] == True:
-		gui_hooks.reviewer_will_end.append(background_sync)
-	if config["homescreen"] == True:
-		leaderboard_on_deck_browser()
-	
-write_config("achievement", True)
-write_config("homescreen_data", [])
-add_username_to_friendlist()
-season()
-
 try:
 	from aqt import gui_hooks
-	gui_hooks.profile_did_open.append(initialize)
+	gui_hooks.profile_did_open.append(profileHook)
+	try:
+		# this hook will be implemented in Anki 2.1.45
+		gui_hooks.addons_dialog_will_delete_addons.append(deleteHook)
+	except:
+		print("addons_dialog_will_delete_addon is not a hook yet")
 except:
 	config = mw.addonManager.getConfig(__name__)
 	if config["import_error"] == True:
 		showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
 		write_config("import_error", False)
+
+checkBackup()	
+write_config("achievement", True)
+write_config("homescreen_data", [])
+add_username_to_friendlist()
+season()
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Sync and update the home screen leaderboard", background_sync, "Shift+S")

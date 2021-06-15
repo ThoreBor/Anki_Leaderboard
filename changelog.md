@@ -3,6 +3,7 @@
 - added option to join multiple groups (__you have to rejoin the group you previously joined__)
 - added option to report and suspend users
 - added config shortcut
+- added option to delete account and/or create a backup of the configurations before deleting the add-on (for Anki >2.1.44)
 - removed E-Mail from group request
 - fixed review stats bug (rescheduled cards were counted as reviews)
 - fixed days studied bug
