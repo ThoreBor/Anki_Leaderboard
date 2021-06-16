@@ -20,7 +20,6 @@ from .version import version
 from .api_connect import connectToAPI
 
 def Main():
-	check_info()
 	create_token()
 	config = mw.addonManager.getConfig(__name__)
 	if config["username"] == "":
@@ -60,7 +59,7 @@ def check_info():
 		url = 'https://ankileaderboardinfo.netlify.app'
 		page = requests.get(url, timeout=30)
 		soup = BeautifulSoup(page.content, 'html.parser')
-		if soup.find(id='show_message').get_text() == "True":
+		if soup.find(id='show_message').get_text() == "False":
 			info = soup.find("div", id="Message")
 			notification_id = soup.find("div", id="id").get_text()
 			if config["notification_id"] != notification_id:
@@ -78,7 +77,6 @@ def add_username_to_friendlist():
 
 def background_sync():
 	create_token()
-	check_info()
 	config = mw.addonManager.getConfig(__name__)
 	token = config["token"]
 	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(season_start, season_end)
@@ -120,6 +118,7 @@ def season():
 		showWarning("Timeout error [season] - No internet connection, or server response took too long.", title="Leaderboard error")
 
 def profileHook():
+	check_info()
 	config = mw.addonManager.getConfig(__name__)
 	if config["autosync"] == True:
 		gui_hooks.reviewer_will_end.append(background_sync)
@@ -131,7 +130,7 @@ def deleteHook(dialog, ids):
 	askUserDeleteAccount = """<h3>Deleting Leaderboard Account</h3>
 	Keep in mind that deleting the add-on only removes the local files. Do you also want to delete your account (username, league history)?
 	"""
-	askUserCreateMetaBackup = """<h3>Leaderboard configuration backup</h3>
+	askUserCreateMetaBackup = """<h3>Leaderboard Configuration Backup</h3>
 	If you want to reinstall this add-on in the future, creating a backup of the configurations is recommended. Do you want to create a backup?
 	"""
 	if "41708974" in ids or "Anki_Leaderboard" in ids:
