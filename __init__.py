@@ -59,7 +59,7 @@ def check_info():
 		url = 'https://ankileaderboardinfo.netlify.app'
 		page = requests.get(url, timeout=30)
 		soup = BeautifulSoup(page.content, 'html.parser')
-		if soup.find(id='show_message').get_text() == "False":
+		if soup.find(id='show_message').get_text() == "True":
 			info = soup.find("div", id="Message")
 			notification_id = soup.find("div", id="id").get_text()
 			if config["notification_id"] != notification_id:
