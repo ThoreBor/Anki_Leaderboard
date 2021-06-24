@@ -136,7 +136,7 @@ def sync(request):
 			return HttpResponse(f"<h3>Account suspended</h3>This account was suspended due to the following reason:<br><br>{sus}<br><br>Please write an e-mail to leaderboard_support@protonmail.com or a message me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a>, if you think that this was a mistake.")
 	except:
 		pass
-	
+
 	f = filter(User, Streak, Cards, Time, Sync_Date, Month, Retention, league_reviews, league_time, league_retention, league_days_learned)
 	if f:
 		return HttpResponse(f)
@@ -193,7 +193,7 @@ def delete(request):
 	c = conn.cursor()
 	User = request.POST.get("Username", None)
 	Token = request.POST.get("Token_v3", None)
-	
+
 	auth = auth_user(User, Token)
 	if auth == 200:
 		c.execute("DELETE FROM Leaderboard WHERE Username = (?)", (User,))
@@ -267,7 +267,7 @@ def joinGroup(request):
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
 	token = request.POST.get("token", None)
-	
+
 	group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 	if not group_list:
 		groups = [group]
@@ -275,7 +275,7 @@ def joinGroup(request):
 		groups = json.loads(group_list)
 		if group not in groups:
 			groups.append(group)
-	
+
 	authUser = auth_user(username, token)
 	if authUser == 200:
 		authGroup = auth_group(group, pwd, username)
@@ -331,7 +331,7 @@ def leaveGroup(request):
 	c = conn.cursor()
 	group = request.POST.get("group", None)
 	token = request.POST.get("token", None)
-	user = request.POST.get("user", None)	
+	user = request.POST.get("user", None)
 	group_list = json.loads(c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0])
 
 	authUser = auth_user(user, token)
@@ -344,10 +344,10 @@ def leaveGroup(request):
 		print(f"{user} left {group}")
 		return HttpResponse("Done!")
 	if authUser == 401:
-		return render(request, "authError.html")		
+		return render(request, "authError.html")
 	if authUser == 404:
 		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
-	
+
 @csrf_exempt
 def groups(request):
 	conn = sqlite3.connect(database_path)
@@ -392,9 +392,9 @@ def banUser(request):
 				print(f"{toBan} was banned from {group} by {user}")
 				return HttpResponse("Done!")
 			else:
-				return HttpResponse(authAdmin)		
+				return HttpResponse(authAdmin)
 		else:
-			return HttpResponse(authGroup)	
+			return HttpResponse(authGroup)
 	if authUser == 401:
 		return render(request, "authError.html")
 	if authUser == 404:
@@ -419,7 +419,7 @@ def setStatus(request):
 		return render(request, "authError.html")
 	if auth == 404:
 		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
-		
+
 @csrf_exempt
 def getStatus(request):
 	conn = sqlite3.connect(database_path)
@@ -441,7 +441,7 @@ def getUserinfo(request):
 			g_new = []
 		else:
 			g_new = json.loads(group[1])
-		if g_old not in g_new:
+		if g_old not in [group.replace(" ", "") for group in g_new]:
 			g_new.append(g_old)
 		league = c.execute("SELECT league, history FROM League WHERE username = (?)", (user,)).fetchone()
 		status = c.execute("SELECT Status FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0]
@@ -464,4 +464,4 @@ def reportUser(request):
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,5,14,0,0,0],[2021,5,28,0,0,0], "Season 17"]))
+	return HttpResponse(json.dumps([[2021,6,11,0,0,0],[2021,6,25,0,0,0], "Season 19"]))

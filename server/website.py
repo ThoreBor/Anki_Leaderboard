@@ -93,11 +93,11 @@ def user(request, username):
 		groups = json.loads(user_data[12])
 	else:
 		groups = []
-	if user_data[6] == "Custom" or "" or None:
+	if user_data[6] == "Custom" or user_data[6] == "" or user_data[6] == None:
 		groups = ["-"]
 	else:
 		subject = user_data[6]
-		if subject not in groups:
+		if subject not in [group.replace(" ", "") for group in groups]:
 			groups.append(subject)
 	data = [{"username": username, "streak": user_data[1], "cards": user_data[2], "time": user_data[3], "month": user_data[5],
 	"subject": ', '.join(groups), "country": country, "retention": user_data[8], "league": league[0]}]
