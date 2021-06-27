@@ -39,8 +39,8 @@ def load_league(self, colors):
 			history = json.loads(i[6])
 			if history["gold"] != 0 or history["silver"] != 0 or history["bronze"] != 0:
 				medal_users.append([username, history["gold"], history["silver"], history["bronze"]])
-				username = f"{username} |"
 			if config["show_medals"] == True:
+				username = f"{username} |"
 				if history["gold"] > 0:
 					username = f"{username} {history['gold'] if history['gold'] != 1 else ''}🥇"
 				if history["silver"] > 0:
