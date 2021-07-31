@@ -8,7 +8,6 @@ import webbrowser
 import requests
 from bs4 import BeautifulSoup
 import datetime
-import hashlib
 import json
 
 from .Leaderboard import start_main
@@ -20,7 +19,6 @@ from .version import version
 from .api_connect import connectToAPI
 
 def Main():
-	create_token()
 	config = mw.addonManager.getConfig(__name__)
 	if config["username"] == "":
 		invoke_setup()
@@ -43,15 +41,6 @@ def config_setup():
 
 def github():
 	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
-
-def create_token():
-	config = mw.addonManager.getConfig(__name__)
-	if config["token"] == None:
-		token = str(mw.col.db.list("SELECT id FROM revlog LIMIT 1"))
-		token = hashlib.sha1(token.encode('utf-8')).hexdigest().upper()
-		write_config("token", token)
-	if "Leaderboard_Token_v3" not in mw.col.conf:
-		mw.col.conf['Leaderboard_Token_v3'] = config["token"]
 
 def check_info():
 	config = mw.addonManager.getConfig(__name__)
@@ -76,7 +65,6 @@ def add_username_to_friendlist():
 		write_config("friends", friends)
 
 def background_sync():
-	create_token()
 	config = mw.addonManager.getConfig(__name__)
 	token = config["token"]
 	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(season_start, season_end)
@@ -85,11 +73,11 @@ def background_sync():
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention,
 		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-		"Token_v3": config["token"], "Version": version}
+		"firebaseToken": config["firebaseToken"], "Version": version}
 	else:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
-		"Token_v3": config["token"], "Version": version}
+		"firebaseToken": config["firebaseToken"], "Version": version}
 
 	x = connectToAPI("sync/", False, data, "Done!", "background_sync")
 	if x.text == "Done!":

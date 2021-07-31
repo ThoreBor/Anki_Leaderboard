@@ -10,6 +10,7 @@
 	"refresh": false, 
 	"tab": 0, 
 	"token": null, 
+	"firebaseToken": null,
 	"achievement": true, 
 	"sortby": "Cards", 
 	"hidden_users": [], 

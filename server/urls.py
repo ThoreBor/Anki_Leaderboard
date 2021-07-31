@@ -21,7 +21,6 @@ from django.conf.urls import url
 from django.http import HttpResponse
 
 app_name = "main"
-#path('upload/', website.upload, name="upload"),
 urlpatterns = [
     url(r'^robots.txt', lambda x: HttpResponse("User-Agent: *\nDisallow: /", content_type="text/plain"), name="robots_file"),
 	path("", website.reviews, name="reviews"),
@@ -49,4 +48,9 @@ urlpatterns = [
 	path('banUser/', api.banUser, name="banUser"),
 	path('leaveGroup/', api.leaveGroup, name="leaveGroup"),
 	path('reportUser/', api.reportUser, name="reportUser"),
+	path('signUp/', api.signUp, name="signUp"),
+	path('logIn/', api.logIn, name="logIn"),
+	path('deleteAccount/', api.deleteAccount, name="deleteAccount"),
+	path('updateAccount/', api.updateAccount, name="updateAccount"),
+	path('resetPassword/', api.resetPassword, name="resetPassword"),
 ]

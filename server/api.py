@@ -5,9 +5,110 @@ import sqlite3
 import json
 from datetime import datetime
 import praw
+import pyrebase
+from .config import praw_config, firebase_config
+#database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
+database_path = 'Leaderboard.db'
 
-database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
-#database_path = 'Leaderboard.db'
+@csrf_exempt
+def signUp(request):
+	conn = sqlite3.connect(database_path)
+	c = conn.cursor()
+	firebase = pyrebase.initialize_app(firebase_config)
+	auth = firebase.auth()
+	email = request.POST.get("email", "")
+	username = request.POST.get("username", "")
+	pwd = request.POST.get("pwd", "")
+	try:
+		response = auth.create_user_with_email_and_password(email, pwd)
+	except:
+		return HttpResponse(json.dumps("Firebase error"))	
+	token = response['idToken']
+	c.execute('INSERT INTO Leaderboard (Username, Token) VALUES(?, ?)', (username, token))
+	conn.commit()
+	return HttpResponse(json.dumps(token))
+
+@csrf_exempt
+def logIn(request):
+	conn = sqlite3.connect(database_path)
+	c = conn.cursor()
+	firebase = pyrebase.initialize_app(firebase_config)
+	auth = firebase.auth()
+	email = request.POST.get("email", "")
+	username = request.POST.get("username", "")
+	pwd = request.POST.get("pwd", "")
+	try:
+		response = auth.sign_in_with_email_and_password(email, pwd)
+	except Exception as e:
+		print(str(e))
+		return HttpResponse(json.dumps("Firebase error"))	
+	token = response['idToken']
+	c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?) ", (token, username))
+	conn.commit()
+	return HttpResponse(json.dumps(token))
+
+@csrf_exempt
+def deleteAccount(request):
+	conn = sqlite3.connect(database_path)
+	c = conn.cursor()
+	firebase = pyrebase.initialize_app(firebase_config)
+	auth = firebase.auth()
+	email = request.POST.get("email", "")
+	username = request.POST.get("username", "")
+	pwd = request.POST.get("pwd", "")
+	firebaseToken = request.POST.get("firebaseToken", "")
+	auth_local = auth_user(username, firebaseToken)
+	if auth_local == 200:
+		try:
+			response = auth.sign_in_with_email_and_password(email, pwd)
+			auth.delete_user_account(response['idToken'])
+		except:
+			return HttpResponse("<h3>404 error</h3>Wrong e-mail address or wrong password.")
+		c.execute("DELETE FROM Leaderboard WHERE Username = (?)", (username,))
+		conn.commit()
+		c.execute("DELETE FROM League WHERE username = (?)", (username,))
+		conn.commit()
+		print(f"Deleted account: {username}")
+		return HttpResponse("Deleted")
+	if auth_local == 401:
+		return render(request, "authError.html")
+	if auth_local == 404:
+		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
+
+@csrf_exempt
+def updateAccount(request):
+	conn = sqlite3.connect(database_path)
+	c = conn.cursor()
+	firebase = pyrebase.initialize_app(firebase_config)
+	auth = firebase.auth()
+	email = request.POST.get("email", "")
+	username = request.POST.get("username", "")
+	pwd = request.POST.get("pwd", "")
+	old_token = request.POST.get("old_token", "")
+	auth_local = auth_user(username, old_token)
+	if auth_local == 200:
+		try:
+			response = auth.create_user_with_email_and_password(email, pwd)
+		except:
+			return HttpResponse(json.dumps("<h3>404 error</h3>E-Mail address already exists, or password is too short."))
+		token = response['idToken']
+		c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?) ", (token, username))
+		conn.commit()
+		print(f"Updated account: {username}")
+		return HttpResponse(json.dumps(token))
+	else:
+		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or token invalid."))
+
+@csrf_exempt
+def resetPassword(request):
+	email = request.POST.get("email", "")
+	firebase = pyrebase.initialize_app(firebase_config)
+	auth = firebase.auth()
+	try:
+		response = auth.send_password_reset_email(email)
+	except:
+		return HttpResponse(json.dumps("Firebase error"))
+	return HttpResponse(json.dumps("Done!"))
 
 def auth_user(user, token):
 	conn = sqlite3.connect(database_path)
@@ -127,7 +228,9 @@ def sync(request):
 	league_days_learned = request.POST.get("league_days_percent", 0)
 	Update_League = request.POST.get("Update_League", True)
 
-	Token = request.POST.get("Token_v3", None)
+	Token_v3 = request.POST.get("Token_v3", None)
+	firebaseToken = request.POST.get("firebaseToken", None)
+	Token = firebaseToken if firebaseToken else Token_v3
 	Version = request.POST.get("Version", None)
 
 	try:
@@ -187,12 +290,15 @@ def sync(request):
 		print(f"Created new account: {User}")
 		return HttpResponse("Done!")
 
+### OLD, for < v1.7.0
 @csrf_exempt
 def delete(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	User = request.POST.get("Username", None)
-	Token = request.POST.get("Token_v3", None)
+	Token_v3 = request.POST.get("Token_v3", None)
+	firebaseToken = request.POST.get("firebaseToken", None)
+	Token = firebaseToken if firebaseToken else Token_v3
 
 	auth = auth_user(User, Token)
 	if auth == 200:
@@ -252,8 +358,7 @@ def create_group(request):
 	else:
 		c.execute('INSERT INTO Groups (Group_Name, pwd, admins, banned) VALUES(?, ?, ?, ?)', (Group_Name, Pwd, json.dumps([User]), json.dumps([])))
 		conn.commit()
-		with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
-			data = json.load(json_file)
+		data = praw_config
 		r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
 		r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
 		print(f"{User} requested a new group: {Group_Name}")
@@ -266,7 +371,9 @@ def joinGroup(request):
 	username = request.POST.get("username", None)
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
-	token = request.POST.get("token", None)
+	Token_v3 = request.POST.get("Token_v3", None)
+	firebaseToken = request.POST.get("firebaseToken", None)
+	token = firebaseToken if firebaseToken else Token_v3
 
 	group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 	if not group_list:
@@ -301,7 +408,9 @@ def manageGroup(request):
 	group = request.POST.get("group", None)
 	oldPwd = request.POST.get("oldPwd", None)
 	newPwd = request.POST.get("newPwd", None)
-	token = request.POST.get("token", None)
+	Token_v3 = request.POST.get("Token_v3", None)
+	firebaseToken = request.POST.get("firebaseToken", None)
+	token = firebaseToken if firebaseToken else Token_v3
 	addAdmin = request.POST.get("addAdmin", None)
 	admins = json.loads(c.execute("SELECT admins FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0])
 	admins.append(addAdmin)
@@ -330,7 +439,9 @@ def leaveGroup(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	group = request.POST.get("group", None)
-	token = request.POST.get("token", None)
+	Token_v3 = request.POST.get("Token_v3", None)
+	firebaseToken = request.POST.get("firebaseToken", None)
+	token = firebaseToken if firebaseToken else Token_v3
 	user = request.POST.get("user", None)
 	group_list = json.loads(c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0])
 
@@ -366,7 +477,9 @@ def banUser(request):
 	toBan = request.POST.get("toBan", None)
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
-	token = request.POST.get("token", None)
+	Token_v3 = request.POST.get("Token_v3", None)
+	firebaseToken = request.POST.get("firebaseToken", None)
+	token = firebaseToken if firebaseToken else Token_v3
 	user = request.POST.get("user", None)
 	g = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (toBan,)).fetchone()[0]
 	banned = json.loads(c.execute("SELECT banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0])
@@ -408,7 +521,9 @@ def setStatus(request):
 	if len(statusMsg) > 280:
 		statusMsg = None
 	username = request.POST.get("username", None)
-	Token = request.POST.get("Token_v3", None)
+	Token_v3 = request.POST.get("Token_v3", None)
+	firebaseToken = request.POST.get("firebaseToken", None)
+	Token = firebaseToken if firebaseToken else Token_v3
 
 	auth = auth_user(username, Token)
 	if auth == 200:
@@ -456,12 +571,10 @@ def reportUser(request):
 	user = request.POST.get("user", "")
 	report_user = request.POST.get("reportUser", "")
 	message = request.POST.get("message", "")
-
-	with open('/home/ankileaderboard/anki_leaderboard_pythonanywhere/main/config.txt') as json_file:
-		data = json.load(json_file)
+	data = praw_config
 	r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
 	r.redditor('Ttime5').message('Report', f"{user} reported {report_user}. \n Message: {message}")
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,6,11,0,0,0],[2021,6,25,0,0,0], "Season 19"]))
+	return HttpResponse(json.dumps([[2021,7,23,0,0,0],[2021,8,6,0,0,0], "Season 22"]))

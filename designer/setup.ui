@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>759</width>
-    <height>478</height>
+    <width>623</width>
+    <height>522</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -61,41 +61,57 @@
        </item>
        <item row="0" column="0">
         <layout class="QGridLayout" name="gl1">
-         <item row="2" column="0">
-          <widget class="QLabel" name="login_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Login:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLineEdit" name="delete_username">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string>Username</string>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="0">
-          <widget class="QLineEdit" name="login_username">
-           <property name="text">
-            <string/>
+          <widget class="QLineEdit" name="account_pwd">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
            </property>
            <property name="placeholderText">
-            <string>Username</string>
+            <string>Password</string>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLineEdit" name="create_username">
+          <widget class="QLineEdit" name="account_mail">
+           <property name="placeholderText">
+            <string>E-Mail</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QComboBox" name="account_action">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
+           <item>
+            <property name="text">
+             <string>Sign-up</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Log-in</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Delete account</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Add password and e-mail address to old account</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLineEdit" name="account_username">
            <property name="text">
             <string/>
            </property>
@@ -107,57 +123,17 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="create_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Create Account:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="label">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Status:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="delete_info">
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-             <underline>false</underline>
-            </font>
-           </property>
-           <property name="text">
-            <string>Delete Account:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QPushButton" name="delete_button">
-           <property name="text">
-            <string>Delete Account</string>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
          <item row="4" column="0">
+          <widget class="QLineEdit" name="account_pwd_repeat">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Repeat password</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
           <widget class="QLabel" name="login_info_2">
            <property name="font">
             <font>
@@ -169,10 +145,13 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="create_button">
+         <item row="5" column="0">
+          <widget class="QPushButton" name="account_button">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
-            <string>Create Account</string>
+            <string>Sign-up</string>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -182,20 +161,40 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QPushButton" name="login_button">
+         <item row="9" column="0">
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
-            <string>Login</string>
+            <string>Bio:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0">
+          <widget class="QPushButton" name="statusButton">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Set Bio</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
            </property>
-           <property name="default">
-            <bool>false</bool>
-           </property>
           </widget>
          </item>
-         <item row="8" column="0">
+         <item row="10" column="0">
           <widget class="QTextEdit" name="statusMsg">
            <property name="html">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -209,22 +208,10 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="8" column="1">
-          <widget class="QPushButton" name="statusButton">
-           <property name="toolTip">
-            <string/>
-           </property>
+         <item row="6" column="0">
+          <widget class="QPushButton" name="account_forgot">
            <property name="text">
-            <string>Set Status</string>
-           </property>
-           <property name="checkable">
-            <bool>false</bool>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
+            <string>Forgot password?</string>
            </property>
           </widget>
          </item>
@@ -464,6 +451,19 @@ Sorting will be disabled</string>
        <string>Groups</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
+       <item row="1" column="1">
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item row="2" column="1">
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
@@ -472,30 +472,10 @@ Sorting will be disabled</string>
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="manage_newRepeat">
+            <item row="1" column="0">
+             <widget class="QLabel" name="manage_old_label">
               <property name="text">
-               <string/>
-              </property>
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
-              </property>
-              <property name="placeholderText">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="addAdmin_Label">
-              <property name="text">
-               <string>Add admin:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="new_repeat_pwd_label_2">
-              <property name="text">
-               <string>Repeat password:</string>
+               <string>Old password:</string>
               </property>
              </widget>
             </item>
@@ -521,19 +501,45 @@ Sorting will be disabled</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="manage_old_label">
+            <item row="5" column="0">
+             <widget class="QLabel" name="addAdmin_Label">
               <property name="text">
-               <string>Old password:</string>
+               <string>Add admin:</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="new_pwd_label_2">
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="manage_newRepeat">
               <property name="text">
-               <string>New password</string>
+               <string/>
+              </property>
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+              <property name="placeholderText">
+               <string/>
               </property>
              </widget>
+            </item>
+            <item row="6" column="0" colspan="2">
+             <widget class="QPushButton" name="manageSave">
+              <property name="text">
+               <string>Save</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="new_repeat_pwd_label_2">
+              <property name="text">
+               <string>Repeat password:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="newAdmin"/>
             </item>
             <item row="1" column="1">
              <widget class="QLineEdit" name="oldPwd">
@@ -548,18 +554,12 @@ Sorting will be disabled</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="0" colspan="2">
-             <widget class="QPushButton" name="manageSave">
+            <item row="2" column="0">
+             <widget class="QLabel" name="new_pwd_label_2">
               <property name="text">
-               <string>Save</string>
-              </property>
-              <property name="autoDefault">
-               <bool>false</bool>
+               <string>New password</string>
               </property>
              </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QLineEdit" name="newAdmin"/>
             </item>
            </layout>
           </item>
@@ -669,16 +669,6 @@ Sorting will be disabled</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="newPwd">
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
-              </property>
-              <property name="placeholderText">
-               <string>optional</string>
-              </property>
-             </widget>
-            </item>
             <item row="5" column="0" colspan="2">
              <widget class="QPushButton" name="add_newGroup">
               <property name="text">
@@ -702,6 +692,16 @@ Sorting will be disabled</string>
               </property>
              </widget>
             </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="newPwd">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+              <property name="placeholderText">
+               <string>optional</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="0" rowspan="3" colspan="2">
              <widget class="QLineEdit" name="newGroup">
               <property name="placeholderText">
@@ -720,19 +720,6 @@ Sorting will be disabled</string>
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="1" column="1">
-        <spacer name="verticalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -890,12 +877,13 @@ Sorting will be disabled</string>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>create_username</tabstop>
-  <tabstop>create_button</tabstop>
-  <tabstop>login_username</tabstop>
-  <tabstop>login_button</tabstop>
-  <tabstop>delete_username</tabstop>
-  <tabstop>delete_button</tabstop>
+  <tabstop>account_action</tabstop>
+  <tabstop>account_mail</tabstop>
+  <tabstop>account_username</tabstop>
+  <tabstop>account_pwd</tabstop>
+  <tabstop>account_pwd_repeat</tabstop>
+  <tabstop>account_button</tabstop>
+  <tabstop>account_forgot</tabstop>
   <tabstop>statusMsg</tabstop>
   <tabstop>statusButton</tabstop>
   <tabstop>country</tabstop>
@@ -932,8 +920,8 @@ Sorting will be disabled</string>
   <tabstop>export_friends</tabstop>
   <tabstop>hiddenUsers</tabstop>
   <tabstop>unhideButton</tabstop>
-  <tabstop>about_text</tabstop>
   <tabstop>tabWidget</tabstop>
+  <tabstop>about_text</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>
