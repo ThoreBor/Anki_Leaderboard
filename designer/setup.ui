@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>623</width>
-    <height>522</height>
+    <height>626</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -61,53 +61,14 @@
        </item>
        <item row="0" column="0">
         <layout class="QGridLayout" name="gl1">
-         <item row="3" column="0">
-          <widget class="QLineEdit" name="account_pwd">
+         <item row="4" column="0">
+          <widget class="QLineEdit" name="account_pwd_repeat">
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>
            </property>
            <property name="placeholderText">
-            <string>Password</string>
+            <string>Repeat password</string>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="account_mail">
-           <property name="placeholderText">
-            <string>E-Mail</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QComboBox" name="account_action">
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-             <underline>false</underline>
-            </font>
-           </property>
-           <item>
-            <property name="text">
-             <string>Sign-up</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Log-in</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Delete account</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Add password and e-mail address to old account</string>
-            </property>
-           </item>
           </widget>
          </item>
          <item row="2" column="0">
@@ -120,16 +81,6 @@
            </property>
            <property name="placeholderText">
             <string>Username</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLineEdit" name="account_pwd_repeat">
-           <property name="echoMode">
-            <enum>QLineEdit::Password</enum>
-           </property>
-           <property name="placeholderText">
-            <string>Repeat password</string>
            </property>
           </widget>
          </item>
@@ -161,7 +112,46 @@
            </property>
           </widget>
          </item>
-         <item row="9" column="0">
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="account_mail">
+           <property name="placeholderText">
+            <string>Email address</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QComboBox" name="account_action">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+             <underline>false</underline>
+            </font>
+           </property>
+           <item>
+            <property name="text">
+             <string>Sign-up</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Log-in</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Delete account</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Add password and email address to old account</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="10" column="0">
           <widget class="QLabel" name="label">
            <property name="font">
             <font>
@@ -175,7 +165,7 @@
            </property>
           </widget>
          </item>
-         <item row="11" column="0">
+         <item row="13" column="0">
           <widget class="QPushButton" name="statusButton">
            <property name="toolTip">
             <string/>
@@ -194,7 +184,14 @@
            </property>
           </widget>
          </item>
-         <item row="10" column="0">
+         <item row="6" column="0">
+          <widget class="QPushButton" name="account_forgot">
+           <property name="text">
+            <string>Forgot password?</string>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0">
           <widget class="QTextEdit" name="statusMsg">
            <property name="html">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -208,14 +205,38 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
-          <widget class="QPushButton" name="account_forgot">
-           <property name="text">
-            <string>Forgot password?</string>
+         <item row="3" column="0">
+          <widget class="QLineEdit" name="account_pwd">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Password</string>
            </property>
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="account_info">
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
+         <property name="text">
+          <string>For old accounts: Please use 'Add password and email address to old account' to secure your account. If you want to delete your account without adding an email address and password, please downgrade to v1.7.0. You can download it &lt;a href=&quot;https://github.com/ThoreBor/Anki_Leaderboard/releases&quot;&gt;here.&lt;/a&gt;</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -451,20 +472,92 @@ Sorting will be disabled</string>
        <string>Groups</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="1" column="1">
-        <spacer name="verticalSpacer_5">
+       <item row="2" column="0" colspan="2">
+        <spacer name="verticalSpacer_4">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>0</width>
+           <width>20</width>
            <height>0</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="2" column="1">
+       <item row="0" column="0" rowspan="2">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Join/Leave group</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QComboBox" name="subject">
+              <item>
+               <property name="text">
+                <string>Join a group</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="join_pwd_label">
+              <property name="text">
+               <string>If it's a private group, please enter the password:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="joinPwd">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="joinGroup">
+              <property name="text">
+               <string>Join group</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="group_list">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="leaveGroup">
+              <property name="text">
+               <string>Leave group</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="1">
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
           <string>Manage groups</string>
@@ -565,91 +658,6 @@ Sorting will be disabled</string>
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="0" column="0" rowspan="3">
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Join/Leave group</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_7">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_5">
-            <item>
-             <widget class="QComboBox" name="subject">
-              <item>
-               <property name="text">
-                <string>Join a group</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="join_pwd_label">
-              <property name="text">
-               <string>If it's a private group, please enter the password:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="joinPwd">
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="joinGroup">
-              <property name="text">
-               <string>Join group</string>
-              </property>
-              <property name="autoDefault">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QListWidget" name="group_list">
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="leaveGroup">
-              <property name="text">
-               <string>Leave group</string>
-              </property>
-              <property name="autoDefault">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="2">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
        </item>
        <item row="0" column="1">
         <widget class="QGroupBox" name="groupBox_3">

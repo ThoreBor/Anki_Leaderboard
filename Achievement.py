@@ -18,4 +18,4 @@ class start_achievement(QDialog):
 		self.dialog.confetti.setMovie(self.gif)
 		self.gif.start()
 
-		self.dialog.message.setText(str(self.value) + " day streak")
+		self.dialog.message.setText(f"{self.value} day streak")

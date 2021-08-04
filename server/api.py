@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from ratelimit.decorators import ratelimit
 import sqlite3
 import json
 from datetime import datetime
@@ -11,6 +12,7 @@ from .config import praw_config, firebase_config
 database_path = 'Leaderboard.db'
 
 @csrf_exempt
+@ratelimit(key='ip', rate='10/h', block=True)
 def signUp(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -19,16 +21,19 @@ def signUp(request):
 	email = request.POST.get("email", "")
 	username = request.POST.get("username", "")
 	pwd = request.POST.get("pwd", "")
+	sync_date = request.POST.get("sync_date", "")
+	version = request.POST.get("version", "")
 	try:
 		response = auth.create_user_with_email_and_password(email, pwd)
 	except:
 		return HttpResponse(json.dumps("Firebase error"))	
 	token = response['idToken']
-	c.execute('INSERT INTO Leaderboard (Username, Token) VALUES(?, ?)', (username, token))
+	c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (username, 0, 0, 0, sync_date, 0, 0, 0, token, version))
 	conn.commit()
 	return HttpResponse(json.dumps(token))
 
 @csrf_exempt
+@ratelimit(key='ip', rate='10/h', block=True)
 def logIn(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -48,6 +53,7 @@ def logIn(request):
 	return HttpResponse(json.dumps(token))
 
 @csrf_exempt
+@ratelimit(key='ip', rate='10/h', block=True)
 def deleteAccount(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -76,6 +82,7 @@ def deleteAccount(request):
 		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
 
 @csrf_exempt
+@ratelimit(key='ip', rate='10/h', block=True)
 def updateAccount(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -100,6 +107,7 @@ def updateAccount(request):
 		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or token invalid."))
 
 @csrf_exempt
+@ratelimit(key='ip', rate='10/h', block=True)
 def resetPassword(request):
 	email = request.POST.get("email", "")
 	firebase = pyrebase.initialize_app(firebase_config)
@@ -209,6 +217,7 @@ def filter(User, Streak, Cards, Time, Sync_Date, Month, Retention, league_review
 	return False
 
 @csrf_exempt
+@ratelimit(key='ip', rate='100/h', block=True)
 def sync(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -292,6 +301,7 @@ def sync(request):
 
 ### OLD, for < v1.7.0
 @csrf_exempt
+@ratelimit(key='ip', rate='10/h', block=True)
 def delete(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -314,6 +324,7 @@ def delete(request):
 		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
 
 @csrf_exempt
+@ratelimit(key='ip', rate='100/h', block=True)
 def all_users(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -325,6 +336,7 @@ def all_users(request):
 	return HttpResponse(json.dumps(Username_List))
 
 @csrf_exempt
+@ratelimit(key='ip', rate='100/h', block=True)
 def get_data(request):
 	sortby = request.POST.get("sortby", "Cards")
 	conn = sqlite3.connect(database_path)
@@ -339,12 +351,14 @@ def get_data(request):
 	return HttpResponse(json.dumps(data))
 
 @csrf_exempt
+@ratelimit(key='ip', rate='100/h', block=True)
 def league_data(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	c.execute("SELECT username, xp, time_spend, reviews, retention, league, history, days_learned FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 	return HttpResponse(json.dumps(c.fetchall()))
 
+@ratelimit(key='ip', rate='10/h', block=True)
 @csrf_exempt
 def create_group(request):
 	conn = sqlite3.connect(database_path)
@@ -360,7 +374,7 @@ def create_group(request):
 		conn.commit()
 		data = praw_config
 		r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
-		r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
+		#r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
 		print(f"{User} requested a new group: {Group_Name}")
 		return HttpResponse("Done!")
 
@@ -471,6 +485,7 @@ def groups(request):
 	return HttpResponse(json.dumps((sorted(Group_List, key=str.lower))))
 
 @csrf_exempt
+@ratelimit(key='ip', rate='100/h', block=True)
 def banUser(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -514,6 +529,7 @@ def banUser(request):
 		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
 
 @csrf_exempt
+@ratelimit(key='ip', rate='10/h', block=True)
 def setStatus(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -567,6 +583,7 @@ def getUserinfo(request):
 		return HttpResponse(json.dumps(u1 + u2))
 
 @csrf_exempt
+@ratelimit(key='ip', rate='100/h', block=True)
 def reportUser(request):
 	user = request.POST.get("user", "")
 	report_user = request.POST.get("reportUser", "")

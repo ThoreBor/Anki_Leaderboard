@@ -161,7 +161,7 @@ class start_main(QDialog):
 		x = connectToAPI("sync/", False, data, "Done!", "load_leaderboard sync")
 
 		### ACHIEVEMENT ###
-
+		
 		achievement_streak = [7, 31, 100, 365, 500, 1000, 1500, 2000, 3000, 4000]
 		if config["achievement"] == True and streak in achievement_streak:
 			s = start_achievement(streak)

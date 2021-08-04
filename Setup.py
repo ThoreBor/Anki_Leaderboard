@@ -166,17 +166,16 @@ class start_setup(QDialog):
 		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
-		#pwd = hashlib.sha3_512(pwd.encode('utf-8')).hexdigest().upper()
 		username_list = connectToAPI("allusers/", True, {}, False, "sign_up")
 
 		if username in username_list:
 			showWarning("This username is already taken")
 			return
-		if askUser("By creating an account, you agree that your e-mail address will be saved on Firebase. It will only be used to be able to reset your password."):
-			data = {"email": email, "username": username, "pwd": pwd}
+		if askUser("By creating an account, you agree that your email address will be saved on Firebase. It will only be used to be able to reset your password."):
+			data = {"email": email, "username": username, "pwd": pwd, "sync_date": datetime.now(), "version": version}
 			response = connectToAPI("signUp/", True, data, False, "sign_up")
 			if response == "Firebase error":
-				showWarning("E-Mail address already exists, or password is too short.")
+				showWarning("Email address already exists, or password is too short.")
 			else:
 				write_config("firebaseToken", response)
 				write_config("username", username)
@@ -189,7 +188,6 @@ class start_setup(QDialog):
 		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
-		#pwd = hashlib.sha3_512(pwd.encode('utf-8')).hexdigest().upper()
 		data = {"email": email, "username": username, "pwd": pwd}
 		response = connectToAPI("logIn/", True, data, False, "log_in")
 		if response == "Firebase error":
@@ -205,7 +203,6 @@ class start_setup(QDialog):
 		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
-		#pwd = hashlib.sha3_512(pwd.encode('utf-8')).hexdigest().upper()
 		firebaseToken = config["firebaseToken"]
 		data = {"email": email, "username": username, "pwd": pwd, "firebaseToken": firebaseToken}
 		response = connectToAPI("deleteAccount/", False, data, "Deleted", "delete_account")
@@ -220,9 +217,8 @@ class start_setup(QDialog):
 		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
-		pwd = hashlib.sha3_512(pwd.encode('utf-8')).hexdigest().upper()
 		firebaseToken = config["firebaseToken"]
-		if askUser("By creating an account, you agree that your e-mail address will be saved on Firebase. It will only be used to be able to reset your password."):
+		if askUser("By creating an account, you agree that your email address will be saved on Firebase. It will only be used to be able to reset your password."):
 			data = {"email": email, "username": username, "pwd": pwd, "firebaseToken": firebaseToken}
 			response = connectToAPI("updateAccount/", True, data, False, "update_account")
 			if "error" in response:
@@ -238,13 +234,13 @@ class start_setup(QDialog):
 	def account_forgot(self):
 		email = self.dialog.account_mail.text()
 		if not email:
-			showWarning("Please enter your E-Mail address.")
+			showWarning("Please enter your email address.")
 			return
 		response = connectToAPI("resetPassword/", True, {"email": email}, False, "account_forgot")
 		if response == "Firebase error":
 			showWarning("Something went wrong")
 		else:
-			tooltip("E-Mail sent")
+			tooltip("Email sent")
 	
 	def update_login_info(self, username):
 		login_info = self.dialog.login_info_2
