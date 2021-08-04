@@ -70,6 +70,15 @@ def deleteAccount(request):
 			auth.delete_user_account(response['idToken'])
 		except:
 			return HttpResponse("<h3>404 error</h3>Wrong e-mail address or wrong password.")
+		group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+		if not group_list:
+			groups = []
+		else:
+			groups = json.loads(group_list)
+		for i in groups:
+			members = c.execute("SELECT members FROM Groups WHERE Group_Name = (?)", (i,)).fetchone()[0]
+			c.execute("UPDATE Groups SET members = (?) WHERE Group_Name = (?)", (members - 1, i))
+			conn.commit()
 		c.execute("DELETE FROM Leaderboard WHERE Username = (?)", (username,))
 		conn.commit()
 		c.execute("DELETE FROM League WHERE username = (?)", (username,))
@@ -312,6 +321,15 @@ def delete(request):
 
 	auth = auth_user(User, Token)
 	if auth == 200:
+		group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (User,)).fetchone()[0]
+		if not group_list:
+			groups = []
+		else:
+			groups = json.loads(group_list)
+		for i in groups:
+			members = c.execute("SELECT members FROM Groups WHERE Group_Name = (?)", (i,)).fetchone()[0]
+			c.execute("UPDATE Groups SET members = (?) WHERE Group_Name = (?)", (members - 1, i))
+			conn.commit()
 		c.execute("DELETE FROM Leaderboard WHERE Username = (?)", (User,))
 		conn.commit()
 		c.execute("DELETE FROM League WHERE username = (?)", (User,))
@@ -385,7 +403,7 @@ def joinGroup(request):
 	username = request.POST.get("username", None)
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
-	Token_v3 = request.POST.get("Token_v3", None)
+	Token_v3 = request.POST.get("token", None)
 	firebaseToken = request.POST.get("firebaseToken", None)
 	token = firebaseToken if firebaseToken else Token_v3
 
@@ -405,6 +423,9 @@ def joinGroup(request):
 			conn.commit()
 			c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?)", (group.replace(" ", ""), username))
 			conn.commit()
+			members = c.execute("SELECT members FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0]
+			c.execute("UPDATE Groups SET members = (?) WHERE Group_Name = (?)", (members + 1, group))
+			conn.commit()
 			print(f"{username} joined {group}")
 			return HttpResponse("Done!")
 		else:
@@ -422,7 +443,7 @@ def manageGroup(request):
 	group = request.POST.get("group", None)
 	oldPwd = request.POST.get("oldPwd", None)
 	newPwd = request.POST.get("newPwd", None)
-	Token_v3 = request.POST.get("Token_v3", None)
+	Token_v3 = request.POST.get("token", None)
 	firebaseToken = request.POST.get("firebaseToken", None)
 	token = firebaseToken if firebaseToken else Token_v3
 	addAdmin = request.POST.get("addAdmin", None)
@@ -453,7 +474,7 @@ def leaveGroup(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	group = request.POST.get("group", None)
-	Token_v3 = request.POST.get("Token_v3", None)
+	Token_v3 = request.POST.get("token", None)
 	firebaseToken = request.POST.get("firebaseToken", None)
 	token = firebaseToken if firebaseToken else Token_v3
 	user = request.POST.get("user", None)
@@ -465,6 +486,9 @@ def leaveGroup(request):
 		c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?) ", (json.dumps(group_list), user))
 		conn.commit()
 		c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", ('', user))
+		conn.commit()
+		members = c.execute("SELECT members FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0]
+		c.execute("UPDATE Groups SET members = (?) WHERE Group_Name = (?)", (members - 1, group))
 		conn.commit()
 		print(f"{user} left {group}")
 		return HttpResponse("Done!")
@@ -492,7 +516,7 @@ def banUser(request):
 	toBan = request.POST.get("toBan", None)
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
-	Token_v3 = request.POST.get("Token_v3", None)
+	Token_v3 = request.POST.get("token", None)
 	firebaseToken = request.POST.get("firebaseToken", None)
 	token = firebaseToken if firebaseToken else Token_v3
 	user = request.POST.get("user", None)
