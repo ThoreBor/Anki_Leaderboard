@@ -106,9 +106,8 @@ class start_user_info(QDialog):
 		toBan = self.user_clicked
 		group = config["current_group"]
 		pwd = config["group_pwds"][config["groups"].index(config["current_group"])]
-		token = config["token"]
 		user = config["username"]
-		data = {"toBan": toBan, "group": group, "pwd": pwd, "token": token, "user": user}
+		data = {"toBan": toBan, "group": group, "pwd": pwd, "firebaseToken": firebaseToken, "user": user}
 		x = connectToAPI("banUser/", False, data, "Done!", "banUser")
 		if x.text == "Done!":
 			tooltip(f"{toBan} is now banned from {group}")

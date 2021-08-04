@@ -432,7 +432,7 @@ class start_setup(QDialog):
 		else:
 			pwd = None
 
-		data = {"username": config["username"], "group": group, "pwd": pwd, "token": config["token"]}
+		data = {"username": config["username"], "group": group, "pwd": pwd, "firebaseToken": config["firebaseToken"]}
 		x = connectToAPI("joinGroup/", False, data, "Done!", "join_group")
 		if x.text == "Done!":
 			tooltip(f"You joined {group}")
@@ -456,7 +456,7 @@ class start_setup(QDialog):
 			group = item.text()
 			config = mw.addonManager.getConfig(__name__)
 			group_pwds = config["group_pwds"]
-			data = {"user": config["username"], "group": group, "token": config["token"]}
+			data = {"user": config["username"], "group": group, "firebaseToken": config["firebaseToken"]}
 			x = connectToAPI("leaveGroup/", False, data, "Done!", "leave_group")
 			if x.text == "Done!":
 				group_pwds.remove(group_pwds[config["groups"].index(group)])
@@ -519,7 +519,7 @@ class start_setup(QDialog):
 			else:
 				newPwd = hashlib.sha1(newPwd.encode('utf-8')).hexdigest().upper()
 
-		data = {'group': group, "user": config["username"], "token": config["token"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
+		data = {'group': group, "user": config["username"], "firebaseToken": config["firebaseToken"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
 		x = connectToAPI("manageGroup/", False, data, "Done!", "manage_group")
 		if x.text == "Done!":
 			tooltip(f"{group} was updated successfully.")

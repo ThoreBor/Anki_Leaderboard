@@ -66,7 +66,6 @@ def add_username_to_friendlist():
 
 def background_sync():
 	config = mw.addonManager.getConfig(__name__)
-	token = config["token"]
 	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(season_start, season_end)
 
 	if datetime.datetime.now() < season_end:
