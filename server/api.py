@@ -8,8 +8,8 @@ from datetime import datetime
 import praw
 import pyrebase
 from .config import praw_config, firebase_config
-#database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
-database_path = 'Leaderboard.db'
+database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
+#database_path = 'Leaderboard.db'
 
 @csrf_exempt
 @ratelimit(key='ip', rate='10/h', block=True)
@@ -26,7 +26,7 @@ def signUp(request):
 	try:
 		response = auth.create_user_with_email_and_password(email, pwd)
 	except:
-		return HttpResponse(json.dumps("Firebase error"))	
+		return HttpResponse(json.dumps("Firebase error"))
 	token = response['idToken']
 	c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (username, 0, 0, 0, sync_date, 0, 0, 0, token, version))
 	conn.commit()
@@ -46,7 +46,7 @@ def logIn(request):
 		response = auth.sign_in_with_email_and_password(email, pwd)
 	except Exception as e:
 		print(str(e))
-		return HttpResponse(json.dumps("Firebase error"))	
+		return HttpResponse(json.dumps("Firebase error"))
 	token = response['idToken']
 	c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?) ", (token, username))
 	conn.commit()
@@ -388,11 +388,11 @@ def create_group(request):
 	if c.execute("SELECT Group_Name FROM Groups WHERE Group_Name = (?)", (Group_Name,)).fetchone():
 		return HttpResponse("This group already exists.")
 	else:
-		c.execute('INSERT INTO Groups (Group_Name, pwd, admins, banned) VALUES(?, ?, ?, ?)', (Group_Name, Pwd, json.dumps([User]), json.dumps([])))
+		c.execute('INSERT INTO Groups (Group_Name, verified, pwd, admins, banned, members) VALUES(?, ?, ?, ?, ?, ?)', (Group_Name, 1, Pwd, json.dumps([User]), json.dumps([]), 0))
 		conn.commit()
 		data = praw_config
 		r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
-		#r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
+		r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
 		print(f"{User} requested a new group: {Group_Name}")
 		return HttpResponse("Done!")
 

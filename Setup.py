@@ -490,7 +490,7 @@ class start_setup(QDialog):
 		data = {'Group_Name': Group_Name, "User": config['username'], "Pwd": pwd}
 		x = connectToAPI("create_group/", False, data, "Done!", "create_new_group")
 		if x.text == "Done!":
-			showInfo(f"{Group_Name} was requested successfully. The developer has been informed. It will normally be approved within 24 hours.")
+			tooltip("Successfully created group. Re-open config.")
 			self.dialog.newGroup.setText("")
 			self.dialog.newPwd.setText("")
 			self.dialog.newRepeat.setText("")

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>623</width>
-    <height>626</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -472,23 +472,77 @@ Sorting will be disabled</string>
        <string>Groups</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="2" column="0" colspan="2">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Create new group</string>
          </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="newRepeat">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+              <property name="placeholderText">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0" colspan="2">
+             <widget class="QPushButton" name="add_newGroup">
+              <property name="text">
+               <string>Create group</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="new_repeat_pwd_label">
+              <property name="text">
+               <string>Repeat password:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="newPwd">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+              <property name="placeholderText">
+               <string>optional</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" rowspan="3" colspan="2">
+             <widget class="QLineEdit" name="newGroup">
+              <property name="placeholderText">
+               <string>Group name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="new_pwd_label">
+              <property name="text">
+               <string>Password:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </item>
-       <item row="0" column="0" rowspan="2">
+       <item row="0" column="0" rowspan="3">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Join/Leave group</string>
@@ -558,6 +612,19 @@ Sorting will be disabled</string>
         </widget>
        </item>
        <item row="1" column="1">
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1">
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
           <string>Manage groups</string>
@@ -659,75 +726,21 @@ Sorting will be disabled</string>
          </layout>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="title">
-          <string>Request new group</string>
+       <item row="3" column="0" colspan="2">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <item>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="newRepeat">
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
-              </property>
-              <property name="placeholderText">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
-             <widget class="QPushButton" name="add_newGroup">
-              <property name="text">
-               <string>Request group</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <property name="autoDefault">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="new_repeat_pwd_label">
-              <property name="text">
-               <string>Repeat password:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="newPwd">
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
-              </property>
-              <property name="placeholderText">
-               <string>optional</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" rowspan="3" colspan="2">
-             <widget class="QLineEdit" name="newGroup">
-              <property name="placeholderText">
-               <string>Group name</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="new_pwd_label">
-              <property name="text">
-               <string>Password:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
