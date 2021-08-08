@@ -102,6 +102,8 @@ class start_setup(QDialog):
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
+		if config["username"] and not config["firebaseToken"]:
+			self.dialog.account_action.setCurrentIndex(3)
 
 		self.dialog.about_text.setHtml(about_text)
 
