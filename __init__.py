@@ -20,7 +20,7 @@ from .api_connect import connectToAPI
 
 def Main():
 	config = mw.addonManager.getConfig(__name__)
-	if config["username"] == "":
+	if config["username"] == "" or not config["firebaseToken"]:
 		invoke_setup()
 	else:
 		mw.leaderboard = start_main(season_start, season_end, current_season)
