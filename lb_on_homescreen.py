@@ -124,6 +124,10 @@ def on_deck_browser_will_render_content(overview, content):
 		for i in lb:
 			if config["username"] == i[1].split(" |")[0]:
 				user_index = lb.index(i)
+				if user_index == 0:
+					for i in range(user_index, (int(config["maxUsers"]))):
+						result.append(lb[i])
+					break
 				if int(config["maxUsers"]) % 2 == 0:
 					for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2))):
 						result.append(lb[i])
