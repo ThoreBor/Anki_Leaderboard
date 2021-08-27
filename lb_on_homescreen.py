@@ -120,20 +120,39 @@ def on_deck_browser_will_render_content(overview, content):
 	else:
 		lb = getData()
 	result = []
+	lb_length = len(lb)
+	if config["maxUsers"] > lb_length:
+		config["maxUsers"] = lb_length
 	if config["focus_on_user"] == True and len(lb) > config["maxUsers"]:
 		for i in lb:
 			if config["username"] == i[1].split(" |")[0]:
-				user_index = lb.index(i)
-				if user_index == 0:
-					for i in range(user_index, (int(config["maxUsers"]))):
-						result.append(lb[i])
-					break
+				user_index = lb.index(i)	
 				if int(config["maxUsers"]) % 2 == 0:
-					for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2))):
-						result.append(lb[i])
+					if user_index + config["maxUsers"] / 2 > lb_length:
+						for i in range((user_index - config["maxUsers"] + 1), user_index + 1):
+							result.append(lb[i])
+						break
+					if user_index - config["maxUsers"] / 2 < 0:
+						for i in range(user_index, (user_index + config["maxUsers"])):
+							result.append(lb[i])
+						break
+					else:
+						for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2))):
+							result.append(lb[i])
+						break
 				else:
-					for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2) + 1)):
-						result.append(lb[i])
+					if user_index + (config["maxUsers"] / 2) + 1 > lb_length:
+						for i in range((user_index - config["maxUsers"] + 1), user_index + 1):
+							result.append(lb[i])
+						break
+					if user_index - config["maxUsers"] / 2 < 0:
+						for i in range(user_index, (user_index + config["maxUsers"])):
+							result.append(lb[i])
+						break
+					else:
+						for i in range((user_index - int(config["maxUsers"] / 2)), (user_index + int(config["maxUsers"] / 2) + 1)):
+							result.append(lb[i])
+					break
 	
 		if not result:
 			result = lb[:config["maxUsers"]]
