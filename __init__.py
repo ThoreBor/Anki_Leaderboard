@@ -114,20 +114,16 @@ def profileHook():
 
 def deleteHook(dialog, ids):
 	config = mw.addonManager.getConfig(__name__)
-	askUserDeleteAccount = """<h3>Deleting Leaderboard Account</h3>
-	Keep in mind that deleting the add-on only removes the local files. Do you also want to delete your account (username, league history)?
+	showInfoDeleteAccount = """<h3>Deleting Leaderboard Account</h3>
+	Keep in mind that deleting the add-on only removes the local files. If you also want to delete your account, go to
+	Leaderboard>Config>Account>Delete account.
 	"""
-	askUserCreateMetaBackup = """<h3>Leaderboard Configuration Backup</h3>
+	askUserCreateMetaBackup = """
+	<h3>Leaderboard Configuration Backup</h3>
 	If you want to reinstall this add-on in the future, creating a backup of the configurations is recommended. Do you want to create a backup?
 	"""
 	if "41708974" in ids or "Anki_Leaderboard" in ids:
-		if askUser(askUserDeleteAccount):
-			data = {'Username': config["username"], "Token_v3": config["token"]}
-			x = connectToAPI("delete/", False, data, "Deleted", "deleteHook")
-			if x.text == "Deleted":
-				write_config("username", "")
-				tooltip("Successfully deleted account.")
-				write_config("token", None)
+		showInfo(showInfoDeleteAccount)
 		if askUser(askUserCreateMetaBackup):
 			config = mw.addonManager.getConfig(__name__)
 			meta_backup = open(join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json"), "w", encoding="utf-8")
