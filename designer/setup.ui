@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>623</width>
-    <height>556</height>
+    <height>464</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -85,6 +85,9 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
             <string>Sign-up</string>
            </property>
@@ -112,6 +115,9 @@
              <bold>true</bold>
              <underline>false</underline>
             </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <item>
             <property name="text">
@@ -151,6 +157,9 @@
          </item>
          <item row="13" column="0">
           <widget class="QPushButton" name="statusButton">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="toolTip">
             <string/>
            </property>
@@ -170,6 +179,9 @@
          </item>
          <item row="6" column="0">
           <widget class="QPushButton" name="account_forgot">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
             <string>Forgot password?</string>
            </property>
@@ -177,6 +189,12 @@
          </item>
          <item row="12" column="0">
           <widget class="QTextEdit" name="statusMsg">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>100</height>
+            </size>
+           </property>
            <property name="html">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -234,6 +252,9 @@ p, li { white-space: pre-wrap; }
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
              <widget class="QCheckBox" name="LB_DeckBrowser">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="text">
                <string>Show the home screen leaderboard (only works with Anki 2.1.20+)</string>
               </property>
@@ -241,6 +262,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QCheckBox" name="lb_focus">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="text">
                <string>Focus on user</string>
               </property>
@@ -257,6 +281,9 @@ p, li { white-space: pre-wrap; }
               </item>
               <item>
                <widget class="QSpinBox" name="maxUsers">
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
                 <property name="maximum">
                  <number>99999</number>
                 </property>
@@ -277,6 +304,9 @@ p, li { white-space: pre-wrap; }
          <layout class="QGridLayout" name="gridLayout_8">
           <item row="0" column="0">
            <widget class="QComboBox" name="country">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <item>
              <property name="text">
               <string>Country</string>
@@ -294,6 +324,9 @@ p, li { white-space: pre-wrap; }
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="maximum">
                <number>23</number>
               </property>
@@ -301,6 +334,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item row="2" column="1" colspan="2">
              <widget class="QComboBox" name="Default_Tab">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <item>
                <property name="text">
                 <string>Global</string>
@@ -337,6 +373,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item row="1" column="1" colspan="2">
              <widget class="QComboBox" name="sortby">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <item>
                <property name="text">
                 <string>Reviews</string>
@@ -395,6 +434,9 @@ p, li { white-space: pre-wrap; }
           </item>
           <item row="2" column="0">
            <widget class="QCheckBox" name="scroll">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="text">
              <string>Automatically scroll to user</string>
             </property>
@@ -405,6 +447,9 @@ p, li { white-space: pre-wrap; }
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="text">
              <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
 Sorting will be disabled</string>
@@ -413,6 +458,9 @@ Sorting will be disabled</string>
           </item>
           <item row="4" column="0">
            <widget class="QCheckBox" name="autosync">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="text">
              <string>Sync when deck is finished (only works with Anki 2.1.20+)</string>
             </property>
@@ -420,6 +468,9 @@ Sorting will be disabled</string>
           </item>
           <item row="5" column="0">
            <widget class="QCheckBox" name="medals">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="text">
              <string>Show league medals next to username</string>
             </property>
@@ -471,6 +522,9 @@ Sorting will be disabled</string>
             </item>
             <item row="5" column="0" colspan="2">
              <widget class="QPushButton" name="add_newGroup">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="text">
                <string>Create group</string>
               </property>
@@ -531,6 +585,9 @@ Sorting will be disabled</string>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
              <widget class="QComboBox" name="subject">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <item>
                <property name="text">
                 <string>Join a group</string>
@@ -557,6 +614,9 @@ Sorting will be disabled</string>
             </item>
             <item>
              <widget class="QPushButton" name="joinGroup">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="text">
                <string>Join group</string>
               </property>
@@ -577,6 +637,9 @@ Sorting will be disabled</string>
             </item>
             <item>
              <widget class="QPushButton" name="leaveGroup">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="text">
                <string>Leave group</string>
               </property>
@@ -620,6 +683,9 @@ Sorting will be disabled</string>
             </item>
             <item row="0" column="0" colspan="2">
              <widget class="QComboBox" name="manageGroup">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <item>
                <property name="text">
                 <string>Select a group you're an admin of</string>
@@ -662,6 +728,9 @@ Sorting will be disabled</string>
             </item>
             <item row="6" column="0" colspan="2">
              <widget class="QPushButton" name="manageSave">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="text">
                <string>Save</string>
               </property>
@@ -760,6 +829,9 @@ Sorting will be disabled</string>
           <layout class="QVBoxLayout" name="vl1">
            <item>
             <widget class="QPushButton" name="remove_friend_button">
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
              <property name="text">
               <string>Remove</string>
              </property>
@@ -770,6 +842,9 @@ Sorting will be disabled</string>
            </item>
            <item>
             <widget class="QPushButton" name="import_friends">
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
              <property name="text">
               <string>Import</string>
              </property>
@@ -780,6 +855,9 @@ Sorting will be disabled</string>
            </item>
            <item>
             <widget class="QPushButton" name="export_friends">
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
              <property name="text">
               <string>Export</string>
              </property>
@@ -805,6 +883,9 @@ Sorting will be disabled</string>
          </item>
          <item row="1" column="1">
           <widget class="QPushButton" name="add_friends_button">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
             <string>Add</string>
            </property>
@@ -843,6 +924,9 @@ Sorting will be disabled</string>
          </item>
          <item>
           <widget class="QPushButton" name="unhideButton">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
             <string>Unhide</string>
            </property>

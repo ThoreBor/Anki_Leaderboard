@@ -70,6 +70,9 @@ p, li { white-space: pre-wrap; }
      </item>
      <item row="8" column="0">
       <widget class="QPushButton" name="hideUser">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="text">
         <string>Hide user</string>
        </property>
@@ -80,6 +83,9 @@ p, li { white-space: pre-wrap; }
      </item>
      <item row="8" column="2">
       <widget class="QPushButton" name="reportUser">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="text">
         <string>Report</string>
        </property>
@@ -107,6 +113,9 @@ p, li { white-space: pre-wrap; }
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="text">
         <string>Ban from group</string>
        </property>
@@ -130,6 +139,9 @@ p, li { white-space: pre-wrap; }
      </item>
      <item row="8" column="1">
       <widget class="QPushButton" name="addFriend">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="text">
         <string>Add friend</string>
        </property>

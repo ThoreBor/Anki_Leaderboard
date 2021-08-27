@@ -20,6 +20,9 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="0">
     <widget class="QPushButton" name="sendReport">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="text">
       <string>Report user</string>
      </property>
