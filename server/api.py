@@ -6,70 +6,65 @@ import sqlite3
 import json
 from datetime import datetime
 import praw
-import pyrebase
+from argon2 import PasswordHasher
 from .config import praw_config, firebase_config
 database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
 #database_path = 'Leaderboard.db'
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 def signUp(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
-	firebase = pyrebase.initialize_app(firebase_config)
-	auth = firebase.auth()
 	email = request.POST.get("email", "")
 	username = request.POST.get("username", "")
 	pwd = request.POST.get("pwd", "")
 	sync_date = request.POST.get("sync_date", "")
 	version = request.POST.get("version", "")
-	try:
-		response = auth.create_user_with_email_and_password(email, pwd)
-	except:
-		return HttpResponse(json.dumps("Firebase error"))
-	token = response['idToken']
-	c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?)', (username, 0, 0, 0, sync_date, 0, 0, 0, token, version))
+	ph = PasswordHasher()
+	hash = ph.hash(pwd)
+	c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (username, 0, 0, 0, sync_date, 0, 0, 0, hash, version, email))
 	conn.commit()
-	return HttpResponse(json.dumps(token))
+	return HttpResponse(json.dumps(hash))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 def logIn(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
-	firebase = pyrebase.initialize_app(firebase_config)
-	auth = firebase.auth()
 	email = request.POST.get("email", "")
 	username = request.POST.get("username", "")
 	pwd = request.POST.get("pwd", "")
+	ph = PasswordHasher()
 	try:
-		response = auth.sign_in_with_email_and_password(email, pwd)
-	except Exception as e:
-		print(str(e))
-		return HttpResponse(json.dumps("Firebase error"))
-	token = response['idToken']
-	c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?) ", (token, username))
+		hash = c.execute("SELECT token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+	except:
+		return HttpResponse(json.dumps("Error"))
+	try:
+		ph.verify(hash, pwd)
+	except:
+		return HttpResponse(json.dumps("Error"))
+	hash = ph.hash(pwd)
+	c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?)", (hash, username))
 	conn.commit()
-	return HttpResponse(json.dumps(token))
+	return HttpResponse(json.dumps(hash))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 def deleteAccount(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
-	firebase = pyrebase.initialize_app(firebase_config)
-	auth = firebase.auth()
-	email = request.POST.get("email", "")
 	username = request.POST.get("username", "")
+	mail = request.POST.get("mail", "")
 	pwd = request.POST.get("pwd", "")
-	firebaseToken = request.POST.get("firebaseToken", "")
-	auth_local = auth_user(username, firebaseToken)
-	if auth_local == 200:
-		try:
-			response = auth.sign_in_with_email_and_password(email, pwd)
-			auth.delete_user_account(response['idToken'])
-		except:
-			return HttpResponse("<h3>404 error</h3>Wrong e-mail address or wrong password.")
+	
+	ph = PasswordHasher()
+	try:
+		hash = c.execute("SELECT token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+	except:
+		return HttpResponse(json.dumps("Something went wrong."))
+	try:
+		ph.verify(hash, pwd)
 		group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 		if not group_list:
 			groups = []
@@ -85,38 +80,31 @@ def deleteAccount(request):
 		conn.commit()
 		print(f"Deleted account: {username}")
 		return HttpResponse("Deleted")
-	if auth_local == 401:
-		return render(request, "authError.html")
-	if auth_local == 404:
-		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
+	except:
+		return HttpResponse(json.dumps("Something went wrong."))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 def updateAccount(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
-	firebase = pyrebase.initialize_app(firebase_config)
-	auth = firebase.auth()
 	email = request.POST.get("email", "")
 	username = request.POST.get("username", "")
 	pwd = request.POST.get("pwd", "")
 	old_token = request.POST.get("old_token", "")
-	auth_local = auth_user(username, old_token)
-	if auth_local == 200:
-		try:
-			response = auth.create_user_with_email_and_password(email, pwd)
-		except:
-			return HttpResponse(json.dumps("<h3>404 error</h3>E-Mail address already exists, or password is too short."))
-		token = response['idToken']
-		c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?) ", (token, username))
+	auth = auth_user(username, old_token)
+	if auth == 200:
+		ph = PasswordHasher()
+		hash = ph.hash(pwd)
+		c.execute("UPDATE Leaderboard SET Token = (?), email = (?) WHERE Username = (?) ", (hash, email, username))
 		conn.commit()
 		print(f"Updated account: {username}")
-		return HttpResponse(json.dumps(token))
+		return HttpResponse(json.dumps(hash))
 	else:
 		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or token invalid."))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 def resetPassword(request):
 	email = request.POST.get("email", "")
 	firebase = pyrebase.initialize_app(firebase_config)
@@ -226,7 +214,7 @@ def filter(User, Streak, Cards, Time, Sync_Date, Month, Retention, league_review
 	return False
 
 @csrf_exempt
-@ratelimit(key='ip', rate='100/h', block=True)
+#@ratelimit(key='ip', rate='100/h', block=True)
 def sync(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -247,8 +235,8 @@ def sync(request):
 	Update_League = request.POST.get("Update_League", True)
 
 	Token_v3 = request.POST.get("Token_v3", None)
-	firebaseToken = request.POST.get("firebaseToken", None)
-	Token = firebaseToken if firebaseToken else Token_v3
+	hash = request.POST.get("hash", None)
+	Token = hash if hash else Token_v3
 	Version = request.POST.get("Version", None)
 
 	try:
@@ -310,14 +298,14 @@ def sync(request):
 
 ### OLD, for < v1.7.0
 @csrf_exempt
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 def delete(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	User = request.POST.get("Username", None)
 	Token_v3 = request.POST.get("Token_v3", None)
-	firebaseToken = request.POST.get("firebaseToken", None)
-	Token = firebaseToken if firebaseToken else Token_v3
+	hash = request.POST.get("hash", None)
+	Token = hash if hash else Token_v3
 
 	auth = auth_user(User, Token)
 	if auth == 200:
@@ -342,7 +330,7 @@ def delete(request):
 		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
 
 @csrf_exempt
-@ratelimit(key='ip', rate='100/h', block=True)
+#@ratelimit(key='ip', rate='100/h', block=True)
 def all_users(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -354,7 +342,7 @@ def all_users(request):
 	return HttpResponse(json.dumps(Username_List))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='100/h', block=True)
+#@ratelimit(key='ip', rate='100/h', block=True)
 def get_data(request):
 	sortby = request.POST.get("sortby", "Cards")
 	conn = sqlite3.connect(database_path)
@@ -369,14 +357,14 @@ def get_data(request):
 	return HttpResponse(json.dumps(data))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='100/h', block=True)
+#@ratelimit(key='ip', rate='100/h', block=True)
 def league_data(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	c.execute("SELECT username, xp, time_spend, reviews, retention, league, history, days_learned FROM League WHERE suspended IS NULL ORDER BY xp DESC")
 	return HttpResponse(json.dumps(c.fetchall()))
 
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 @csrf_exempt
 def create_group(request):
 	conn = sqlite3.connect(database_path)
@@ -404,8 +392,8 @@ def joinGroup(request):
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
 	Token_v3 = request.POST.get("token", None)
-	firebaseToken = request.POST.get("firebaseToken", None)
-	token = firebaseToken if firebaseToken else Token_v3
+	hash = request.POST.get("hash", None)
+	token = hash if hash else Token_v3
 
 	group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 	if not group_list:
@@ -444,8 +432,8 @@ def manageGroup(request):
 	oldPwd = request.POST.get("oldPwd", None)
 	newPwd = request.POST.get("newPwd", None)
 	Token_v3 = request.POST.get("token", None)
-	firebaseToken = request.POST.get("firebaseToken", None)
-	token = firebaseToken if firebaseToken else Token_v3
+	hash = request.POST.get("hash", None)
+	token = hash if hash else Token_v3
 	addAdmin = request.POST.get("addAdmin", None)
 	admins = json.loads(c.execute("SELECT admins FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0])
 	admins.append(addAdmin)
@@ -475,8 +463,8 @@ def leaveGroup(request):
 	c = conn.cursor()
 	group = request.POST.get("group", None)
 	Token_v3 = request.POST.get("token", None)
-	firebaseToken = request.POST.get("firebaseToken", None)
-	token = firebaseToken if firebaseToken else Token_v3
+	hash = request.POST.get("hash", None)
+	token = hash if hash else Token_v3
 	user = request.POST.get("user", None)
 	group_list = json.loads(c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0])
 
@@ -509,7 +497,7 @@ def groups(request):
 	return HttpResponse(json.dumps((sorted(Group_List, key=str.lower))))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='100/h', block=True)
+#@ratelimit(key='ip', rate='100/h', block=True)
 def banUser(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -517,8 +505,8 @@ def banUser(request):
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
 	Token_v3 = request.POST.get("token", None)
-	firebaseToken = request.POST.get("firebaseToken", None)
-	token = firebaseToken if firebaseToken else Token_v3
+	hash = request.POST.get("hash", None)
+	token = hash if hash else Token_v3
 	user = request.POST.get("user", None)
 	g = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (toBan,)).fetchone()[0]
 	banned = json.loads(c.execute("SELECT banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0])
@@ -553,7 +541,7 @@ def banUser(request):
 		return HttpResponse("<h3>404 error</h3>Couldn't find user.")
 
 @csrf_exempt
-@ratelimit(key='ip', rate='10/h', block=True)
+#@ratelimit(key='ip', rate='10/h', block=True)
 def setStatus(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
@@ -562,8 +550,8 @@ def setStatus(request):
 		statusMsg = None
 	username = request.POST.get("username", None)
 	Token_v3 = request.POST.get("Token_v3", None)
-	firebaseToken = request.POST.get("firebaseToken", None)
-	Token = firebaseToken if firebaseToken else Token_v3
+	hash = request.POST.get("hash", None)
+	Token = hash if hash else Token_v3
 
 	auth = auth_user(username, Token)
 	if auth == 200:
@@ -618,4 +606,4 @@ def reportUser(request):
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,7,23,0,0,0],[2021,8,6,0,0,0], "Season 22"]))
+	return HttpResponse(json.dumps([[2021,8,20,0,0,0],[2021,9,3,0,0,0], "Season 24"]))

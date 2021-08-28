@@ -139,6 +139,11 @@
              <string>Add password and email address to old account</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Log-out</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item row="10" column="0">

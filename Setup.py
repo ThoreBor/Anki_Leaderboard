@@ -15,6 +15,10 @@ from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version, about_text
 from .api_connect import connectToAPI
 
+askUserCreateAccount = """
+<h3></h3>
+"""
+
 class start_setup(QDialog):
 	def __init__(self, season_start, season_end, parent=None):
 		self.parent = parent
@@ -102,7 +106,7 @@ class start_setup(QDialog):
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
-		if config["username"] and not config["firebaseToken"]:
+		if config["username"] and not config["hash"]:
 			self.dialog.account_action.setCurrentIndex(3)
 
 		self.dialog.about_text.setHtml(about_text)
@@ -112,21 +116,48 @@ class start_setup(QDialog):
 		self.check_lineEdit()
 		if index == 0:
 			self.dialog.account_button.setText("Sign-up")
+			self.dialog.account_mail.show()
+			self.dialog.account_username.show()
+			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.show()
 			self.dialog.account_forgot.hide()
+			self.dialog.account_username.setPlaceholderText("Username")
+			self.dialog.account_button.setEnabled(False)
 		if index == 1:
 			self.dialog.account_button.setText("Log-in")
+			self.dialog.account_mail.show()
+			self.dialog.account_username.show()
+			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.hide()
 			self.dialog.account_forgot.show()
+			self.dialog.account_username.setPlaceholderText("Username")
+			self.dialog.account_button.setEnabled(False)
 		if index == 2:
 			self.dialog.account_button.setText("Delete Account")
+			self.dialog.account_mail.show()
+			self.dialog.account_username.show()
+			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.hide()
 			self.dialog.account_forgot.show()
+			self.dialog.account_username.setPlaceholderText("Username")
+			self.dialog.account_button.setEnabled(False)
 		if index == 3:
 			self.dialog.account_button.setText("Update Account")
+			self.dialog.account_mail.show()
+			self.dialog.account_username.show()
+			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.show()
 			self.dialog.account_forgot.hide()
 			self.dialog.account_username.setPlaceholderText("Username of your existing account")
+			self.dialog.account_button.setEnabled(False)
+		if index == 4:
+			self.dialog.account_button.setText("Log-out")
+			self.dialog.account_mail.hide()
+			self.dialog.account_username.hide()
+			self.dialog.account_pwd.hide()
+			self.dialog.account_pwd_repeat.hide()
+			self.dialog.account_forgot.hide()
+			self.dialog.account_button.setEnabled(True)
 
 	def account_button(self):
 		index = self.dialog.account_action.currentIndex()
@@ -138,6 +169,8 @@ class start_setup(QDialog):
 			self.delete_account()
 		if index == 3:
 			self.update_account()
+		if index == 4:
+			self.log_out()
 
 	def check_lineEdit(self):
 		email = self.dialog.account_mail.text()
@@ -173,18 +206,18 @@ class start_setup(QDialog):
 		if username in username_list:
 			showWarning("This username is already taken")
 			return
-		if askUser("By creating an account, you agree that your email address will be saved on Firebase. It will only be used to be able to reset your password."):
+		if len(pwd) < 6:
+			showWarning("The password has to be at least 6 characters long.")
+			return
+		if askUser(askUserCreateAccount):
 			data = {"email": email, "username": username, "pwd": pwd, "sync_date": datetime.now(), "version": version}
 			response = connectToAPI("signUp/", True, data, False, "sign_up")
-			if response == "Firebase error":
-				showWarning("Email address already exists, or password is too short.")
-			else:
-				write_config("firebaseToken", response)
-				write_config("username", username)
-				self.update_login_info(username)
-				tooltip("Successfully signed-up")
+			write_config("hash", response)
+			write_config("username", username)
+			self.update_login_info(username)
+			tooltip("Successfully signed-up")
 		else:
-			pass		
+			pass	
 
 	def log_in(self):
 		email = self.dialog.account_mail.text()
@@ -192,26 +225,25 @@ class start_setup(QDialog):
 		pwd = self.dialog.account_pwd.text()
 		data = {"email": email, "username": username, "pwd": pwd}
 		response = connectToAPI("logIn/", True, data, False, "log_in")
-		if response == "Firebase error":
+		if response == "Error":
 			showWarning("Something went wrong.")
 		else:
-			write_config("firebaseToken", response)
+			write_config("hash", response)
 			write_config("username", username)
 			self.update_login_info(username)
 			tooltip("Successfully logged-in")
 
 	def delete_account(self):
 		config = mw.addonManager.getConfig(__name__)
-		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
+		mail = self.dialog.account_mail.text()
 		pwd = self.dialog.account_pwd.text()
-		firebaseToken = config["firebaseToken"]
-		data = {"email": email, "username": username, "pwd": pwd, "firebaseToken": firebaseToken}
+		data = {"username": username, "mail": mail, "pwd": pwd}
 		response = connectToAPI("deleteAccount/", False, data, "Deleted", "delete_account")
 		if response.text == "Deleted":
-			write_config("firebaseToken", None)
+			write_config("hash", None)
 			write_config("username", "")
-			self.update_login_info(username)
+			self.update_login_info("")
 			tooltip("Successfully deleted account")
 
 	def update_account(self):
@@ -219,19 +251,30 @@ class start_setup(QDialog):
 		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
-		firebaseToken = config["firebaseToken"]
-		if askUser("By creating an account, you agree that your email address will be saved on Firebase. It will only be used to be able to reset your password."):
-			data = {"email": email, "username": username, "pwd": pwd, "firebaseToken": firebaseToken}
+		old_token = config["token"]
+
+		if len(pwd) < 6:
+			showWarning("The password has to be at least 6 characters long.")
+			return
+		
+		if askUser(askUserCreateAccount):
+			data = {"email": email, "username": username, "pwd": pwd, "old_token": old_token}
 			response = connectToAPI("updateAccount/", True, data, False, "update_account")
 			if "error" in response:
 				showWarning(response)
 			else:
-				write_config("firebaseToken", response)
+				write_config("hash", response)
 				write_config("username", username)
 				self.update_login_info(username)
 				tooltip("Successfully updated account")
 		else:	
-			pass		
+			pass
+
+	def log_out(self):
+		write_config("hash", None)
+		write_config("username", "")
+		self.update_login_info("")
+		tooltip("Successfully logged-out")
 
 	def account_forgot(self):
 		email = self.dialog.account_mail.text()
@@ -434,7 +477,7 @@ class start_setup(QDialog):
 		else:
 			pwd = None
 
-		data = {"username": config["username"], "group": group, "pwd": pwd, "firebaseToken": config["firebaseToken"]}
+		data = {"username": config["username"], "group": group, "pwd": pwd, "hash": config["hash"]}
 		x = connectToAPI("joinGroup/", False, data, "Done!", "join_group")
 		if x.text == "Done!":
 			tooltip(f"You joined {group}")
@@ -458,7 +501,7 @@ class start_setup(QDialog):
 			group = item.text()
 			config = mw.addonManager.getConfig(__name__)
 			group_pwds = config["group_pwds"]
-			data = {"user": config["username"], "group": group, "firebaseToken": config["firebaseToken"]}
+			data = {"user": config["username"], "group": group, "hash": config["hash"]}
 			x = connectToAPI("leaveGroup/", False, data, "Done!", "leave_group")
 			if x.text == "Done!":
 				group_pwds.remove(group_pwds[config["groups"].index(group)])
@@ -521,7 +564,7 @@ class start_setup(QDialog):
 			else:
 				newPwd = hashlib.sha1(newPwd.encode('utf-8')).hexdigest().upper()
 
-		data = {'group': group, "user": config["username"], "firebaseToken": config["firebaseToken"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
+		data = {'group': group, "user": config["username"], "hash": config["hash"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
 		x = connectToAPI("manageGroup/", False, data, "Done!", "manage_group")
 		if x.text == "Done!":
 			tooltip(f"{group} was updated successfully.")
@@ -532,7 +575,6 @@ class start_setup(QDialog):
 			self.dialog.manage_newRepeat.setText("")
 			self.dialog.newAdmin.setText("")
 			
-
 	def load_Group(self):
 		config = mw.addonManager.getConfig(__name__)
 		_translate = QtCore.QCoreApplication.translate
@@ -566,7 +608,6 @@ class start_setup(QDialog):
 		if config["username"]:
 			status = connectToAPI("getStatus/", True, {"username": config["username"]}, False, "load_status")
 			self.dialog.statusMsg.setText(status[0])
-
 			
 	def update_hidden_list(self, hidden):
 		config = mw.addonManager.getConfig(__name__)

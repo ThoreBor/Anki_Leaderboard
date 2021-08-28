@@ -20,7 +20,7 @@ from .api_connect import connectToAPI
 
 def Main():
 	config = mw.addonManager.getConfig(__name__)
-	if config["username"] == "" or not config["firebaseToken"]:
+	if config["username"] == "" or not config["hash"]:
 		invoke_setup()
 	else:
 		mw.leaderboard = start_main(season_start, season_end, current_season)
@@ -72,11 +72,11 @@ def background_sync():
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention,
 		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-		"firebaseToken": config["firebaseToken"], "Version": version}
+		"hash": config["hash"], "Version": version}
 	else:
 		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
-		"firebaseToken": config["firebaseToken"], "Version": version}
+		"hash": config["hash"], "Version": version}
 
 	x = connectToAPI("sync/", False, data, "Done!", "background_sync")
 	if x.text == "Done!":
