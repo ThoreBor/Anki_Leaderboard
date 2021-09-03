@@ -7,7 +7,11 @@ import json
 from datetime import datetime
 import praw
 from argon2 import PasswordHasher
-from .config import praw_config, firebase_config
+import smtplib
+from email.message import EmailMessage
+import secrets
+from .config import praw_config, smtp_config
+
 database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
 #database_path = 'Leaderboard.db'
 
@@ -106,14 +110,58 @@ def updateAccount(request):
 @csrf_exempt
 #@ratelimit(key='ip', rate='10/h', block=True)
 def resetPassword(request):
-	email = request.POST.get("email", "")
-	firebase = pyrebase.initialize_app(firebase_config)
-	auth = firebase.auth()
+	conn = sqlite3.connect(database_path)
+	c = conn.cursor()
 	try:
-		response = auth.send_password_reset_email(email)
+		email = request.POST.get("email", "")
+		username = request.POST.get("username", "")
+		token = secrets.token_hex(nbytes=64)
+		c.execute("UPDATE Leaderboard SET emailReset = (?) WHERE Username = (?) ", (token, username))
+		conn.commit()
+
+		msg = EmailMessage()
+		email_message = f"""
+Hello {username},
+
+to reset your password for your leaderboard account, click on this link:
+http://127.0.0.1:8000/newPassword/{token}
+If you didn't want to reset your password, just ignore this mail.
+
+Your Leaderboard Team
+"""
+		msg.set_content(email_message)
+		msg['Subject'] = 'Reset password for the Leaderboard add-on'
+		msg['From'] = smtp_config["sender_email"]
+		msg['To'] = email
+		server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+		server.ehlo()
+		server.login(smtp_config["sender_email"], smtp_config["sender_pwd"])
+		server.send_message(msg)
+		server.close()
+		return HttpResponse("Done!")
 	except:
-		return HttpResponse(json.dumps("Firebase error"))
-	return HttpResponse(json.dumps("Done!"))
+		return HttpResponse("Error")
+
+def newPassword(request, token):
+	conn = sqlite3.connect(database_path)
+	c = conn.cursor()
+	if request.method == "POST":
+		username = request.POST.get("username", "")
+		pwd = request.POST.get("pwd", "")
+		rpwd = request.POST.get("rpwd", "")
+		token = request.POST.get("token", "")
+		if pwd != rpwd:
+			return HttpResponse("Error - Passwords are not the same. Try again.")
+		emailReset = c.execute("SELECT emailReset FROM Leaderboard WHERE Username = (?) ", (username,)).fetchone()[0]
+		if emailReset != token:
+			return HttpResponse("Forbidden")
+		ph = PasswordHasher()
+		hash = ph.hash(pwd)
+		c.execute("UPDATE Leaderboard SET emailReset = (?), token = (?) WHERE Username = (?) ", (None, hash, username))
+		conn.commit()
+		return HttpResponse("Your password was reset successfully.")
+	else:
+		return render(request, "newPassword.html", {"token": token})
 
 def auth_user(user, token):
 	conn = sqlite3.connect(database_path)
@@ -595,7 +643,7 @@ def getUserinfo(request):
 		return HttpResponse(json.dumps(u1 + u2))
 
 @csrf_exempt
-@ratelimit(key='ip', rate='100/h', block=True)
+#@ratelimit(key='ip', rate='100/h', block=True)
 def reportUser(request):
 	user = request.POST.get("user", "")
 	report_user = request.POST.get("reportUser", "")
@@ -606,4 +654,4 @@ def reportUser(request):
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,8,20,0,0,0],[2021,9,3,0,0,0], "Season 24"]))
+	return HttpResponse(json.dumps([[2021,9,3,0,0,0],[2021,9,17,0,0,0], "Season 25"]))

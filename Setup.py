@@ -278,11 +278,12 @@ class start_setup(QDialog):
 
 	def account_forgot(self):
 		email = self.dialog.account_mail.text()
-		if not email:
-			showWarning("Please enter your email address.")
+		username = self.dialog.account_username.text()
+		if not email or not username:
+			showWarning("Please enter your email address and username first.")
 			return
-		response = connectToAPI("resetPassword/", True, {"email": email}, False, "account_forgot")
-		if response == "Firebase error":
+		response = connectToAPI("resetPassword/", False, {"email": email, "username": username}, False, "account_forgot")
+		if response == "Error":
 			showWarning("Something went wrong")
 		else:
 			tooltip("Email sent")
