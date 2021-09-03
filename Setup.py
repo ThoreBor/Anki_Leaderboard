@@ -9,6 +9,7 @@ from aqt.qt import *
 from aqt.utils import tooltip, showInfo, showWarning, askUser
 
 from .forms import setup
+from .resetPassword import start_resetPassword
 from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
@@ -125,7 +126,7 @@ class start_setup(QDialog):
 			self.dialog.account_button.setEnabled(False)
 		if index == 1:
 			self.dialog.account_button.setText("Log-in")
-			self.dialog.account_mail.show()
+			self.dialog.account_mail.hide()
 			self.dialog.account_username.show()
 			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.hide()
@@ -134,7 +135,7 @@ class start_setup(QDialog):
 			self.dialog.account_button.setEnabled(False)
 		if index == 2:
 			self.dialog.account_button.setText("Delete Account")
-			self.dialog.account_mail.show()
+			self.dialog.account_mail.hide()
 			self.dialog.account_username.show()
 			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.hide()
@@ -192,7 +193,7 @@ class start_setup(QDialog):
 			else:
 				self.dialog.account_button.setEnabled(False)
 		else:
-			if email and username and pwd:
+			if username and pwd:
 				self.dialog.account_button.setEnabled(True)
 			else:
 				self.dialog.account_button.setEnabled(False)
@@ -220,10 +221,9 @@ class start_setup(QDialog):
 			pass	
 
 	def log_in(self):
-		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
-		data = {"email": email, "username": username, "pwd": pwd}
+		data = {"username": username, "pwd": pwd}
 		response = connectToAPI("logIn/", True, data, False, "log_in")
 		if response == "Error":
 			showWarning("Something went wrong.")
@@ -236,9 +236,8 @@ class start_setup(QDialog):
 	def delete_account(self):
 		config = mw.addonManager.getConfig(__name__)
 		username = self.dialog.account_username.text()
-		mail = self.dialog.account_mail.text()
 		pwd = self.dialog.account_pwd.text()
-		data = {"username": username, "mail": mail, "pwd": pwd}
+		data = {"username": username, "pwd": pwd}
 		response = connectToAPI("deleteAccount/", False, data, "Deleted", "delete_account")
 		if response.text == "Deleted":
 			write_config("hash", None)
@@ -277,16 +276,9 @@ class start_setup(QDialog):
 		tooltip("Successfully logged-out")
 
 	def account_forgot(self):
-		email = self.dialog.account_mail.text()
-		username = self.dialog.account_username.text()
-		if not email or not username:
-			showWarning("Please enter your email address and username first.")
-			return
-		response = connectToAPI("resetPassword/", False, {"email": email, "username": username}, False, "account_forgot")
-		if response == "Error":
-			showWarning("Something went wrong")
-		else:
-			tooltip("Email sent")
+		s = start_resetPassword()
+		if s.exec():
+			pass
 	
 	def update_login_info(self, username):
 		login_info = self.dialog.login_info_2

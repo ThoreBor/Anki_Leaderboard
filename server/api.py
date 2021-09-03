@@ -36,7 +36,6 @@ def signUp(request):
 def logIn(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
-	email = request.POST.get("email", "")
 	username = request.POST.get("username", "")
 	pwd = request.POST.get("pwd", "")
 	ph = PasswordHasher()
@@ -59,7 +58,6 @@ def deleteAccount(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	username = request.POST.get("username", "")
-	mail = request.POST.get("mail", "")
 	pwd = request.POST.get("pwd", "")
 	
 	ph = PasswordHasher()
@@ -124,7 +122,7 @@ def resetPassword(request):
 Hello {username},
 
 to reset your password for your leaderboard account, click on this link:
-http://127.0.0.1:8000/newPassword/{token}
+https://ankileaderboard.pythonanywhere.com/newPassword/{token}
 If you didn't want to reset your password, just ignore this mail.
 
 Your Leaderboard Team
