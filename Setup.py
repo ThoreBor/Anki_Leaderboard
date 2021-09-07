@@ -184,7 +184,7 @@ class start_setup(QDialog):
 				self.dialog.account_button.setEnabled(True)
 				if pwd == pwd_repeat and pwd:
 					self.dialog.account_button.setEnabled(True)
-					self.dialog.account_pwd_repeat.setStyleSheet("background-color: #ffffff")
+					self.dialog.account_pwd_repeat.setStyleSheet("background-color: var(--window-bg)")
 				if pwd != pwd_repeat and pwd:
 					self.dialog.account_button.setEnabled(False)
 					self.dialog.account_pwd_repeat.setStyleSheet("background-color: #ff4242")
