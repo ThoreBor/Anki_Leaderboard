@@ -113,6 +113,10 @@ class start_setup(QDialog):
 		self.dialog.about_text.setHtml(about_text)
 
 	def account_action(self):
+		self.dialog.account_mail.setText("")
+		self.dialog.account_username.setText("")
+		self.dialog.account_pwd.setText("")
+		self.dialog.account_pwd_repeat.setText("")
 		index = self.dialog.account_action.currentIndex()
 		self.check_lineEdit()
 		if index == 0:
