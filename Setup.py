@@ -109,6 +109,8 @@ class start_setup(QDialog):
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
 		if config["username"] and not config["hash"]:
 			self.dialog.account_action.setCurrentIndex(3)
+		if not config["hash"]:
+			self.dialog.tabWidget.setTabEnabled(2, False)
 
 		self.dialog.about_text.setHtml(about_text)
 
@@ -221,6 +223,7 @@ class start_setup(QDialog):
 			write_config("username", username)
 			self.update_login_info(username)
 			tooltip("Successfully signed-up")
+			self.dialog.tabWidget.setTabEnabled(2, True)
 		else:
 			pass	
 
@@ -236,6 +239,7 @@ class start_setup(QDialog):
 			write_config("username", username)
 			self.update_login_info(username)
 			tooltip("Successfully logged-in")
+			self.dialog.tabWidget.setTabEnabled(2, True)
 
 	def delete_account(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -248,6 +252,7 @@ class start_setup(QDialog):
 			write_config("username", "")
 			self.update_login_info("")
 			tooltip("Successfully deleted account")
+			self.dialog.tabWidget.setTabEnabled(2, False)
 
 	def update_account(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -270,6 +275,7 @@ class start_setup(QDialog):
 				write_config("username", username)
 				self.update_login_info(username)
 				tooltip("Successfully updated account")
+				self.dialog.tabWidget.setTabEnabled(2, True)
 		else:	
 			pass
 
@@ -278,6 +284,7 @@ class start_setup(QDialog):
 		write_config("username", "")
 		self.update_login_info("")
 		tooltip("Successfully logged-out")
+		self.dialog.tabWidget.setTabEnabled(2, False)
 
 	def account_forgot(self):
 		s = start_resetPassword()
