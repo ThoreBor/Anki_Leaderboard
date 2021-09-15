@@ -30,6 +30,7 @@ def signUp(request):
 	hash = ph.hash(pwd)
 	c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (username, 0, 0, 0, sync_date, 0, 0, 0, hash, version, email))
 	conn.commit()
+	print("New sign-up")
 	return HttpResponse(json.dumps(hash))
 
 @csrf_exempt
@@ -51,6 +52,7 @@ def logIn(request):
 	hash = ph.hash(pwd)
 	c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?)", (hash, username))
 	conn.commit()
+	print("New login")
 	return HttpResponse(json.dumps(hash))
 
 @csrf_exempt
@@ -81,7 +83,7 @@ def deleteAccount(request):
 		conn.commit()
 		c.execute("DELETE FROM League WHERE username = (?)", (username,))
 		conn.commit()
-		print(f"Deleted account: {username}")
+		print("Deleted account")
 		return HttpResponse("Deleted")
 	except:
 		return HttpResponse(json.dumps("Something went wrong."))
@@ -101,7 +103,7 @@ def updateAccount(request):
 		hash = ph.hash(pwd)
 		c.execute("UPDATE Leaderboard SET Token = (?), email = (?) WHERE Username = (?) ", (hash, email, username))
 		conn.commit()
-		print(f"Updated account: {username}")
+		print("Updated account")
 		return HttpResponse(json.dumps(hash))
 	else:
 		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or token invalid."))
@@ -137,6 +139,7 @@ Your Leaderboard Team
 		server.login(smtp_config["sender_email"], smtp_config["sender_pwd"])
 		server.send_message(msg)
 		server.close()
+		print("Sent reset password email")
 		return HttpResponse("Done!")
 	except:
 		return HttpResponse("Error")
@@ -172,7 +175,7 @@ def auth_user(user, token):
 	if t[0] == token or t[0] is None:
 		return 200
 	else:
-		print(f"auth_user 401: {user}")
+		print("auth_user 401")
 		return 401
 
 def auth_group(group, pwd, user):
@@ -181,15 +184,15 @@ def auth_group(group, pwd, user):
 	p = c.execute("SELECT pwd FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()
 	banned = json.loads(c.execute("SELECT banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0])
 	if not p:
-		print(f"auth_group 404: {user} {group}")
+		print("auth_group 404")
 		return "<h3>404 error</h3>This group doesn't exist."
 	if p[0] == pwd or p[0] is None:
 		if user in banned:
-			print(f"auth_group 403: {user} {group}")
+			print("auth_group 403")
 			return "<h3>403 error</h3>You're banned from this group."
 		return 200
 	else:
-		print(f"auth_group 401: {user} {group}")
+		print("auth_group 401")
 		return "<h3>401 error</h3>Wrong group password."
 
 def auth_admin(user, group):
@@ -199,7 +202,7 @@ def auth_admin(user, group):
 	if user in admins:
 		return 200
 	else:
-		print(f"auth_admin 403: {user} {group}")
+		print("auth_admin 403")
 		return "<h3>401 error</h3>You are not an admin of this group."
 
 def filter(User, Streak, Cards, Time, Sync_Date, Month, Retention, league_reviews, league_time, league_retention, league_days_learned):
@@ -331,7 +334,7 @@ def sync(request):
 				c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league, days_learned) VALUES(?, ?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta", league_days_learned))
 				conn.commit()
 
-		print(f"Updated account: {User} ({Version})")
+		print(f"Updated account ({Version})")
 		return HttpResponse("Done!")
 	if auth == 401:
 		return render(request, "authError.html")
@@ -341,7 +344,7 @@ def sync(request):
 		if Update_League == True:
 			c.execute('INSERT INTO League (username, xp, time_spend, reviews, retention, league, days_learned) VALUES(?, ?, ?, ?, ?, ?, ?)', (User, xp, league_time, league_reviews, league_retention, "Delta", league_days_learned))
 			conn.commit()
-		print(f"Created new account: {User}")
+		print(f"Created new account ({Version})")
 		return HttpResponse("Done!")
 
 ### OLD, for < v1.7.0
@@ -370,7 +373,7 @@ def delete(request):
 		conn.commit()
 		c.execute("DELETE FROM League WHERE username = (?)", (User,))
 		conn.commit()
-		print(f"Deleted account: {User}")
+		print("Deleted account")
 		return HttpResponse("Deleted")
 	if auth == 401:
 		return render(request, "authError.html")
@@ -429,7 +432,7 @@ def create_group(request):
 		data = praw_config
 		r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
 		r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
-		print(f"{User} requested a new group: {Group_Name}")
+		print(f"New group: {Group_Name}")
 		return HttpResponse("Done!")
 
 @csrf_exempt
@@ -462,7 +465,7 @@ def joinGroup(request):
 			members = c.execute("SELECT members FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0]
 			c.execute("UPDATE Groups SET members = (?) WHERE Group_Name = (?)", (members + 1, group))
 			conn.commit()
-			print(f"{username} joined {group}")
+			print(f"Somebody joined {group}")
 			return HttpResponse("Done!")
 		else:
 			return HttpResponse(authGroup)
@@ -494,7 +497,7 @@ def manageGroup(request):
 			if authAdmin == 200:
 				c.execute("UPDATE Groups SET pwd = (?), admins = (?) WHERE Group_Name = (?) ", (newPwd, json.dumps(admins), group))
 				conn.commit()
-				print(f"{username} made some changes to {group}")
+				print(f"Somebody made some changes to {group}")
 				return HttpResponse("Done!")
 			else:
 				return HttpResponse(authAdmin)
@@ -526,7 +529,7 @@ def leaveGroup(request):
 		members = c.execute("SELECT members FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0]
 		c.execute("UPDATE Groups SET members = (?) WHERE Group_Name = (?)", (members - 1, group))
 		conn.commit()
-		print(f"{user} left {group}")
+		print(f"Somebody left {group}")
 		return HttpResponse("Done!")
 	if authUser == 401:
 		return render(request, "authError.html")
@@ -577,7 +580,7 @@ def banUser(request):
 				conn.commit()
 				c.execute("UPDATE Leaderboard SET Subject = (?) WHERE Username = (?) ", (None, toBan))
 				conn.commit()
-				print(f"{toBan} was banned from {group} by {user}")
+				print(f"Somebody was banned from {group}")
 				return HttpResponse("Done!")
 			else:
 				return HttpResponse(authAdmin)
