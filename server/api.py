@@ -1,6 +1,7 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 from ratelimit.decorators import ratelimit
 import sqlite3
 import json
@@ -59,7 +60,7 @@ def deleteAccount(request):
 	c = conn.cursor()
 	username = request.POST.get("username", "")
 	pwd = request.POST.get("pwd", "")
-	
+
 	ph = PasswordHasher()
 	try:
 		hash = c.execute("SELECT token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
@@ -114,7 +115,7 @@ def resetPassword(request):
 		email = request.POST.get("email", "")
 		username = request.POST.get("username", "")
 		token = secrets.token_hex(nbytes=64)
-		c.execute("UPDATE Leaderboard SET emailReset = (?) WHERE Username = (?) ", (token, username))
+		c.execute("UPDATE Leaderboard SET emailReset = (?) WHERE Username = (?) AND email = (?)", (token, username, email))
 		conn.commit()
 
 		msg = EmailMessage()
@@ -149,15 +150,16 @@ def newPassword(request, token):
 		rpwd = request.POST.get("rpwd", "")
 		token = request.POST.get("token", "")
 		if pwd != rpwd:
-			return HttpResponse("Error - Passwords are not the same. Try again.")
+			messages.error(request, "Error - Passwords are not the same. Try again.")
 		emailReset = c.execute("SELECT emailReset FROM Leaderboard WHERE Username = (?) ", (username,)).fetchone()[0]
 		if emailReset != token:
-			return HttpResponse("Forbidden")
+			return HttpResponse("<h1>Forbidden</h1>")
 		ph = PasswordHasher()
 		hash = ph.hash(pwd)
 		c.execute("UPDATE Leaderboard SET emailReset = (?), token = (?) WHERE Username = (?) ", (None, hash, username))
 		conn.commit()
-		return HttpResponse("Your password was reset successfully.")
+		messages.success(request, "Your password has been changed successfully!")
+		return HttpResponseRedirect('/')
 	else:
 		return render(request, "newPassword.html", {"token": token})
 
