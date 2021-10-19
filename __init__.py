@@ -106,6 +106,11 @@ def season():
 
 def profileHook():
 	check_info()
+	checkBackup()	
+	write_config("achievement", True)
+	write_config("homescreen_data", [])
+	add_username_to_friendlist()
+	season()
 	config = mw.addonManager.getConfig(__name__)
 	if config["autosync"] == True:
 		gui_hooks.reviewer_will_end.append(background_sync)
@@ -171,12 +176,6 @@ except:
 	if config["import_error"] == True:
 		showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
 		write_config("import_error", False)
-
-checkBackup()	
-write_config("achievement", True)
-write_config("homescreen_data", [])
-add_username_to_friendlist()
-season()
 
 add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
 add_menu('&Leaderboard',"&Sync and update the home screen leaderboard", background_sync, "Shift+S")
