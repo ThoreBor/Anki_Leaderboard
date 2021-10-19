@@ -601,7 +601,7 @@ class start_config(QDialog):
 		if len(statusMsg) > 280:
 			showWarning("The message can only be 280 characters long.", title="Leaderboard")
 			return
-		data = {"status": statusMsg, "username": config["username"], "Token_v3": config["token"]}
+		data = {"status": statusMsg, "username": config["username"], "authToken": config["authToken"]}
 		x = connectToAPI("setStatus/", False, data, "Done!", "status")
 		if x.text == "Done!":
 			tooltip("Done")
