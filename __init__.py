@@ -11,7 +11,7 @@ import datetime
 import json
 
 from .Leaderboard import start_main
-from .Setup import start_setup
+from .config import start_config
 from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
@@ -29,13 +29,13 @@ def Main():
 		mw.leaderboard.activateWindow()
 
 def invoke_setup():
-	mw.lb_setup = start_setup(season_start, season_end)
+	mw.lb_setup = start_config(season_start, season_end)
 	mw.lb_setup.show()
 	mw.lb_setup.raise_()
 	mw.lb_setup.activateWindow()
 
 def config_setup():
-	s = start_setup(season_start, season_end)
+	s = start_config(season_start, season_end)
 	if s.exec():
 		pass
 
