@@ -17,7 +17,13 @@ from .version import version, about_text
 from .api_connect import connectToAPI
 
 askUserCreateAccount = """
-<h3></h3>
+<h3>Sign-up</h3>
+By signing up, you agree that your email address and password will be saved on the Leaderboard's server. Your email address will only be used
+to reset your password, if you forget it. Your password will be stored securely by hashing and salting it using argon2.
+<br><br>
+<b>Do you want to sign up now?</b>
+<br><br>
+<i>This add-on is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a></i>
 """
 
 class start_setup(QDialog):
@@ -107,9 +113,9 @@ class start_setup(QDialog):
 
 		self.dialog.next_day_info1.setText(_translate("Dialog", "Next day starts"))
 		self.dialog.next_day_info2.setText(_translate("Dialog", "hours past midnight"))
-		if config["username"] and not config["hash"]:
+		if config["username"] and not config["authToken"]:
 			self.dialog.account_action.setCurrentIndex(3)
-		if not config["hash"]:
+		if not config["authToken"]:
 			self.dialog.tabWidget.setTabEnabled(2, False)
 
 		self.dialog.about_text.setHtml(about_text)
@@ -122,7 +128,7 @@ class start_setup(QDialog):
 		index = self.dialog.account_action.currentIndex()
 		self.check_lineEdit()
 		if index == 0:
-			self.dialog.account_button.setText("Sign-up")
+			self.dialog.account_button.setText("Sign up")
 			self.dialog.account_mail.show()
 			self.dialog.account_username.show()
 			self.dialog.account_pwd.show()
@@ -131,7 +137,7 @@ class start_setup(QDialog):
 			self.dialog.account_username.setPlaceholderText("Username")
 			self.dialog.account_button.setEnabled(False)
 		if index == 1:
-			self.dialog.account_button.setText("Log-in")
+			self.dialog.account_button.setText("Log in")
 			self.dialog.account_mail.hide()
 			self.dialog.account_username.show()
 			self.dialog.account_pwd.show()
@@ -210,20 +216,17 @@ class start_setup(QDialog):
 		pwd = self.dialog.account_pwd.text()
 		username_list = connectToAPI("allusers/", True, {}, False, "sign_up")
 
-		if username in username_list:
-			showWarning("This username is already taken")
-			return
-		if len(pwd) < 6:
-			showWarning("The password has to be at least 6 characters long.")
-			return
 		if askUser(askUserCreateAccount):
 			data = {"email": email, "username": username, "pwd": pwd, "sync_date": datetime.now(), "version": version}
 			response = connectToAPI("signUp/", True, data, False, "sign_up")
-			write_config("hash", response)
-			write_config("username", username)
-			self.update_login_info(username)
-			tooltip("Successfully signed-up")
-			self.dialog.tabWidget.setTabEnabled(2, True)
+			if response == "Error":
+				showWarning("This username is already taken.")
+			else:
+				write_config("authToken", response)
+				write_config("username", username)
+				self.update_login_info(username)
+				tooltip("Successfully signed-up")
+				self.dialog.tabWidget.setTabEnabled(2, True)
 		else:
 			pass	
 
@@ -235,7 +238,7 @@ class start_setup(QDialog):
 		if response == "Error":
 			showWarning("Something went wrong.")
 		else:
-			write_config("hash", response)
+			write_config("authToken", response)
 			write_config("username", username)
 			self.update_login_info(username)
 			tooltip("Successfully logged-in")
@@ -248,7 +251,7 @@ class start_setup(QDialog):
 		data = {"username": username, "pwd": pwd}
 		response = connectToAPI("deleteAccount/", False, data, "Deleted", "delete_account")
 		if response.text == "Deleted":
-			write_config("hash", None)
+			write_config("authToken", None)
 			write_config("username", "")
 			self.update_login_info("")
 			tooltip("Successfully deleted account")
@@ -260,10 +263,6 @@ class start_setup(QDialog):
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
 		old_token = config["token"]
-
-		if len(pwd) < 6:
-			showWarning("The password has to be at least 6 characters long.")
-			return
 		
 		if askUser(askUserCreateAccount):
 			data = {"email": email, "username": username, "pwd": pwd, "old_token": old_token}
@@ -271,7 +270,7 @@ class start_setup(QDialog):
 			if "error" in response:
 				showWarning(response)
 			else:
-				write_config("hash", response)
+				write_config("authToken", response)
 				write_config("username", username)
 				self.update_login_info(username)
 				tooltip("Successfully updated account")
@@ -280,7 +279,7 @@ class start_setup(QDialog):
 			pass
 
 	def log_out(self):
-		write_config("hash", None)
+		write_config("authToken", None)
 		write_config("username", "")
 		self.update_login_info("")
 		tooltip("Successfully logged-out")
@@ -481,7 +480,7 @@ class start_setup(QDialog):
 		else:
 			pwd = None
 
-		data = {"username": config["username"], "group": group, "pwd": pwd, "hash": config["hash"]}
+		data = {"username": config["username"], "group": group, "pwd": pwd, "authToken": config["authToken"]}
 		x = connectToAPI("joinGroup/", False, data, "Done!", "join_group")
 		if x.text == "Done!":
 			tooltip(f"You joined {group}")
@@ -505,7 +504,7 @@ class start_setup(QDialog):
 			group = item.text()
 			config = mw.addonManager.getConfig(__name__)
 			group_pwds = config["group_pwds"]
-			data = {"user": config["username"], "group": group, "hash": config["hash"]}
+			data = {"user": config["username"], "group": group, "authToken": config["authToken"]}
 			x = connectToAPI("leaveGroup/", False, data, "Done!", "leave_group")
 			if x.text == "Done!":
 				group_pwds.remove(group_pwds[config["groups"].index(group)])
@@ -568,7 +567,7 @@ class start_setup(QDialog):
 			else:
 				newPwd = hashlib.sha1(newPwd.encode('utf-8')).hexdigest().upper()
 
-		data = {'group': group, "user": config["username"], "hash": config["hash"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
+		data = {'group': group, "user": config["username"], "authToken": config["authToken"], "oldPwd": oldPwd, "newPwd": newPwd, "addAdmin": addAdmin}
 		x = connectToAPI("manageGroup/", False, data, "Done!", "manage_group")
 		if x.text == "Done!":
 			tooltip(f"{group} was updated successfully.")

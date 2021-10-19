@@ -26,12 +26,18 @@ def signUp(request):
 	pwd = request.POST.get("pwd", "")
 	sync_date = request.POST.get("sync_date", "")
 	version = request.POST.get("version", "")
+
+	allUsers = [i[0] for i in c.execute("SELECT Username FROM Leaderboard").fetchall()]
+	if username in allUsers:
+		return HttpResponse(json.dumps("Error"))
+	
 	ph = PasswordHasher()
 	hash = ph.hash(pwd)
-	c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (username, 0, 0, 0, sync_date, 0, 0, 0, hash, version, email))
+	authToken = secrets.token_hex(nbytes=64)
+	c.execute('INSERT INTO Leaderboard (Username, Streak, Cards , Time_Spend, Sync_Date, Month, Country, Retention, Token, version, email, hash) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (username, 0, 0, 0, sync_date, 0, 0, 0, authToken, version, email, hash))
 	conn.commit()
 	print("New sign-up")
-	return HttpResponse(json.dumps(hash))
+	return HttpResponse(json.dumps(authToken))
 
 @csrf_exempt
 #@ratelimit(key='ip', rate='10/h', block=True)
@@ -42,18 +48,20 @@ def logIn(request):
 	pwd = request.POST.get("pwd", "")
 	ph = PasswordHasher()
 	try:
-		hash = c.execute("SELECT token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+		hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 	except:
 		return HttpResponse(json.dumps("Error"))
 	try:
 		ph.verify(hash, pwd)
 	except:
 		return HttpResponse(json.dumps("Error"))
+	
 	hash = ph.hash(pwd)
-	c.execute("UPDATE Leaderboard SET Token = (?) WHERE Username = (?)", (hash, username))
+	authToken = secrets.token_hex(nbytes=64)
+	c.execute("UPDATE Leaderboard SET Token = (?), hash = (?) WHERE Username = (?)", (authToken, hash, username))
 	conn.commit()
 	print("New login")
-	return HttpResponse(json.dumps(hash))
+	return HttpResponse(json.dumps(authToken))
 
 @csrf_exempt
 #@ratelimit(key='ip', rate='10/h', block=True)
@@ -65,7 +73,7 @@ def deleteAccount(request):
 
 	ph = PasswordHasher()
 	try:
-		hash = c.execute("SELECT token FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+		hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 	except:
 		return HttpResponse(json.dumps("Something went wrong."))
 	try:
@@ -101,10 +109,11 @@ def updateAccount(request):
 	if auth == 200:
 		ph = PasswordHasher()
 		hash = ph.hash(pwd)
-		c.execute("UPDATE Leaderboard SET Token = (?), email = (?) WHERE Username = (?) ", (hash, email, username))
+		authToken = secrets.token_hex(nbytes=64)
+		c.execute("UPDATE Leaderboard SET Token = (?), email = (?), hash = (?) WHERE Username = (?) ", (authToken, email, hash, username))
 		conn.commit()
 		print("Updated account")
-		return HttpResponse(json.dumps(hash))
+		return HttpResponse(json.dumps(authToken))
 	else:
 		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or token invalid."))
 
@@ -159,7 +168,7 @@ def newPassword(request, token):
 			return HttpResponse("<h1>Forbidden</h1>")
 		ph = PasswordHasher()
 		hash = ph.hash(pwd)
-		c.execute("UPDATE Leaderboard SET emailReset = (?), token = (?) WHERE Username = (?) ", (None, hash, username))
+		c.execute("UPDATE Leaderboard SET emailReset = (?), hash = (?) WHERE Username = (?) ", (None, hash, username))
 		conn.commit()
 		messages.success(request, "Your password has been changed successfully!")
 		return HttpResponseRedirect('/')
@@ -286,8 +295,8 @@ def sync(request):
 	Update_League = request.POST.get("Update_League", True)
 
 	Token_v3 = request.POST.get("Token_v3", None)
-	hash = request.POST.get("hash", None)
-	Token = hash if hash else Token_v3
+	authToken = request.POST.get("authToken", None)
+	Token = authToken if authToken else Token_v3
 	Version = request.POST.get("Version", None)
 
 	try:
@@ -355,8 +364,8 @@ def delete(request):
 	c = conn.cursor()
 	User = request.POST.get("Username", None)
 	Token_v3 = request.POST.get("Token_v3", None)
-	hash = request.POST.get("hash", None)
-	Token = hash if hash else Token_v3
+	authToken = request.POST.get("authToken", None)
+	Token = authToken if authToken else Token_v3
 
 	auth = auth_user(User, Token)
 	if auth == 200:
@@ -443,8 +452,8 @@ def joinGroup(request):
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
 	Token_v3 = request.POST.get("token", None)
-	hash = request.POST.get("hash", None)
-	token = hash if hash else Token_v3
+	authToken = request.POST.get("authToken", None)
+	token = authToken if authToken else Token_v3
 
 	group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 	if not group_list:
@@ -483,8 +492,8 @@ def manageGroup(request):
 	oldPwd = request.POST.get("oldPwd", None)
 	newPwd = request.POST.get("newPwd", None)
 	Token_v3 = request.POST.get("token", None)
-	hash = request.POST.get("hash", None)
-	token = hash if hash else Token_v3
+	authToken = request.POST.get("authToken", None)
+	token = authToken if authToken else Token_v3
 	addAdmin = request.POST.get("addAdmin", None)
 	admins = json.loads(c.execute("SELECT admins FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0])
 	admins.append(addAdmin)
@@ -514,8 +523,8 @@ def leaveGroup(request):
 	c = conn.cursor()
 	group = request.POST.get("group", None)
 	Token_v3 = request.POST.get("token", None)
-	hash = request.POST.get("hash", None)
-	token = hash if hash else Token_v3
+	authToken = request.POST.get("authToken", None)
+	token = authToken if authToken else Token_v3
 	user = request.POST.get("user", None)
 	group_list = json.loads(c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0])
 
@@ -556,8 +565,8 @@ def banUser(request):
 	group = request.POST.get("group", None)
 	pwd = request.POST.get("pwd", None)
 	Token_v3 = request.POST.get("token", None)
-	hash = request.POST.get("hash", None)
-	token = hash if hash else Token_v3
+	authToken = request.POST.get("authToken", None)
+	token = authToken if authToken else Token_v3
 	user = request.POST.get("user", None)
 	g = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (toBan,)).fetchone()[0]
 	banned = json.loads(c.execute("SELECT banned FROM Groups WHERE Group_Name = (?)", (group,)).fetchone()[0])
@@ -601,8 +610,8 @@ def setStatus(request):
 		statusMsg = None
 	username = request.POST.get("username", None)
 	Token_v3 = request.POST.get("Token_v3", None)
-	hash = request.POST.get("hash", None)
-	Token = hash if hash else Token_v3
+	authToken = request.POST.get("authToken", None)
+	Token = authToken if authToken else Token_v3
 
 	auth = auth_user(username, Token)
 	if auth == 200:
@@ -657,4 +666,4 @@ def reportUser(request):
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,9,3,0,0,0],[2021,9,17,0,0,0], "Season 25"]))
+	return HttpResponse(json.dumps([[2021,10,15,0,0,0],[2021,10,29,0,0,0], "Season 28"]))

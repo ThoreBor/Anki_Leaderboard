@@ -152,11 +152,11 @@ class start_main(QDialog):
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 			"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention,
 			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-			"hash": config["hash"], "Version": version}
+			"authToken": config["authToken"], "Version": version}
 		else:
 			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
 			"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
-			"hash": config["hash"], "Version": version}
+			"authToken": config["authToken"], "Version": version}
 
 		x = connectToAPI("sync/", False, data, "Done!", "load_leaderboard sync")
 

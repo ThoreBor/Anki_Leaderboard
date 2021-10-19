@@ -14,7 +14,7 @@ def write_config(name, value):
 		"refresh": config["refresh"], 
 		"tab": config["tab"], 
 		"token": config["token"],
-		"hash": config["hash"],
+		"authToken": config["authToken"],
 		"achievement": config["achievement"], 
 		"sortby": config["sortby"], 
 		"hidden_users": config["hidden_users"], 
