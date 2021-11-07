@@ -248,14 +248,15 @@ class start_config(QDialog):
 		config = mw.addonManager.getConfig(__name__)
 		username = self.dialog.account_username.text()
 		pwd = self.dialog.account_pwd.text()
-		data = {"username": username, "pwd": pwd}
-		response = connectToAPI("deleteAccount/", False, data, "Deleted", "delete_account")
-		if response.text == "Deleted":
-			write_config("authToken", None)
-			write_config("username", "")
-			self.update_login_info("")
-			tooltip("Successfully deleted account")
-			self.dialog.tabWidget.setTabEnabled(2, False)
+		if askUser("<h3>Deleting Account</h3>If you delete your account, all of your data will be deleted. <br><br><b>Do you want to delete your account now?</b>"):
+			data = {"username": username, "pwd": pwd}
+			response = connectToAPI("deleteAccount/", False, data, "Deleted", "delete_account")
+			if response.text == "Deleted":
+				write_config("authToken", None)
+				write_config("username", "")
+				self.update_login_info("")
+				tooltip("Successfully deleted account")
+				self.dialog.tabWidget.setTabEnabled(2, False)
 
 	def update_account(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -483,32 +484,22 @@ class start_config(QDialog):
 		data = {"username": config["username"], "group": group, "pwd": pwd, "authToken": config["authToken"]}
 		x = connectToAPI("joinGroup/", False, data, "Done!", "join_group")
 		if x.text == "Done!":
-			tooltip(f"You joined {group}")
 			if not config["current_group"]:
 				write_config("current_group", group)
 			if group not in group_list:
-				group_pwds = config["group_pwds"]
-				if pwd:
-					group_pwds.append(pwd)
-					write_config("group_pwds", group_pwds)
-				else:
-					group_pwds.append(None)
-				write_config("group_pwds", group_pwds)
 				group_list.append(group)
 				write_config("groups", group_list)
 				self.update_group_list(sorted(group_list, key=str.lower))
+				tooltip(f"You joined {group}")
 			self.dialog.joinPwd.clear()
 
 	def leave_group(self):
 		for item in self.dialog.group_list.selectedItems():
 			group = item.text()
 			config = mw.addonManager.getConfig(__name__)
-			group_pwds = config["group_pwds"]
 			data = {"user": config["username"], "group": group, "authToken": config["authToken"]}
 			x = connectToAPI("leaveGroup/", False, data, "Done!", "leave_group")
 			if x.text == "Done!":
-				group_pwds.remove(group_pwds[config["groups"].index(group)])
-				write_config("group_pwds", group_pwds)
 				config['groups'].remove(group)
 				write_config("groups", config["groups"])
 				if len(config['groups']) > 0:
@@ -571,8 +562,6 @@ class start_config(QDialog):
 		x = connectToAPI("manageGroup/", False, data, "Done!", "manage_group")
 		if x.text == "Done!":
 			tooltip(f"{group} was updated successfully.")
-			config["group_pwds"][config["groups"].index(group)] = newPwd if oldPwd != newPwd else oldPwd
-			write_config("group_pwds", config["group_pwds"])
 			self.dialog.oldPwd.setText("")
 			self.dialog.manage_newPwd.setText("")
 			self.dialog.manage_newRepeat.setText("")

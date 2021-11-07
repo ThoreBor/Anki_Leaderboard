@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>336</width>
+    <height>112</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Confirm group password</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/person/icons/person.png</normaloff>:/person/icons/person.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLineEdit" name="groupPassword">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Password</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="banButton">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Ban user</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>groupPassword</tabstop>
+  <tabstop>banButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

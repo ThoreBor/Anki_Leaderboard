@@ -9,6 +9,7 @@ from .forms import user_info
 from .reportUser import start_report
 from .config_manager import write_config
 from .api_connect import connectToAPI
+from .banUser import start_banUser
 
 class start_user_info(QDialog):
 	def __init__(self, user_clicked, enabled, parent=None):
@@ -102,15 +103,9 @@ class start_user_info(QDialog):
 			tooltip(f"{self.user_clicked} is now your friend.")
 
 	def banUser(self):
-		config = mw.addonManager.getConfig(__name__)
-		toBan = self.user_clicked
-		group = config["current_group"]
-		pwd = config["group_pwds"][config["groups"].index(config["current_group"])]
-		user = config["username"]
-		data = {"toBan": toBan, "group": group, "pwd": pwd, "authToken": config["authToken"], "user": user}
-		x = connectToAPI("banUser/", False, data, "Done!", "banUser")
-		if x.text == "Done!":
-			tooltip(f"{toBan} is now banned from {group}")
+		s = start_banUser(self.user_clicked)
+		if s.exec():
+			pass
 			
 	def reportUser(self):
 		s = start_report(self.user_clicked)
