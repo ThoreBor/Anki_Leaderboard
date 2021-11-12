@@ -84,6 +84,7 @@ class start_user_info(QDialog):
 		self.dialog.addFriend.clicked.connect(self.addFriend)
 		self.dialog.banUser.clicked.connect(self.banUser)
 		self.dialog.reportUser.clicked.connect(self.reportUser)
+		self.dialog.history.sortItems(0, QtCore.Qt.DescendingOrder)
 
 	def hideUser(self):
 		config = mw.addonManager.getConfig(__name__)
