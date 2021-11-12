@@ -30,6 +30,9 @@ def signUp(request):
 	allUsers = [i[0] for i in c.execute("SELECT Username FROM Leaderboard").fetchall()]
 	if username in allUsers:
 		return HttpResponse(json.dumps("Error"))
+
+	if len(username) > 15:
+		return HttpResponse(json.dumps("Error"))
 	
 	ph = PasswordHasher()
 	hash = ph.hash(pwd)
