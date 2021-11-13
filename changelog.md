@@ -1,4 +1,10 @@
 # Change Log
+## v2.0.0
+- use email address and password to authenticate users
+- minor UI changes
+- minor performance improvements
+- fixed some bugs
+
 ## v1.7.0
 - added option to join multiple groups (__you have to rejoin the group you previously joined__)
 - added option to report and suspend users

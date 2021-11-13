@@ -1,4 +1,4 @@
-version = "v1.7.0"
+version = "v2.0.0"
 
 about_text = f"""
 <h2>Leaderboard {version}</h2>
@@ -26,16 +26,9 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.<br>
 Also thank you to everyone who reported bugs and suggested new features!</b>
 <h3>Change Log:</h3>
-- added option to join multiple groups <b>(you have to rejoin the group you previously joined)</b><br>
-- added option to report and suspend users<br>
-- added config shortcut<br>
-- added option to delete account and/or create a backup of the configurations before deleting the add-on (this option will be available in Anki >2.1.44)<br>
-- removed E-Mail from group request<br>
-- fixed stats bug (rescheduled cards were counted as reviews)<br>
-- fixed days studied bug<br>
-- minimum study time for leagues is now 5 minutes<br>
-- adjusted dark mode colors<br>
-- UI changes<br>
-- various under the hood changes (add-on and server-side)<br><br>
+- use email address and password to authenticate users<br>
+- minor UI changes<br>
+- minor performance improvements<br>
+- fixed some bugs<br><br>
 <b>You can check out the full change log on <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/changelog.md">GitHub</a>.</b>
 """
