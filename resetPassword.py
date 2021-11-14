@@ -23,7 +23,7 @@ class start_resetPassword(QDialog):
 			showWarning("Please enter your email address and username first.")
 			return
 		response = connectToAPI("resetPassword/", False, {"email": email, "username": username}, False, "account_forgot")
-		if response == "Error":
+		if response.text == "Error":
 			showWarning("Something went wrong")
 		else:
 			tooltip("Email sent")

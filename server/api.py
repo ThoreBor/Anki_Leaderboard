@@ -129,6 +129,10 @@ def resetPassword(request):
 		email = request.POST.get("email", "")
 		username = request.POST.get("username", "")
 		token = secrets.token_hex(nbytes=64)
+
+		# check if it exists
+		c.execute("SELECT Username FROM Leaderboard WHERE Username = (?) AND email = (?)", (username, email)).fetchone()[0]
+		
 		c.execute("UPDATE Leaderboard SET emailReset = (?) WHERE Username = (?) AND email = (?)", (token, username, email))
 		conn.commit()
 
