@@ -9,7 +9,7 @@ class start_report(QDialog):
 	def __init__(self, user_clicked, parent=None):
 		self.parent = parent
 		self.user_clicked = user_clicked
-		QDialog.__init__(self, parent, Qt.Window)
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = report.Ui_Dialog()
 		self.dialog.setupUi(self)
 		self.setupUI()

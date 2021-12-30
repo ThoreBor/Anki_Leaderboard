@@ -31,7 +31,7 @@ class start_config(QDialog):
 		self.parent = parent
 		self.season_start = season_start
 		self.season_end = season_end
-		QDialog.__init__(self, parent, Qt.Window)
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = config.Ui_Dialog()
 		self.dialog.setupUi(self)
 		self.setupUI()

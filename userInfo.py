@@ -16,7 +16,7 @@ class start_user_info(QDialog):
 		self.parent = parent
 		self.user_clicked = user_clicked.split(" |")[0]
 		self.enabled = enabled
-		QDialog.__init__(self, parent, Qt.Window)
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = user_info.Ui_Dialog()
 		self.dialog.setupUi(self)
 		self.setupUI()
@@ -35,10 +35,10 @@ class start_user_info(QDialog):
 			pass
 
 		header = self.dialog.history.horizontalHeader()   
-		header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-		header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-		header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-		header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+		header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.Stretch)
+		header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
+		header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeMode.Stretch)
+		header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeMode.Stretch)
 
 		if data[0] == "Country":
 			data[0] = None
@@ -61,19 +61,19 @@ class start_user_info(QDialog):
 				self.dialog.history.setItem(rowPosition , 3, QtWidgets.QTableWidgetItem(str(i)))
 
 				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, int(results["seasons"][index]))
+				item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(results["seasons"][index]))
 				self.dialog.history.setItem(rowPosition, 0, item)
-				item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+				item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, int(results["xp"][index]))
+				item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(results["xp"][index]))
 				self.dialog.history.setItem(rowPosition, 2, item)
-				item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+				item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 				item = QtWidgets.QTableWidgetItem()
-				item.setData(QtCore.Qt.DisplayRole, int(results["rank"][index]))
+				item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(results["rank"][index]))
 				self.dialog.history.setItem(rowPosition, 1, item)
-				item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+				item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 				index += 1
 		for i in data[1]:
@@ -84,7 +84,7 @@ class start_user_info(QDialog):
 		self.dialog.addFriend.clicked.connect(self.addFriend)
 		self.dialog.banUser.clicked.connect(self.banUser)
 		self.dialog.reportUser.clicked.connect(self.reportUser)
-		self.dialog.history.sortItems(0, QtCore.Qt.DescendingOrder)
+		self.dialog.history.sortItems(0, QtCore.Qt.SortOrder.DescendingOrder)
 
 	def hideUser(self):
 		config = mw.addonManager.getConfig(__name__)

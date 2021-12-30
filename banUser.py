@@ -9,7 +9,7 @@ from .api_connect import connectToAPI
 class start_banUser(QDialog):
 	def __init__(self, user_clicked, parent=None):
 		self.parent = parent
-		QDialog.__init__(self, parent, Qt.Window)
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = banUser.Ui_Dialog()
 		self.dialog.setupUi(self)
 		self.user_clicked = user_clicked
@@ -26,5 +26,4 @@ class start_banUser(QDialog):
 		x = connectToAPI("banUser/", False, data, "Done!", "banUser")
 		if x.text == "Done!":
 			tooltip(f"{toBan} is now banned from {config['current_group']}")
-		
 		

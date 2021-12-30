@@ -7,7 +7,7 @@ from .forms import achievement
 class start_achievement(QDialog):
 	def __init__(self, value, parent=None):
 		self.parent = parent
-		QDialog.__init__(self, parent, Qt.Window)
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = achievement.Ui_Dialog()
 		self.dialog.setupUi(self)
 		self.value = value
