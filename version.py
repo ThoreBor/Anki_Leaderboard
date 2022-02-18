@@ -22,7 +22,7 @@ You can also check the leaderboard (past 24 hours) on this <a href="https://anki
 Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/user/Ttime5">Reddit</a> or 
 <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a>.
 <br><br>
-<b>© Thore Tyborski 2021<br>
+<b>© Thore Tyborski 2022<br>
 With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
 <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.<br>
 Also thank you to everyone who reported bugs and suggested new features!</b>
