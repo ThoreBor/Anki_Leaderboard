@@ -15,13 +15,12 @@ Including another URLconf
 """
 from . import website
 from . import api
-from django.urls import path
-from django.conf.urls import url
+from django.urls import path, re_path
 from django.http import HttpResponse
 
 app_name = "main"
 urlpatterns = [
-    url(r'^robots.txt', lambda x: HttpResponse("User-Agent: *\nDisallow: /", content_type="text/plain"), name="robots_file"),
+    re_path(r'^robots.txt', lambda x: HttpResponse("User-Agent: *\nDisallow: /", content_type="text/plain"), name="robots_file"),
 	path("", website.reviews, name="reviews"),
     path("time/", website.time, name="time"),
     path("streak/", website.streak, name="streak"),
@@ -31,6 +30,7 @@ urlpatterns = [
 	path('beta/', website.beta, name="beta"),
 	path('gamma/', website.gamma, name="gamma"),
 	path('delta/', website.delta, name="delta"),
+	path('privacy/', website.privacy, name="privacy"),
 	path('sync/', api.sync, name="sync"),
 	path('delete/', api.delete, name="delete"),
 	path('allusers/', api.all_users, name="allusers"),

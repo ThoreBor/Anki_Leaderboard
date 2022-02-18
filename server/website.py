@@ -158,3 +158,6 @@ def delta(request):
 			data.append(x)
 			counter += 1
 	return render(request, "leagues.html", {"data": data})
+
+def privacy(request):
+	return render(request, "privacy.html")

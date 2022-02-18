@@ -20,12 +20,10 @@ from .api_connect import connectToAPI
 
 askUserCreateAccount = """
 <h3>Sign-up</h3>
-By signing up, you agree that your email address and password will be saved on the Leaderboard's server. Your email address will only be used
-to reset your password, if you forget it. Your password will be stored securely by hashing and salting it using argon2.
+By signing up, you confirm that you read and accept the Privacy Policy of this add-on. 
+You can read it <a href="https://ankileaderboard.pythonanywhere.com/privacy/">here</a>.
 <br><br>
 <b>Do you want to sign up now?</b>
-<br><br>
-<i>This add-on is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a></i>
 """
 
 class start_config(QDialog):
