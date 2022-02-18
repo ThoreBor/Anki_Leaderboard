@@ -57,15 +57,15 @@ def load_league(self, colors):
 
 			self.dialog.League.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(str(username)))
 			self.dialog.League.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(str(xp)))
-			self.dialog.League.item(rowPosition, 1).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.item(rowPosition, 1).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 			self.dialog.League.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(str(reviews)))
-			self.dialog.League.item(rowPosition, 2).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.item(rowPosition, 2).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 			self.dialog.League.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(str(time_spend)))
-			self.dialog.League.item(rowPosition, 3).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.item(rowPosition, 3).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 			self.dialog.League.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(retention)))
-			self.dialog.League.item(rowPosition, 4).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.item(rowPosition, 4).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 			self.dialog.League.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str(days_learned)))
-			self.dialog.League.item(rowPosition, 5).setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+			self.dialog.League.item(rowPosition, 5).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 			if username.split(" |")[0] in config['friends']:
 				for j in range(self.dialog.League.columnCount()):
@@ -118,7 +118,7 @@ def load_league(self, colors):
 		if item == config['username']:
 			userposition = self.dialog.League.item(i, 0)
 			self.dialog.League.selectRow(i)
-			self.dialog.League.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
+			self.dialog.League.scrollToItem(userposition, QAbstractItemView.ScrollHint.PositionAtCenter)
 			self.dialog.League.clearSelection()
 	
 	write_config("medal_users", medal_users)

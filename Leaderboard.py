@@ -35,7 +35,7 @@ class start_main(QDialog):
 		self.season_end = season_end
 		self.current_season = current_season
 		self.groups_lb = []
-		QDialog.__init__(self, parent, Qt.Window)
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
 		self.setupUI()
@@ -87,12 +87,12 @@ class start_main(QDialog):
 		self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 		for l in lb_list:
 			header = l.horizontalHeader()   
-			header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-			header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-			header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-			header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-			header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
-			header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
+			header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+			header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
+			header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeMode.Stretch)
+			header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeMode.Stretch)
+			header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeMode.Stretch)
+			header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeMode.Stretch)
 		
 		self.load_leaderboard()
 
@@ -104,29 +104,29 @@ class start_main(QDialog):
 		tab.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.DisplayRole, int(cards))
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(cards))
 		tab.setItem(rowPosition, 1, item)
-		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.DisplayRole, float(time))
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, float(time))
 		tab.setItem(rowPosition, 2, item)
-		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.DisplayRole, int(streak))
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(streak))
 		tab.setItem(rowPosition, 3, item)
-		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.DisplayRole, month)
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, month)
 		tab.setItem(rowPosition, 4, item)
-		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.DisplayRole, retention)
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, retention)
 		tab.setItem(rowPosition, 5, item)
-		item.setTextAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
+		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 	def switchGroup(self):
 		self.dialog.Custom_Leaderboard.setSortingEnabled(False)

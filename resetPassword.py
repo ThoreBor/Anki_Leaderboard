@@ -8,7 +8,7 @@ from .api_connect import connectToAPI
 class start_resetPassword(QDialog):
 	def __init__(self, parent=None):
 		self.parent = parent
-		QDialog.__init__(self, parent, Qt.Window)
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = reset_password.Ui_Dialog()
 		self.dialog.setupUi(self)
 		self.setupUI()
@@ -27,4 +27,3 @@ class start_resetPassword(QDialog):
 			showWarning("Something went wrong")
 		else:
 			tooltip("Email sent")
-		
