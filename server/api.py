@@ -33,7 +33,7 @@ def signUp(request):
 
 	if len(username) > 15:
 		return HttpResponse(json.dumps("Error"))
-	
+
 	ph = PasswordHasher()
 	hash = ph.hash(pwd)
 	authToken = secrets.token_hex(nbytes=64)
@@ -58,7 +58,7 @@ def logIn(request):
 		ph.verify(hash, pwd)
 	except:
 		return HttpResponse(json.dumps("Error"))
-	
+
 	hash = ph.hash(pwd)
 	authToken = secrets.token_hex(nbytes=64)
 	c.execute("UPDATE Leaderboard SET Token = (?), hash = (?) WHERE Username = (?)", (authToken, hash, username))
@@ -132,7 +132,7 @@ def resetPassword(request):
 
 		# check if it exists
 		c.execute("SELECT Username FROM Leaderboard WHERE Username = (?) AND email = (?)", (username, email)).fetchone()[0]
-		
+
 		c.execute("UPDATE Leaderboard SET emailReset = (?) WHERE Username = (?) AND email = (?)", (token, username, email))
 		conn.commit()
 
@@ -414,7 +414,16 @@ def get_data(request):
 	sortby = request.POST.get("sortby", "Cards")
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
-	c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard WHERE suspended IS NULL ORDER BY {} DESC".format(sortby))
+	if sortby == "Cards":
+	    c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard WHERE suspended IS NULL ORDER BY Cards DESC")
+	if sortby == "Streak":
+	    c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard WHERE suspended IS NULL ORDER BY Streak DESC")
+	if sortby == "Time_Spend":
+	    c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard WHERE suspended IS NULL ORDER BY Time_Spend DESC")
+	if sortby == "Month":
+	    c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard WHERE suspended IS NULL ORDER BY Month DESC")
+	if sortby == "Retention":
+	    c.execute("SELECT Username, Streak, Cards, Time_Spend, Sync_Date, Month, Subject, Country, Retention, groups FROM Leaderboard WHERE suspended IS NULL ORDER BY Retention DESC")
 	data = []
 	for row in c.fetchall():
 		if row[9]:
@@ -447,7 +456,7 @@ def create_group(request):
 		conn.commit()
 		data = praw_config
 		r = praw.Reddit(username = data["un"], password = data["pw"], client_id = data["cid"], client_secret = data["cs"], user_agent = data["ua"])
-		r.redditor('Ttime5').message('Group Request', f"{User} requested a new group: {Group_Name}")
+		r.redditor('Ttime5').message('New Group', f"{User} created a new group: {Group_Name}")
 		print(f"New group: {Group_Name}")
 		return HttpResponse("Done!")
 
@@ -673,4 +682,4 @@ def reportUser(request):
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2021,10,15,0,0,0],[2021,10,29,0,0,0], "Season 28"]))
+	return HttpResponse(json.dumps([[2022,2,7,0,0,0],[2022,2,21,0,0,0], "Season 36"]))
