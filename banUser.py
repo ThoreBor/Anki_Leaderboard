@@ -1,10 +1,14 @@
-from aqt.qt import *
+from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip
 from aqt import mw
 import hashlib
 
-from .forms import banUser
+if qtmajor > 5:
+	from .forms.pyqt6UI import banUser
+else:
+	from .forms.pyqt5UI import banUser
 from .api_connect import connectToAPI
+
 
 class start_banUser(QDialog):
 	def __init__(self, user_clicked, parent=None):
@@ -17,6 +21,10 @@ class start_banUser(QDialog):
 
 	def setupUI(self):
 		self.dialog.banButton.clicked.connect(self.banUser)
+		
+		icon = QIcon()
+		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/person.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		self.setWindowIcon(icon)
 
 	def banUser(self):
 		config = mw.addonManager.getConfig(__name__)

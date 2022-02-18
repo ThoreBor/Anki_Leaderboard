@@ -1,11 +1,15 @@
-from aqt.qt import *
+from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip
 from aqt import mw
-
 import json
-from PyQt5 import QtCore, QtWidgets
+from os.path import dirname, join, realpath
 
-from .forms import user_info
+if qtmajor > 5:
+	from .forms.pyqt6UI import user_info
+	from PyQt6 import QtCore, QtWidgets
+else:
+	from .forms.pyqt5UI import user_info
+	from PyQt5 import QtCore, QtWidgets
 from .reportUser import start_report
 from .config_manager import write_config
 from .api_connect import connectToAPI
@@ -23,6 +27,11 @@ class start_user_info(QDialog):
 
 	def setupUI(self):
 		self.dialog.username_label.setText(self.user_clicked)
+
+		icon = QIcon()
+		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/person.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		self.setWindowIcon(icon)
+
 		if self.enabled == True:
 			self.dialog.banUser.setEnabled(True)
 

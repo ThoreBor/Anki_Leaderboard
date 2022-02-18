@@ -1,8 +1,12 @@
-from aqt.qt import *
+from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip
 from aqt import mw
+from os.path import dirname, join, realpath
 
-from .forms import report
+if qtmajor > 5:
+	from .forms.pyqt6UI import report
+else:
+	from .forms.pyqt5UI import report
 from .api_connect import connectToAPI
 
 class start_report(QDialog):
@@ -15,6 +19,10 @@ class start_report(QDialog):
 		self.setupUI()
 
 	def setupUI(self):
+		icon = QIcon()
+		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/person.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		self.setWindowIcon(icon)
+		
 		self.dialog.reportLabel.setText(f"Please explain why you want to report {self.user_clicked}:")
 		self.dialog.sendReport.clicked.connect(self.sendReport)
 

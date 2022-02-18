@@ -1,9 +1,11 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
 import json
-
 from aqt import mw
-from aqt.qt import *
+from aqt.qt import Qt, qtmajor, QAbstractItemView
 
+if qtmajor > 5:
+	from PyQt6 import QtCore, QtGui, QtWidgets
+else:
+	from PyQt5 import QtCore, QtGui, QtWidgets
 from .config_manager import write_config
 from .api_connect import connectToAPI
 

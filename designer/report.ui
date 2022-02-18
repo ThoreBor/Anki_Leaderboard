@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Report user</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/person/icons/person.png</normaloff>:/person/icons/person.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="0">
     <widget class="QPushButton" name="sendReport">
@@ -52,8 +48,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>reportReason</tabstop>
   <tabstop>sendReport</tabstop>
  </tabstops>
- <resources>
-  <include location="icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

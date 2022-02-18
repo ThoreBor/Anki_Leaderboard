@@ -1,16 +1,18 @@
 from datetime import datetime
 from os.path import dirname, join, realpath
-
 import hashlib
-from PyQt5 import QtCore
 
 from aqt import mw
-from aqt.qt import *
+from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip, showInfo, showWarning, askUser
 
-from .forms import config
+if qtmajor > 5:
+	from .forms.pyqt6UI import config
+	from PyQt6 import QtCore
+else:
+	from .forms.pyqt5UI import config
+	from PyQt5 import QtCore
 from .resetPassword import start_resetPassword
-from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version, about_text
@@ -38,6 +40,10 @@ class start_config(QDialog):
 
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
+
+		icon = QIcon()
+		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/settings.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		self.setWindowIcon(icon)
 
 		self.update_login_info(config["username"])
 		self.dialog.account_forgot.hide()

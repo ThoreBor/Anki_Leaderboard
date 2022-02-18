@@ -1,9 +1,9 @@
 from aqt import mw
-from PyQt5.QtWidgets import QAction, QMenu
-from aqt.qt import *
+from aqt.qt import QAction, QMenu, QKeySequence
 from aqt.utils import showInfo, showWarning, tooltip, askUser
 
 from os.path import dirname, join, realpath
+import os
 import webbrowser
 import requests
 from bs4 import BeautifulSoup

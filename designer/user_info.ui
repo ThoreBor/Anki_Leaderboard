@@ -16,10 +16,6 @@
   <property name="windowTitle">
    <string>User</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/person/icons/person.png</normaloff>:/person/icons/person.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
@@ -276,8 +272,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>history</tabstop>
   <tabstop>status_message</tabstop>
  </tabstops>
- <resources>
-  <include location="icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

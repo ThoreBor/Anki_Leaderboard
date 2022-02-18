@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="krone">
-    <file>icons/krone.png</file>
-  </qresource>
-  <qresource prefix="person">
-    <file>icons/person.png</file>
-  </qresource>
-</RCC>

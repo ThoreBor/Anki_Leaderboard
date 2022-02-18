@@ -19,10 +19,6 @@
   <property name="windowTitle">
    <string>Leaderboard Config</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/person/icons/person.png</normaloff>:/person/icons/person.png</iconset>
-  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
@@ -1012,8 +1008,6 @@ Sorting will be disabled</string>
   <tabstop>tabWidget</tabstop>
   <tabstop>about_text</tabstop>
  </tabstops>
- <resources>
-  <include location="icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

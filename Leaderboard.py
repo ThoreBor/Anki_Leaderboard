@@ -3,12 +3,16 @@ from datetime import date, timedelta
 import threading
 import json
 from os.path import dirname, join, realpath
-from PyQt5 import QtCore, QtGui, QtWidgets
 
 from aqt import mw
-from aqt.qt import *
+from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor, QAbstractItemView
 
-from .forms import Leaderboard
+if qtmajor > 5:
+	from .forms.pyqt6UI import Leaderboard
+	from PyQt6 import QtCore, QtGui, QtWidgets
+else:
+	from .forms.pyqt5UI import Leaderboard
+	from PyQt5 import QtCore, QtGui, QtWidgets
 from .Stats import Stats
 from .Achievement import start_achievement
 from .config_manager import write_config
@@ -43,6 +47,11 @@ class start_main(QDialog):
 	def setupUI(self):
 		config = mw.addonManager.getConfig(__name__)
 		_translate = QtCore.QCoreApplication.translate
+
+		icon = QIcon()
+		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/krone.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		self.setWindowIcon(icon)
+		
 		if config["refresh"] == True:
 			self.dialog.Global_Leaderboard.setSortingEnabled(False)
 			self.dialog.Friends_Leaderboard.setSortingEnabled(False)

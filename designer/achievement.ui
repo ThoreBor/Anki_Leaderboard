@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Leaderboard</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/krone/icons/krone.png</normaloff>:/krone/icons/krone.png</iconset>
-  </property>
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
@@ -68,8 +64,6 @@
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
