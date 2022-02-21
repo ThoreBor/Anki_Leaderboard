@@ -12,7 +12,8 @@ You have to study at least 5 minutes per day, otherwise this day won't be counte
 (<i><a href="https://github.com/ThoreBor/Anki_Leaderboard/issues/122">See this issue for more info<a/></i>).
 At the end of each season, the top 20% will be promoted, and the last 20% will be relegated.<br><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
-It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> 
+It is licensed under the <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE">MIT License.</a> The privacy policy can
+found <a href="https://ankileaderboard.pythonanywhere.com/privacy/">here</a>.
 If you like this add-on, rate and review it on <a href="https://ankiweb.net/shared/info/41708974">AnkiWeb.</a><br><br>
 You can also check the leaderboard (past 24 hours) on this <a href="https://ankileaderboard.pythonanywhere.com/">website</a>.<br>
 <div>Crown icon made by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></div>
