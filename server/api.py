@@ -52,9 +52,6 @@ def logIn(request):
 	ph = PasswordHasher()
 	try:
 		hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
-	except:
-		return HttpResponse(json.dumps("Error"))
-	try:
 		ph.verify(hash, pwd)
 	except:
 		return HttpResponse(json.dumps("Error"))
@@ -77,9 +74,6 @@ def deleteAccount(request):
 	ph = PasswordHasher()
 	try:
 		hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
-	except:
-		return HttpResponse(json.dumps("Something went wrong."))
-	try:
 		ph.verify(hash, pwd)
 		group_list = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
 		if not group_list:
@@ -119,6 +113,29 @@ def updateAccount(request):
 		return HttpResponse(json.dumps(authToken))
 	else:
 		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or token invalid."))
+
+@csrf_exempt
+def changeUsername(request):
+	conn = sqlite3.connect(database_path)
+	c = conn.cursor()
+	username = request.POST.get("username", None)
+	new_username = request.POST.get("new_username", None)
+	pwd = request.POST.get("pwd", None)
+
+	ph = PasswordHasher()
+	try:
+		hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+		ph.verify(hash, pwd)
+	except:
+		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or wrong password"))
+
+	hash = ph.hash(pwd)
+	authToken = secrets.token_hex(nbytes=64)
+	c.execute("UPDATE Leaderboard SET Token = (?), hash = (?), Username = (?) WHERE Username = (?)", (authToken, hash, new_username, username))
+	c.execute("UPDATE League SET username = (?) WHERE username = (?)", (new_username, username))
+	conn.commit()
+	print("Changed username")
+	return HttpResponse(json.dumps(authToken))
 
 @csrf_exempt
 #@ratelimit(key='ip', rate='10/h', block=True)
@@ -651,7 +668,7 @@ def getUserinfo(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	user = request.POST.get("user", None)
-	a = request.POST.get("a", False)
+	a = request.POST.get("a", False) #support for older versions
 	if a:
 		country = c.execute("SELECT Country FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()[0]
 		group = c.execute("SELECT Subject, groups FROM Leaderboard WHERE Username = (?)", (user,)).fetchone()

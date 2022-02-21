@@ -90,6 +90,7 @@ class start_config(QDialog):
 		self.dialog.account_action.currentIndexChanged.connect(self.account_action)
 		self.dialog.account_mail.textChanged.connect(self.check_lineEdit)
 		self.dialog.account_username.textChanged.connect(self.check_lineEdit)
+		self.dialog.account_new_username.textChanged.connect(self.check_lineEdit)
 		self.dialog.account_pwd.textChanged.connect(self.check_lineEdit)
 		self.dialog.account_pwd_repeat.textChanged.connect(self.check_lineEdit)
 		self.dialog.statusButton.clicked.connect(self.status)
@@ -121,12 +122,14 @@ class start_config(QDialog):
 			self.dialog.account_action.setCurrentIndex(3)
 		if not config["authToken"]:
 			self.dialog.tabWidget.setTabEnabled(2, False)
+		self.account_action()
 
 		self.dialog.about_text.setHtml(about_text)
 
 	def account_action(self):
 		self.dialog.account_mail.setText("")
 		self.dialog.account_username.setText("")
+		self.dialog.account_new_username.setText("")
 		self.dialog.account_pwd.setText("")
 		self.dialog.account_pwd_repeat.setText("")
 		index = self.dialog.account_action.currentIndex()
@@ -135,6 +138,7 @@ class start_config(QDialog):
 			self.dialog.account_button.setText("Sign up")
 			self.dialog.account_mail.show()
 			self.dialog.account_username.show()
+			self.dialog.account_new_username.hide()
 			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.show()
 			self.dialog.account_forgot.hide()
@@ -144,6 +148,7 @@ class start_config(QDialog):
 			self.dialog.account_button.setText("Log in")
 			self.dialog.account_mail.hide()
 			self.dialog.account_username.show()
+			self.dialog.account_new_username.hide()
 			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.hide()
 			self.dialog.account_forgot.show()
@@ -153,6 +158,7 @@ class start_config(QDialog):
 			self.dialog.account_button.setText("Delete Account")
 			self.dialog.account_mail.hide()
 			self.dialog.account_username.show()
+			self.dialog.account_new_username.hide()
 			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.hide()
 			self.dialog.account_forgot.show()
@@ -162,6 +168,7 @@ class start_config(QDialog):
 			self.dialog.account_button.setText("Update Account")
 			self.dialog.account_mail.show()
 			self.dialog.account_username.show()
+			self.dialog.account_new_username.hide()
 			self.dialog.account_pwd.show()
 			self.dialog.account_pwd_repeat.show()
 			self.dialog.account_forgot.hide()
@@ -171,10 +178,22 @@ class start_config(QDialog):
 			self.dialog.account_button.setText("Log out")
 			self.dialog.account_mail.hide()
 			self.dialog.account_username.hide()
+			self.dialog.account_new_username.hide()
 			self.dialog.account_pwd.hide()
 			self.dialog.account_pwd_repeat.hide()
 			self.dialog.account_forgot.hide()
 			self.dialog.account_button.setEnabled(True)
+		if index == 5:
+			self.dialog.account_button.setText("Change username")
+			self.dialog.account_mail.hide()
+			self.dialog.account_username.show()
+			self.dialog.account_new_username.show()
+			self.dialog.account_pwd.show()
+			self.dialog.account_pwd_repeat.hide()
+			self.dialog.account_forgot.show()
+			self.dialog.account_username.setPlaceholderText("Username")
+			self.dialog.account_button.setEnabled(False)
+
 
 	def account_button(self):
 		index = self.dialog.account_action.currentIndex()
@@ -188,27 +207,32 @@ class start_config(QDialog):
 			self.update_account()
 		if index == 4:
 			self.log_out()
+		if index == 5:
+			self.change_username()
 
 	def check_lineEdit(self):
 		email = self.dialog.account_mail.text()
 		username = self.dialog.account_username.text()
+		new_username = self.dialog.account_new_username.text()
 		pwd = self.dialog.account_pwd.text()
 		pwd_repeat = self.dialog.account_pwd_repeat.text()
 		index = self.dialog.account_action.currentIndex()
 		if index == 0 or index == 3:
-			if email and username:
-				self.dialog.account_button.setEnabled(True)
-				if pwd == pwd_repeat and pwd:
+			if email and username and pwd and pwd_repeat:
+				if pwd == pwd_repeat:
 					self.dialog.account_button.setEnabled(True)
 					self.dialog.account_pwd_repeat.setStyleSheet("background-color: var(--window-bg)")
-				if pwd != pwd_repeat and pwd:
+				if pwd != pwd_repeat:
 					self.dialog.account_button.setEnabled(False)
 					self.dialog.account_pwd_repeat.setStyleSheet("background-color: #ff4242")
-				if not pwd:
-					self.dialog.account_button.setEnabled(False)
 			else:
 				self.dialog.account_button.setEnabled(False)
-		else:
+		if index == 5:
+			if username and pwd and new_username:
+				self.dialog.account_button.setEnabled(True)
+			else:
+				self.dialog.account_button.setEnabled(False)
+		if index == 1 or index == 2 or index == 4:
 			if username and pwd:
 				self.dialog.account_button.setEnabled(True)
 			else:
@@ -289,6 +313,24 @@ class start_config(QDialog):
 		self.update_login_info("")
 		tooltip("Successfully logged-out")
 		self.dialog.tabWidget.setTabEnabled(2, False)
+
+	def change_username(self):
+		username = self.dialog.account_username.text()
+		new_username = self.dialog.account_new_username.text()
+		pwd = self.dialog.account_pwd.text()
+
+		if askUser("If someone added you as a friend, they will have to re-add you after you changed your username.<br><br><b>Do you want to proceed?</b>"):
+			data = {"username": username,"new_username": new_username,"pwd": pwd}
+			response = connectToAPI("changeUsername/", True, data, False, "change_username")
+			if "error" in response:
+				showWarning(response)
+			else:
+				write_config("authToken", response)
+				write_config("username", new_username)
+				self.update_login_info(new_username)
+				tooltip("Successfully updated account")
+		else:
+			pass
 
 	def account_forgot(self):
 		s = start_resetPassword()

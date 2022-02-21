@@ -53,4 +53,5 @@ urlpatterns = [
 	path('updateAccount/', api.updateAccount, name="updateAccount"),
 	path('resetPassword/', api.resetPassword, name="resetPassword"),
 	path('newPassword/<slug:token>', api.newPassword, name="newPassword"),
+	path('changeUsername/', api.changeUsername, name="changeUsername")
 ]
