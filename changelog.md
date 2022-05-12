@@ -1,6 +1,6 @@
 # Change Log
 ## v2.1.0
-- fixed rest Password error message
+- fixed reset password error message
 - fixed homescreen group bug
 - added PyQt6 support
 - added option to change username

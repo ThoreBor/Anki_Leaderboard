@@ -28,7 +28,7 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.<br>
 Also thank you to everyone who reported bugs and suggested new features!</b>
 <h3>Change Log:</h3>
-- fixed rest Password error message<br>
+- fixed reset password error message<br>
 - fixed homescreen group bug<br>
 - added PyQt6 support<br>
 - added option to change username<br>
