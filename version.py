@@ -1,4 +1,4 @@
-version = "v2.0.0"
+version = "v2.1.0"
 
 about_text = f"""
 <h2>Leaderboard {version}</h2>
@@ -28,9 +28,10 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 <a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.<br>
 Also thank you to everyone who reported bugs and suggested new features!</b>
 <h3>Change Log:</h3>
-- use email address and password to authenticate users<br>
-- minor UI changes<br>
-- minor performance improvements<br>
-- fixed some bugs<br><br>
+- fixed rest Password error message<br>
+- fixed homescreen group bug<br>
+- added PyQt6 support<br>
+- added option to change username<br>
+- added privacy policy<br><br>
 <b>You can check out the full change log on <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/changelog.md">GitHub</a>.</b>
 """
