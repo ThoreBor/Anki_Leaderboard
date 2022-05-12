@@ -54,8 +54,8 @@ def check_info():
 			if config["notification_id"] != notification_id:
 				showInfo(str(info), title="Leaderboard")
 				write_config("notification_id", notification_id)
-	except:
-		showWarning("Timeout error [check_info] - No internet connection, or server response took too long.", title="Leaderboard error")
+	except Exception as e:
+		showWarning(f"Timeout error [check_info] - No internet connection, or server response took too long.\n {e}", title="Leaderboard error")
 
 def add_username_to_friendlist():
 	config = mw.addonManager.getConfig(__name__)
@@ -98,11 +98,11 @@ def season():
 		season_end = datetime.datetime(season_end[0],season_end[1],season_end[2],season_end[3],season_end[4],season_end[5])
 		global current_season
 		current_season = season[2]
-	except:
+	except Exception as e:
 		season_start = datetime.datetime.now()
 		season_end = datetime.datetime.now()
 		current_season = ""
-		showWarning("Timeout error [season] - No internet connection, or server response took too long.", title="Leaderboard error")
+		showWarning(f"Timeout error [season] - No internet connection, or server response took too long. \n {e}", title="Leaderboard error")
 
 def profileHook():
 	check_info()
