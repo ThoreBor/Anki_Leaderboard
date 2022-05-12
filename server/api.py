@@ -122,20 +122,23 @@ def changeUsername(request):
 	new_username = request.POST.get("new_username", None)
 	pwd = request.POST.get("pwd", None)
 
-	ph = PasswordHasher()
-	try:
-		hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
-		ph.verify(hash, pwd)
-	except:
-		return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or wrong password"))
+	if not c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]:
+		ph = PasswordHasher()
+		try:
+			hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+			ph.verify(hash, pwd)
+		except:
+			return HttpResponse(json.dumps("<h3>404 error</h3>Couldn't find user, or wrong password"))
 
-	hash = ph.hash(pwd)
-	authToken = secrets.token_hex(nbytes=64)
-	c.execute("UPDATE Leaderboard SET Token = (?), hash = (?), Username = (?) WHERE Username = (?)", (authToken, hash, new_username, username))
-	c.execute("UPDATE League SET username = (?) WHERE username = (?)", (new_username, username))
-	conn.commit()
-	print("Changed username")
-	return HttpResponse(json.dumps(authToken))
+		hash = ph.hash(pwd)
+		authToken = secrets.token_hex(nbytes=64)
+		c.execute("UPDATE Leaderboard SET Token = (?), hash = (?), Username = (?) WHERE Username = (?)", (authToken, hash, new_username, username))
+		c.execute("UPDATE League SET username = (?) WHERE username = (?)", (new_username, username))
+		conn.commit()
+		print("Changed username")
+		return HttpResponse(json.dumps(authToken))
+	else:
+		return HttpResponse(json.dumps("<h3>401 error</h3>Username is already taken"))
 
 @csrf_exempt
 #@ratelimit(key='ip', rate='10/h', block=True)
