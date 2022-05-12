@@ -40,6 +40,9 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">font-weight: bold</string>
+       </property>
        <property name="text">
         <string>Bio</string>
        </property>
@@ -98,6 +101,9 @@ p, li { white-space: pre-wrap; }
          <weight>75</weight>
          <bold>true</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-weight: bold</string>
        </property>
        <property name="text">
         <string>Username</string>
@@ -190,6 +196,9 @@ p, li { white-space: pre-wrap; }
          <weight>75</weight>
          <bold>true</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-weight: bold</string>
        </property>
        <property name="text">
         <string>History:</string>

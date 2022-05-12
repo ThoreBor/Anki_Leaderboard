@@ -317,6 +317,9 @@
              <bold>true</bold>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">font-weight: bold</string>
+           </property>
            <property name="text">
             <string>League Name</string>
            </property>
@@ -330,6 +333,9 @@
              <weight>75</weight>
              <bold>true</bold>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font-weight: bold</string>
            </property>
            <property name="text">
             <string>00 days 00 hours remaining</string>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>623</width>
-    <height>464</height>
+    <height>490</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -47,10 +47,14 @@
            <weight>75</weight>
            <bold>true</bold>
            <underline>false</underline>
+           <kerning>false</kerning>
           </font>
          </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font-weight: bold</string>
          </property>
          <item>
           <property name="text">
@@ -186,6 +190,9 @@
            <weight>75</weight>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font-weight: bold</string>
          </property>
          <property name="text">
           <string>Bio:</string>
