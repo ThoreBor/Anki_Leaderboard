@@ -7,7 +7,7 @@ The online version of the add-on is available on [this website](https://ankilead
 ## Installing
 You can download the newest stable release from [AnkiWeb](https://ankiweb.net/shared/info/41708974).
 
-If you want to test the newest, potentially unstable version from GitHub, clone this repository into the addons21 folder and run /tools/build_ui.sh from the root directory. If you already have an account, you have to copy the meta.json file into the cloned folder.
+If you want to test the newest, potentially unstable version from GitHub, clone this repository into the addons21 folder and run /tools/build_ui.sh from the root directory. If you already have an account, you might want to copy the meta.json file into the cloned folder.
 
 The newest stable version can also be downloaded from GitHub. Just download the .ankiaddon file from releases and open it.
 
@@ -15,5 +15,5 @@ The newest stable version can also be downloaded from GitHub. Just download the 
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE) file for details
 
-© Thore Tyborski 2021 
+© Thore Tyborski 2022 
 See also the list of [contributors](https://github.com/ThoreBor/Anki_Leaderboard/contributors) who participated in this project.
