@@ -5,6 +5,7 @@ import json
 from os.path import dirname, join, realpath
 
 from aqt import mw
+from aqt.theme import theme_manager
 from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor, QAbstractItemView
 
 if qtmajor > 5:
@@ -22,7 +23,7 @@ from .version import version
 from .api_connect import connectToAPI
 
 try:
-	nightmode = mw.pm.night_mode()
+	nightmode = theme_manager.night_mode
 except:
 	nightmode = False
 
