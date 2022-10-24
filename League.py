@@ -9,7 +9,7 @@ else:
 from .config_manager import write_config
 from .api_connect import connectToAPI
 
-def load_league(self, colors):
+def load_league(self):
 
 	### GET DATA ###
 
@@ -71,10 +71,10 @@ def load_league(self, colors):
 
 			if username.split(" |")[0] in config['friends']:
 				for j in range(self.dialog.League.columnCount()):
-					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
+					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(self.colors['FRIEND_COLOR']))
 			if username.split(" |")[0] == config['username']:
 				for j in range(self.dialog.League.columnCount()):
-					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
+					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(self.colors['USER_COLOR']))
 	
 	### HIGHLIGHT ###
 
@@ -95,23 +95,23 @@ def load_league(self, colors):
 			if item == config['username'] or item == config['friends'] or user_league_name == "Alpha":
 				continue
 			else:
-				self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_TOP']))
+				self.dialog.League.item(i, j).setBackground(QtGui.QColor(self.colors['LEAGUE_TOP']))
 
 	if self.dialog.League.rowCount() >= 3:
 		for j in range(self.dialog.League.columnCount()):
-			self.dialog.League.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-			self.dialog.League.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-			self.dialog.League.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
+			self.dialog.League.item(0, j).setBackground(QtGui.QColor(self.colors['GOLD_COLOR']))
+			self.dialog.League.item(1, j).setBackground(QtGui.QColor(self.colors['SILVER_COLOR']))
+			self.dialog.League.item(2, j).setBackground(QtGui.QColor(self.colors['BRONZE_COLOR']))
 
 		for i in range((users - threshold), users):
 			for j in range(self.dialog.League.columnCount()):
 				item = self.dialog.League.item(i, 0).text().split(" |")[0]
 				if item == config['username'] and user_league_name != "Delta":
-					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM_USER']))
+					self.dialog.League.item(i, j).setBackground(QtGui.QColor(self.colors['LEAGUE_BOTTOM_USER']))
 				if user_league_name == "Delta" or item == config['friends']:
 					continue
 				else:
-					self.dialog.League.item(i, j).setBackground(QtGui.QColor(colors['LEAGUE_BOTTOM']))
+					self.dialog.League.item(i, j).setBackground(QtGui.QColor(self.colors['LEAGUE_BOTTOM']))
 	
 	### SCROLL ###
 

@@ -22,17 +22,6 @@ from .userInfo import start_user_info
 from .version import version
 from .api_connect import connectToAPI
 
-try:
-	nightmode = theme_manager.night_mode
-except:
-	nightmode = False
-
-with open(join(dirname(realpath(__file__)), "colors.json"), "r") as colors_file:
-	data = colors_file.read()
-colors_themes = json.loads(data)
-colors = colors_themes["dark"] if nightmode else colors_themes["light"]
-
-
 class start_main(QDialog):
 	def __init__(self, season_start, season_end, current_season, parent=None):
 		self.parent = parent
@@ -43,6 +32,20 @@ class start_main(QDialog):
 		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
+		try:
+			nightmode = theme_manager.night_mode
+		except:
+			#for older versions
+			try:
+				nightmode = mw.pm.night_mode()
+			except:
+				nightmode = False
+			nightmode = False
+
+		with open(join(dirname(realpath(__file__)), "colors.json"), "r") as colors_file:
+			data = colors_file.read()
+		colors_themes = json.loads(data)
+		self.colors = colors_themes["dark"] if nightmode else colors_themes["light"]
 		self.setupUI()
 
 	def setupUI(self):
@@ -201,7 +204,7 @@ class start_main(QDialog):
 
 		### LEAGUE ###
 
-		load_league(self, colors)
+		load_league(self)
 		time_remaining = self.season_end - datetime.datetime.now()
 		tr_days = time_remaining.days
 		tr_hours = int((time_remaining.seconds) / 60 / 60)
@@ -288,16 +291,16 @@ class start_main(QDialog):
 			item = tab.item(i, 0).text().split(" |")[0]
 			if i % 2 == 0:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(colors['ROW_LIGHT']))
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors['ROW_LIGHT']))
 			else:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(colors['ROW_DARK']))
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors['ROW_DARK']))
 			if item in config['friends'] and tab != self.dialog.Friends_Leaderboard:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(colors['FRIEND_COLOR']))
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors['FRIEND_COLOR']))
 			if item == config['username']:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(colors['USER_COLOR']))
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors['USER_COLOR']))
 			if item == config['username'] and config["scroll"] == True:
 				userposition = tab.item(i, 0)
 				tab.selectRow(i)
@@ -306,9 +309,9 @@ class start_main(QDialog):
 
 		if tab.rowCount() >= 3:
 			for j in range(tab.columnCount()):
-				tab.item(0, j).setBackground(QtGui.QColor(colors['GOLD_COLOR']))
-				tab.item(1, j).setBackground(QtGui.QColor(colors['SILVER_COLOR']))
-				tab.item(2, j).setBackground(QtGui.QColor(colors['BRONZE_COLOR']))
+				tab.item(0, j).setBackground(QtGui.QColor(self.colors['GOLD_COLOR']))
+				tab.item(1, j).setBackground(QtGui.QColor(self.colors['SILVER_COLOR']))
+				tab.item(2, j).setBackground(QtGui.QColor(self.colors['BRONZE_COLOR']))
 
 	def user_info(self, tab):
 		for idx in tab.selectionModel().selectedIndexes():
