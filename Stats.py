@@ -1,5 +1,5 @@
 import time
-from datetime import date, timedelta
+from datetime import date, timedelta, time
 import datetime
 
 from aqt import mw
@@ -25,7 +25,7 @@ def get_reviews_and_retention(start_date, end_date):
     start = int(start_date.timestamp() * 1000)
     end = int(end_date.timestamp() * 1000)
     reviews = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE id >= ? AND id < ? AND ease > 0", start, end)
-    flunked_total = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE ease == 1 AND id >= ? AND id < ? AND ease > 0", start, end) 
+    flunked_total = mw.col.db.scalar("SELECT COUNT(*) FROM revlog WHERE ease == 1 AND id >= ? AND id < ?", start, end) 
     
     if reviews == 0:
         return 0, 0
