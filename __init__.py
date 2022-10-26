@@ -16,169 +16,166 @@ from .Stats import Stats
 from .config_manager import write_config
 from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version
-from .api_connect import connectToAPI
+from .api_connect import *
 
-def Main():
-	config = mw.addonManager.getConfig(__name__)
-	if config["username"] == "" or not config["authToken"]:
-		invoke_setup()
-	else:
-		mw.leaderboard = start_main(season_start, season_end, current_season)
-		mw.leaderboard.show()
-		mw.leaderboard.raise_()
-		mw.leaderboard.activateWindow()
 
-def invoke_setup():
-	mw.lb_setup = start_config(season_start, season_end)
-	mw.lb_setup.show()
-	mw.lb_setup.raise_()
-	mw.lb_setup.activateWindow()
+class startup():
+	def __init__(self):
+		config = mw.addonManager.getConfig(__name__)
 
-def config_setup():
-	s = start_config(season_start, season_end)
-	if s.exec():
-		pass
+		# Create menu
+		self.addMenu('&Leaderboard', "&Open", self.leaderboard, 'Shift+L')
+		self.addMenu('&Leaderboard', "&Sync and update the home screen leaderboard", self.backgroundSync, "Shift+S")
+		self.addMenu('&Leaderboard', "&Config", self.invokeSetup, "Alt+C")
+		self.addMenu('&Leaderboard', "&Make a feature request or report a bug", self.github)
+		mw.addonManager.setConfigAction(__name__, self.configSetup)
 
-def github():
-	webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
+		try:
+			from aqt import gui_hooks
+			gui_hooks.profile_did_open.append(self.profileHook)
+			gui_hooks.addons_dialog_will_delete_addons.append(self.deleteHook)
+		except:
+			if config["import_error"] == True:
+				showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
+				write_config("import_error", False)
 
-def check_info():
-	config = mw.addonManager.getConfig(__name__)
-	try:
-		url = 'https://ankileaderboardinfo.netlify.app'
-		page = requests.get(url, timeout=30)
-		soup = BeautifulSoup(page.content, 'html.parser')
-		if soup.find(id='show_message').get_text() == "True":
-			info = soup.find("div", id="Message")
-			notification_id = soup.find("div", id="id").get_text()
-			if config["notification_id"] != notification_id:
-				showInfo(str(info), title="Leaderboard")
-				write_config("notification_id", notification_id)
-	except Exception as e:
-		showWarning(f"Timeout error [check_info] - No internet connection, or server response took too long.\n {e}", title="Leaderboard error")
-
-def add_username_to_friendlist():
-	config = mw.addonManager.getConfig(__name__)
-	if config['username'] != "" and config['username'] not in config['friends']:
-		friends = config["friends"]
-		friends.append(config['username'])
-		write_config("friends", friends)
-
-def background_sync():
-	config = mw.addonManager.getConfig(__name__)
-	streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(season_start, season_end)
-
-	if datetime.datetime.now() < season_end:
-		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention,
-		"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-		"authToken": config["authToken"], "Version": version}
-	else:
-		data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-		"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
-		"authToken": config["authToken"], "Version": version}
-
-	x = connectToAPI("sync/", False, data, "Done!", "background_sync")
-	if x.text == "Done!":
-		tooltip("Synced leaderboard successfully.")
-	
-	if config["homescreen"] == True:
+	def profileHook(self):
+		config = mw.addonManager.getConfig(__name__)
+		self.checkInfo()
+		self.checkBackup()	
+		write_config("achievement", True)
 		write_config("homescreen_data", [])
-		leaderboard_on_deck_browser()
+		self.addUsernameToFriendlist()
+		self.season()
+		if config["autosync"] == True:
+			gui_hooks.reviewer_will_end.append(self.backgroundSync)
+		if config["homescreen"] == True:
+			self.backgroundSync()
 
-def season():
-	url = 'https://ankileaderboard.pythonanywhere.com/season/'
-	try:
-		season = requests.get(url, timeout=30).json()
-		global season_start
-		season_start = season[0]
-		season_start = datetime.datetime(season_start[0],season_start[1],season_start[2],season_start[3],season_start[4],season_start[5])
-		global season_end
-		season_end = season[1]
-		season_end = datetime.datetime(season_end[0],season_end[1],season_end[2],season_end[3],season_end[4],season_end[5])
-		global current_season
-		current_season = season[2]
-	except Exception as e:
-		season_start = datetime.datetime.now()
-		season_end = datetime.datetime.now()
-		current_season = ""
-		showWarning(f"Timeout error [season] - No internet connection, or server response took too long. \n {e}", title="Leaderboard error")
+	def leaderboard(self):
+		config = mw.addonManager.getConfig(__name__)
+		if config["username"] == "" or not config["authToken"]:
+			invokeSetup()
+		else:
+			mw.leaderboard = start_main(self.start, self.end, self.currentSeason)
+			mw.leaderboard.show()
+			mw.leaderboard.raise_()
+			mw.leaderboard.activateWindow()
+			return
 
-def profileHook():
-	check_info()
-	checkBackup()	
-	write_config("achievement", True)
-	write_config("homescreen_data", [])
-	add_username_to_friendlist()
-	season()
-	config = mw.addonManager.getConfig(__name__)
-	if config["autosync"] == True:
-		gui_hooks.reviewer_will_end.append(background_sync)
-	if config["homescreen"] == True:
-		leaderboard_on_deck_browser()
+	def invokeSetup(self):
+		mw.lb_setup = start_config(self.start, self.end)
+		mw.lb_setup.show()
+		mw.lb_setup.raise_()
+		mw.lb_setup.activateWindow()
 
-def deleteHook(dialog, ids):
-	config = mw.addonManager.getConfig(__name__)
-	showInfoDeleteAccount = """<h3>Deleting Leaderboard Account</h3>
-	Keep in mind that deleting the add-on only removes the local files. If you also want to delete your account, go to
-	Leaderboard>Config>Account>Delete account.
-	"""
-	askUserCreateMetaBackup = """
-	<h3>Leaderboard Configuration Backup</h3>
-	If you want to reinstall this add-on in the future, creating a backup of the configurations is recommended. Do you want to create a backup?
-	"""
-	if "41708974" in ids or "Anki_Leaderboard" in ids:
-		showInfo(showInfoDeleteAccount)
-		if askUser(askUserCreateMetaBackup):
-			config = mw.addonManager.getConfig(__name__)
-			meta_backup = open(join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json"), "w", encoding="utf-8")
-			meta_backup.write(json.dumps({"config": config}))
-			meta_backup.close()
-			tooltip("Successfully created a backup")
+	def configSetup(self):
+		s = start_config(self.start, self.end)
+		if s.exec():
+			pass
 
-def checkBackup():
-	askUserRestoreFromBackup = """<h3>Leaderboard configuration backup found</h3>
-	Do you want to restore your configurations?
-	"""
-	backup_path = join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json")
-	if os.path.exists(backup_path):
-		meta_backup = open(backup_path, "r", encoding="utf-8")
-		if askUser(askUserRestoreFromBackup):
-			new_meta = open(join(dirname(realpath(__file__)), "meta.json"), "w", encoding="utf-8") 
-			new_meta.write(json.dumps(json.loads(meta_backup.read())))
-			new_meta.close()
-			meta_backup.close()
-		os.remove(backup_path)
+	def github(self):
+		webbrowser.open('https://github.com/ThoreBor/Anki_Leaderboard/issues')
 
-def add_menu(Name, Button, exe, *sc):
-	action = QAction(Button, mw)
-	action.triggered.connect(exe)
-	if not hasattr(mw, 'menu'):
-		mw.menu = {}
-	if Name not in mw.menu:
-		add = QMenu(Name, mw)
-		mw.menu[Name] = add
-		mw.form.menubar.insertMenu(mw.form.menuTools.menuAction(), add)
-	mw.menu[Name].addAction(action)
-	for i in sc:
-		action.setShortcut(QKeySequence(i))
+	def checkInfo(self):
+		config = mw.addonManager.getConfig(__name__)
+		try:
+			url = 'https://ankileaderboardinfo.netlify.app'
+			page = requests.get(url, timeout=10)
+			soup = BeautifulSoup(page.content, 'html.parser')
+			if soup.find(id='show_message').get_text() == "True":
+				info = soup.find("div", id="Message")
+				notification_id = soup.find("div", id="id").get_text()
+				if config["notification_id"] != notification_id:
+					showInfo(str(info), title="Leaderboard")
+					write_config("notification_id", notification_id)
+		except Exception as e:
+			showWarning(f"Timeout error [checkInfo] - No internet connection, or server response took too long.\n {e}", title="Leaderboard error")
 
-try:
-	from aqt import gui_hooks
-	gui_hooks.profile_did_open.append(profileHook)
-	try:
-		# this hook will be implemented in Anki 2.1.45
-		gui_hooks.addons_dialog_will_delete_addons.append(deleteHook)
-	except:
-		print("addons_dialog_will_delete_addon is not a hook yet")
-except:
-	config = mw.addonManager.getConfig(__name__)
-	if config["import_error"] == True:
-		showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
-		write_config("import_error", False)
+	def addUsernameToFriendlist(self):
+		# Legacy
+		config = mw.addonManager.getConfig(__name__)
+		if config['username'] != "" and config['username'] not in config['friends']:
+			friends = config["friends"]
+			friends.append(config['username'])
+			write_config("friends", friends)
 
-add_menu('&Leaderboard',"&Leaderboard", Main, 'Shift+L')
-add_menu('&Leaderboard',"&Sync and update the home screen leaderboard", background_sync, "Shift+S")
-add_menu('&Leaderboard',"&Config", invoke_setup, "Alt+C")
-add_menu('&Leaderboard',"&Make a feature request or report a bug", github)
-mw.addonManager.setConfigAction(__name__, config_setup)
+	def backgroundSync(self):
+		config = mw.addonManager.getConfig(__name__)
+		streak, cards, time, cardsPast30Days, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysPercent = Stats(self.start, self.end)
+
+		if datetime.datetime.now() < self.end:
+			data = {'username': config['username'], "streak": streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
+			"month": cardsPast30Days, "country": config['country'].replace(" ", ""), "retention": retention,
+			"leagueReviews": leagueReviews, "leagueTime": leagueTime, "leagueRetention": leagueRetention, "leagueDaysPercent": leagueDaysPercent,
+			"authToken": config["authToken"], "version": version, "updateLeague": True, "sortby": config["sortby"]}
+		else:
+			data = {'username': config['username'], "streak": streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
+			"month": cardsPast30Days, "country": config['country'].replace(" ", ""), "retention": retention,
+			"authToken": config["authToken"], "version": version, "updateLeague": False, "sortby": config["sortby"]}
+
+		self.response = postRequest("sync/", data, 200)
+		if self.response:
+			tooltip("Synced leaderboard successfully.")
+			write_config("homescreen_data", [])
+			leaderboard_on_deck_browser(self.response.json())
+
+	def season(self):
+		response = getRequest("season/")
+		if response:
+			response = response.json()
+			self.start = response[0]
+			self.start = datetime.datetime(self.start[0],self.start[1],self.start[2],self.start[3],self.start[4],self.start[5])
+			self.end = response[1]
+			self.end = datetime.datetime(self.end[0],self.end[1],self.end[2],self.end[3],self.end[4],self.end[5])
+			self.currentSeason = response[2]
+		else:
+			self.start = datetime.datetime.now()
+			self.end = datetime.datetime.now()
+			self.currentSeason = ""
+
+	def deleteHook(self, dialog, ids):
+		config = mw.addonManager.getConfig(__name__)
+		showInfoDeleteAccount = """<h3>Deleting Leaderboard Account</h3>
+		Keep in mind that deleting the add-on only removes the local files. If you also want to delete your account, go to
+		Leaderboard>Config>Account>Delete account.
+		"""
+		askUserCreateMetaBackup = """
+		<h3>Leaderboard Configuration Backup</h3>
+		If you want to reinstall this add-on in the future, creating a backup of the configurations is recommended. Do you want to create a backup?
+		"""
+		if "41708974" in ids or "Anki_Leaderboard" in ids:
+			showInfo(showInfoDeleteAccount)
+			if askUser(askUserCreateMetaBackup):
+				meta_backup = open(join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json"), "w", encoding="utf-8")
+				meta_backup.write(json.dumps({"config": config}))
+				meta_backup.close()
+				tooltip("Successfully created a backup")
+
+	def checkBackup(self):
+		askUserRestoreFromBackup = """<h3>Leaderboard configuration backup found</h3>
+		Do you want to restore your configurations?
+		"""
+		backup_path = join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json")
+		if os.path.exists(backup_path):
+			meta_backup = open(backup_path, "r", encoding="utf-8")
+			if askUser(askUserRestoreFromBackup):
+				new_meta = open(join(dirname(realpath(__file__)), "meta.json"), "w", encoding="utf-8") 
+				new_meta.write(json.dumps(json.loads(meta_backup.read())))
+				new_meta.close()
+				meta_backup.close()
+			os.remove(backup_path)
+
+	def addMenu(self, parent, child, function, shortcut=None):
+		menubar = [i for i in mw.form.menubar.actions()]
+		if parent in [i.text() for i in menubar]:
+			menu = [i.parent() for i in menubar][[i.text() for i in menubar].index(parent)]
+		else:
+			menu = mw.form.menubar.addMenu(parent)
+		item = QAction(child, menu)
+		item.triggered.connect(function)
+		if shortcut:
+			item.setShortcut(QKeySequence(shortcut))
+		menu.addAction(item)
+
+startup()

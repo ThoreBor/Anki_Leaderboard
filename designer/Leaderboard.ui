@@ -403,6 +403,13 @@
      </widget>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="refreshButton">
+     <property name="text">
+      <string>Refresh Leaderboard</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

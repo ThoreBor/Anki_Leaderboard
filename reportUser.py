@@ -7,7 +7,7 @@ if qtmajor > 5:
 	from .forms.pyqt6UI import report
 else:
 	from .forms.pyqt5UI import report
-from .api_connect import connectToAPI
+from .api_connect import postRequest
 
 class start_report(QDialog):
 	def __init__(self, user_clicked, parent=None):
@@ -28,7 +28,7 @@ class start_report(QDialog):
 
 	def sendReport(self):
 		config = mw.addonManager.getConfig(__name__)
-		data = {"user": config["username"], "reportUser": self.user_clicked, "message": self.dialog.reportReason.toPlainText()}
-		x = connectToAPI("reportUser/", False, data, "Done!", "sendReport")
-		if x.text == "Done!":
+		data = {"username": config["username"], "reportUser": self.user_clicked, "message": self.dialog.reportReason.toPlainText()}
+		response = postRequest("reportUser/", data, 200)
+		if response:
 			tooltip(f"{self.user_clicked} was succsessfully reported")

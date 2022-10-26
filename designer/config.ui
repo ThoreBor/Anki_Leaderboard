@@ -73,11 +73,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Add password and email address to old account</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Log-out</string>
           </property>
          </item>
@@ -167,6 +162,9 @@
          </property>
          <property name="text">
           <string>Reset password</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -324,16 +322,14 @@ p, li { white-space: pre-wrap; }
           <string>General</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
-          <item row="0" column="0">
-           <widget class="QComboBox" name="country">
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="autosync">
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
-            <item>
-             <property name="text">
-              <string>Country</string>
-             </property>
-            </item>
+            <property name="text">
+             <string>Sync when deck is finished (only works with Anki 2.1.20+)</string>
+            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -464,31 +460,19 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="refresh">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+          <item row="0" column="0">
+           <widget class="QComboBox" name="country">
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
-            <property name="text">
-             <string>Refresh the Leaderboard every two minutes (beta, only for Anki 2.1.24+)
-Sorting will be disabled</string>
-            </property>
+            <item>
+             <property name="text">
+              <string>Country</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QCheckBox" name="autosync">
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="text">
-             <string>Sync when deck is finished (only works with Anki 2.1.20+)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
            <widget class="QCheckBox" name="medals">
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
@@ -998,7 +982,6 @@ Sorting will be disabled</string>
   <tabstop>sortby</tabstop>
   <tabstop>Default_Tab</tabstop>
   <tabstop>scroll</tabstop>
-  <tabstop>refresh</tabstop>
   <tabstop>autosync</tabstop>
   <tabstop>medals</tabstop>
   <tabstop>LB_DeckBrowser</tabstop>

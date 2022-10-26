@@ -1,44 +1,45 @@
 import json
 from aqt import mw
 from aqt.qt import Qt, qtmajor, QAbstractItemView
+import datetime
 
 if qtmajor > 5:
 	from PyQt6 import QtCore, QtGui, QtWidgets
 else:
 	from PyQt5 import QtCore, QtGui, QtWidgets
 from .config_manager import write_config
-from .api_connect import connectToAPI
 
 def load_league(self):
-
-	### GET DATA ###
-
-	config = mw.addonManager.getConfig(__name__)
-	data = connectToAPI("league/", True, {}, False, "load_league")
-
-	for i in data:
-		if config["username"] in i:
+	for i in self.response[1]:
+		if self.config["username"] in i:
 			user_league_name = i[5]
 			self.dialog.league_label.setText(f"{user_league_name}: {self.current_season}")
+
+	time_remaining = self.season_end - datetime.datetime.now()
+	tr_days = time_remaining.days
+	tr_hours = int((time_remaining.seconds) / 60 / 60)
+
+	if tr_days < 0:
+		self.dialog.time_left.setText(f"The next season is going to start soon.")
+	else:
+		self.dialog.time_left.setText(f"{tr_days} days {tr_hours} hours remaining")
+	self.dialog.time_left.setToolTip(f"Season start: {self.season_start} \nSeason end: {self.season_end} (local time)")
 
 	### BUILD TABLE ###
 
 	medal_users = []
 	counter = 0
-	for i in data:
+	for i in self.response[1]:
 		username = i[0]
 		xp = i[1]
 		reviews = i[2]
 		time_spend = i[3]
 		retention = i[4]
 		league_name = i[5]
-		if i[7]:
-			days_learned = i[7]
-		else:
-			days_learned = "n/a"
+		days_learned = i[7]
 
 		if i[6]:
-			if config["show_medals"] == True:
+			if self.config["show_medals"] == True:
 				history = json.loads(i[6])
 				if history["gold"] != 0 or history["silver"] != 0 or history["bronze"] != 0:
 					medal_users.append([username, history["gold"], history["silver"], history["bronze"]])
@@ -69,10 +70,10 @@ def load_league(self):
 			self.dialog.League.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str(days_learned)))
 			self.dialog.League.item(rowPosition, 5).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
-			if username.split(" |")[0] in config['friends']:
+			if username.split(" |")[0] in self.config['friends']:
 				for j in range(self.dialog.League.columnCount()):
 					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(self.colors['FRIEND_COLOR']))
-			if username.split(" |")[0] == config['username']:
+			if username.split(" |")[0] == self.config['username']:
 				for j in range(self.dialog.League.columnCount()):
 					self.dialog.League.item(counter-1, j).setBackground(QtGui.QColor(self.colors['USER_COLOR']))
 	
@@ -92,7 +93,7 @@ def load_league(self):
 	for i in range(threshold):
 		for j in range(self.dialog.League.columnCount()):
 			item = self.dialog.League.item(i, 0).text().split(" |")[0]
-			if item == config['username'] or item == config['friends'] or user_league_name == "Alpha":
+			if item == self.config['username'] or item == self.config['friends'] or user_league_name == "Alpha":
 				continue
 			else:
 				self.dialog.League.item(i, j).setBackground(QtGui.QColor(self.colors['LEAGUE_TOP']))
@@ -106,9 +107,9 @@ def load_league(self):
 		for i in range((users - threshold), users):
 			for j in range(self.dialog.League.columnCount()):
 				item = self.dialog.League.item(i, 0).text().split(" |")[0]
-				if item == config['username'] and user_league_name != "Delta":
+				if item == self.config['username'] and user_league_name != "Delta":
 					self.dialog.League.item(i, j).setBackground(QtGui.QColor(self.colors['LEAGUE_BOTTOM_USER']))
-				if user_league_name == "Delta" or item == config['friends']:
+				if user_league_name == "Delta" or item == self.config['friends']:
 					continue
 				else:
 					self.dialog.League.item(i, j).setBackground(QtGui.QColor(self.colors['LEAGUE_BOTTOM']))
@@ -117,7 +118,7 @@ def load_league(self):
 
 	for i in range(self.dialog.League.rowCount()):
 		item = self.dialog.League.item(i, 0).text().split(" |")[0]
-		if item == config['username']:
+		if item == self.config['username']:
 			userposition = self.dialog.League.item(i, 0)
 			self.dialog.League.selectRow(i)
 			self.dialog.League.scrollToItem(userposition, QAbstractItemView.ScrollHint.PositionAtCenter)

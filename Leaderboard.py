@@ -1,6 +1,5 @@
 import datetime
 from datetime import date, timedelta
-import threading
 import json
 from os.path import dirname, join, realpath
 
@@ -20,7 +19,7 @@ from .config_manager import write_config
 from .League import load_league
 from .userInfo import start_user_info
 from .version import version
-from .api_connect import connectToAPI
+from .api_connect import postRequest
 
 class start_main(QDialog):
 	def __init__(self, season_start, season_end, current_season, parent=None):
@@ -29,6 +28,7 @@ class start_main(QDialog):
 		self.season_end = season_end
 		self.current_season = current_season
 		self.groups_lb = []
+		self.config = mw.addonManager.getConfig(__name__)
 		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.dialog = Leaderboard.Ui_dialog()
 		self.dialog.setupUi(self)
@@ -49,38 +49,31 @@ class start_main(QDialog):
 		self.setupUI()
 
 	def setupUI(self):
-		config = mw.addonManager.getConfig(__name__)
 		_translate = QtCore.QCoreApplication.translate
 
 		icon = QIcon()
 		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/krone.png")), QIcon.Mode.Normal, QIcon.State.Off)
 		self.setWindowIcon(icon)
 		
-		if config["refresh"] == True:
-			self.dialog.Global_Leaderboard.setSortingEnabled(False)
-			self.dialog.Friends_Leaderboard.setSortingEnabled(False)
-			self.dialog.Country_Leaderboard.setSortingEnabled(False)
-			self.dialog.Custom_Leaderboard.setSortingEnabled(False)
-		else:
-			header1 = self.dialog.Global_Leaderboard.horizontalHeader()
-			header1.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Global_Leaderboard))
-			header2 = self.dialog.Friends_Leaderboard.horizontalHeader()
-			header2.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Friends_Leaderboard))
-			header3 = self.dialog.Country_Leaderboard.horizontalHeader()
-			header3.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Country_Leaderboard))
-			header4 = self.dialog.Custom_Leaderboard.horizontalHeader()
-			header4.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Custom_Leaderboard))
+		header1 = self.dialog.Global_Leaderboard.horizontalHeader()
+		header1.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Global_Leaderboard))
+		header2 = self.dialog.Friends_Leaderboard.horizontalHeader()
+		header2.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Friends_Leaderboard))
+		header3 = self.dialog.Country_Leaderboard.horizontalHeader()
+		header3.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Country_Leaderboard))
+		header4 = self.dialog.Custom_Leaderboard.horizontalHeader()
+		header4.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Custom_Leaderboard))
 
 		tab_widget = self.dialog.Parent
 		country_tab = tab_widget.indexOf(self.dialog.tab_3)
 		subject_tab = tab_widget.indexOf(self.dialog.tab_4)
-		tab_widget.setTabText(country_tab, config["country"])
-		for i in range(0, len(config["groups"])):
+		tab_widget.setTabText(country_tab, self.config["country"])
+		for i in range(0, len(self.config["groups"])):
 			self.dialog.groups.addItem("")
-			self.dialog.groups.setItemText(i, _translate("Dialog", config["groups"][i]))
-		self.dialog.groups.setCurrentText(config["current_group"])
+			self.dialog.groups.setItemText(i, _translate("Dialog", self.config["groups"][i]))
+		self.dialog.groups.setCurrentText(self.config["current_group"])
 		self.dialog.groups.currentTextChanged.connect(lambda: self.highlight(self.dialog.Custom_Leaderboard))
-		self.dialog.Parent.setCurrentIndex(config['tab'])
+		self.dialog.Parent.setCurrentIndex(self.config['tab'])
 
 		self.dialog.Global_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Global_Leaderboard))
 		self.dialog.Global_Leaderboard.setToolTip("Double click on user for more info.")
@@ -93,6 +86,7 @@ class start_main(QDialog):
 		self.dialog.League.doubleClicked.connect(lambda: self.user_info(self.dialog.League))
 		self.dialog.League.setToolTip("Double click on user for more info.")
 		self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
+		self.dialog.refreshButton.clicked.connect(self.sync)
 
 		### RESIZE ###
 
@@ -107,7 +101,7 @@ class start_main(QDialog):
 			header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeMode.Stretch)
 			header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeMode.Stretch)
 		
-		self.load_leaderboard()
+		self.sync()
 
 	def add_row(self, tab, username, cards, time, streak, month, retention):
 		rowPosition = tab.rowCount()
@@ -132,56 +126,53 @@ class start_main(QDialog):
 		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, month)
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(month))
 		tab.setItem(rowPosition, 4, item)
 		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, retention)
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, float(retention))
 		tab.setItem(rowPosition, 5, item)
 		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 	def switchGroup(self):
 		self.dialog.Custom_Leaderboard.setSortingEnabled(False)
-		config = mw.addonManager.getConfig(__name__)
 		write_config("current_group", self.dialog.groups.currentText())
 		self.dialog.Custom_Leaderboard.setRowCount(0)
 		for i in self.groups_lb:
 			if self.dialog.groups.currentText().replace(" ", "") in i[6]:
 				self.add_row(self.dialog.Custom_Leaderboard, i[0], i[1], i[2], i[3], i[4], i[5])
-		if config["refresh"] == True:
-			self.dialog.Custom_Leaderboard.setSortingEnabled(False)
-		else:
-			self.dialog.Custom_Leaderboard.setSortingEnabled(True)
-		
-	def load_leaderboard(self):
+		self.dialog.Custom_Leaderboard.setSortingEnabled(True)
 
-		### SYNC ###
-
-		config = mw.addonManager.getConfig(__name__)
-		streak, cards, time, cards_past_30_days, retention, league_reviews, league_time, league_retention, league_days_percent = Stats(self.season_start, self.season_end)
-
-		if datetime.datetime.now() < self.season_end:
-			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-			"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention,
-			"league_reviews": league_reviews, "league_time": league_time, "league_retention": league_retention, "league_days_percent": league_days_percent,
-			"authToken": config["authToken"], "Version": version}
-		else:
-			data = {'Username': config['username'], "Streak": streak, "Cards": cards, "Time": time, "Sync_Date": datetime.datetime.now(),
-			"Month": cards_past_30_days, "Country": config['country'].replace(" ", ""), "Retention": retention, "Update_League": False,
-			"authToken": config["authToken"], "Version": version}
-
-		x = connectToAPI("sync/", False, data, "Done!", "load_leaderboard sync")
-
-		### ACHIEVEMENT ###
-		
+	def achievement(self, streak):		
 		achievement_streak = [7, 31, 100, 365, 500, 1000, 1500, 2000, 3000, 4000]
-		if config["achievement"] == True and streak in achievement_streak:
+		if self.config["achievement"] == True and streak in achievement_streak:
 			s = start_achievement(streak)
 			if s.exec():
 				pass
-
 			write_config("achievement", False)
+		
+	def sync(self):
+		streak, cards, time, cardsPast30Days, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysPercent = Stats(self.season_start, self.season_end)
+
+		if datetime.datetime.now() < self.season_end:
+			data = {'username': self.config['username'], "streak": streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
+			"month": cardsPast30Days, "country": self.config['country'].replace(" ", ""), "retention": retention,
+			"leagueReviews": leagueReviews, "leagueTime": leagueTime, "leagueRetention": leagueRetention, "leagueDaysPercent": leagueDaysPercent,
+			"authToken": self.config["authToken"], "version": version, "updateLeague": True, "sortby": self.config["sortby"]}
+		else:
+			data = {'username': self.config['username'], "streak": streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
+			"month": cardsPast30Days, "country": self.config['country'].replace(" ", ""), "retention": retention,
+			"authToken": self.config["authToken"], "version": version, "updateLeague": False, "sortby": self.config["sortby"]}
+
+		self.response = postRequest("sync/", data, 200)
+		if self.response:
+			self.response = self.response.json()
+			self.achievement(streak)
+			self.buildLeaderboard()
+			load_league(self)
+			
+	def buildLeaderboard(self):
 
 		### CLEAR TABLE ###
 
@@ -191,60 +182,36 @@ class start_main(QDialog):
 		self.dialog.Custom_Leaderboard.setRowCount(0)
 		self.dialog.League.setRowCount(0)
 
-		### GET DATA ###
-
-		new_day = datetime.time(int(config['newday']),0,0)
+		new_day = datetime.time(int(self.config['newday']),0,0)
 		time_now = datetime.datetime.now().time()
 		if time_now < new_day:
 			start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
 		else:
 			start_day = datetime.datetime.combine(date.today(), new_day)
-		sortby = {"sortby": config["sortby"]}
-		data = connectToAPI("getdata/", True, sortby, False, "load_leaderboard getdata")
 
-		### LEAGUE ###
-
-		load_league(self)
-		time_remaining = self.season_end - datetime.datetime.now()
-		tr_days = time_remaining.days
-		tr_hours = int((time_remaining.seconds) / 60 / 60)
-
-		if tr_days < 0:
-			self.dialog.time_left.setText(f"The next season is going to start soon.")
-		else:
-			self.dialog.time_left.setText(f"{tr_days} days {tr_hours} hours remaining")
-		self.dialog.time_left.setToolTip(f"Season start: {self.season_start} \nSeason end: {self.season_end} (local time)")
-
-		### BUILD LEADERBOARD ###
-
-		config = mw.addonManager.getConfig(__name__)
-		medal_users = config["medal_users"]
+		medal_users = self.config["medal_users"]
 		self.groups_lb = []
-		c_groups = [x.replace(" ", "") for x in config["groups"]]
+		c_groups = [x.replace(" ", "") for x in self.config["groups"]]
 
-		for i in data:
+		for i in self.response[0]:
 			username = i[0]
 			streak = i[1]
 			cards = i[2]
 			time = i[3]
 			sync_date = i[4]
 			sync_date = datetime.datetime.strptime(sync_date, '%Y-%m-%d %H:%M:%S.%f')
-			try:
-				month = int(i[5])
-			except:
-				month = ""
-			groups = i[9]
+			month = i[5]
+			groups = []
 			if i[6]:
 				groups.append(i[6].replace(" ", ""))
-			groups = [x.replace(" ", "") for x in groups]
 			country = i[7]
 			retention = i[8]
-			try:
-				retention = float(retention)
-			except:
-				retention = ""
+			if i[9]:
+				for group in json.loads(i[9]):
+					groups.append(group)
+			groups = [x.replace(" ", "") for x in groups]
 				
-			if config["show_medals"] == True:
+			if self.config["show_medals"] == True:
 				for i in medal_users:
 					if username in i:
 						username = f"{username} |"
@@ -255,19 +222,19 @@ class start_main(QDialog):
 						if i[3] > 0:
 							username = f"{username} {i[3] if i[3] != 1 else ''}🥉"
 
-			if sync_date > start_day and username.split(" |")[0] not in config["hidden_users"]:
+			if sync_date > start_day and username.split(" |")[0] not in self.config["hidden_users"]:
 				self.add_row(self.dialog.Global_Leaderboard, username, cards, time, streak, month, retention)
 
-				if country == config['country'].replace(" ", "") and country != "Country":
+				if country == self.config['country'].replace(" ", "") and country != "Country":
 					self.add_row(self.dialog.Country_Leaderboard, username, cards, time, streak, month, retention)
 
-				c_groups = [x.replace(" ", "") for x in config["groups"]]
+				c_groups = [x.replace(" ", "") for x in self.config["groups"]]
 				if any(i in c_groups for i in groups):
 					self.groups_lb.append([username, cards, time, streak, month, retention, groups])
-					if config["current_group"].replace(" ", "") in groups:
+					if self.config["current_group"].replace(" ", "") in groups:
 						self.add_row(self.dialog.Custom_Leaderboard, username, cards, time, streak, month, retention)
 
-				if username.split(" |")[0] in config['friends']:
+				if username.split(" |")[0] in self.config['friends']:
 					self.add_row(self.dialog.Friends_Leaderboard, username, cards, time, streak, month, retention)
 
 		self.highlight(self.dialog.Global_Leaderboard)
@@ -275,18 +242,9 @@ class start_main(QDialog):
 		self.highlight(self.dialog.Country_Leaderboard)
 		self.highlight(self.dialog.Custom_Leaderboard)
 
-		if config["refresh"] == True:
-			global t
-			t = threading.Timer(120.0, self.load_leaderboard)
-			t.daemon = True
-			t.start()
-		else:
-			pass
-
 	def highlight(self, tab):
 		if tab == self.dialog.Custom_Leaderboard:
 			self.switchGroup()
-		config = mw.addonManager.getConfig(__name__)
 		for i in range(tab.rowCount()):
 			item = tab.item(i, 0).text().split(" |")[0]
 			if i % 2 == 0:
@@ -295,13 +253,13 @@ class start_main(QDialog):
 			else:
 				for j in range(tab.columnCount()):
 					tab.item(i, j).setBackground(QtGui.QColor(self.colors['ROW_DARK']))
-			if item in config['friends'] and tab != self.dialog.Friends_Leaderboard:
+			if item in self.config['friends'] and tab != self.dialog.Friends_Leaderboard:
 				for j in range(tab.columnCount()):
 					tab.item(i, j).setBackground(QtGui.QColor(self.colors['FRIEND_COLOR']))
-			if item == config['username']:
+			if item == self.config['username']:
 				for j in range(tab.columnCount()):
 					tab.item(i, j).setBackground(QtGui.QColor(self.colors['USER_COLOR']))
-			if item == config['username'] and config["scroll"] == True:
+			if item == self.config['username'] and self.config["scroll"] == True:
 				userposition = tab.item(i, 0)
 				tab.selectRow(i)
 				tab.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
@@ -325,12 +283,3 @@ class start_main(QDialog):
 		mw.user_info.show()
 		mw.user_info.raise_()
 		mw.user_info.activateWindow()
-
-	def closeEvent(self, event):
-		config = mw.addonManager.getConfig(__name__)
-		if config["refresh"] == True:
-			global t
-			t.cancel()
-			event.accept()
-		else:
-			event.accept()

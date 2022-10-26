@@ -1,5 +1,7 @@
 import datetime
 from datetime import date, timedelta
+import json
+
 try:
 	from aqt import gui_hooks
 except:
@@ -11,7 +13,6 @@ from anki.hooks import wrap
 
 from .userInfo import start_user_info
 from .config_manager import write_config
-from .api_connect import connectToAPI
 
 def getData():
 	config = mw.addonManager.getConfig(__name__)
@@ -24,32 +25,25 @@ def getData():
 		else:
 			start_day = datetime.datetime.combine(date.today(), new_day)
 
-		sortby = {"sortby": config["sortby"]}
-		data = connectToAPI("getdata/", True, sortby, False, "getData")
-
 		lb_list = []
 		counter = 0
-
-		for i in data:
+		for i in data[0]:
 			username = i[0]
 			streak = i[1]
 			cards = i[2]
 			time = i[3]
 			sync_date = i[4]
 			sync_date = datetime.datetime.strptime(sync_date, '%Y-%m-%d %H:%M:%S.%f')
-			try:
-				month = int(i[5])
-			except:
-				month = ""
+			month = i[5]
 			country = i[7]
 			retention = i[8]
-			groups = i[9]
+			groups = []
 			if i[6]:
 				groups.append(i[6].replace(" ", ""))
-			try:
-				retention = float(retention)
-			except:
-				retention = ""
+			if i[9]:
+				for group in json.loads(i[9]):
+					groups.append(group)
+			groups = [x.replace(" ", "") for x in groups]	
 
 			if config["show_medals"] == True:
 				for i in medal_users:
@@ -77,24 +71,20 @@ def getData():
 					lb_list.append([counter, username, cards, time, streak, month, retention])
 
 	if config["tab"] == 4:
-		data = connectToAPI("league/", True, {}, False, "load_league")
-		for i in data:
+		for i in data[1]:
 			if config["username"] in i:
 				user_league_name = i[5]
 
 		counter = 0
 		lb_list = []
-
-		for i in data:
+		for i in data[1]:
 			username = i[0]
 			xp = i[1]
 			reviews = i[2]
 			time_spend = i[3]
 			retention = i[4]
 			league_name = i[5]
-			if i[7]:
-				days_learned = i[7]
-			else: days_learned = "n/a"
+			days_learned = i[7]	
 
 			for i in medal_users:
 				if username in i:
@@ -272,7 +262,9 @@ def on_deck_browser_will_render_content(overview, content):
 
 	content.stats += table_style + table_header + table_content + "</table>"
 
-def leaderboard_on_deck_browser():
+def leaderboard_on_deck_browser(response):
+	global data
+	data = response
 	config = mw.addonManager.getConfig(__name__)
 	gui_hooks.deck_browser_will_render_content.remove(on_deck_browser_will_render_content)
 	if config["homescreen"] == True:

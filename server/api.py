@@ -121,8 +121,8 @@ def changeUsername(request):
 	username = request.POST.get("username", None)
 	new_username = request.POST.get("new_username", None)
 	pwd = request.POST.get("pwd", None)
-
-	if not c.execute("SELECT Username FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]:
+	taken = True if c.execute("SELECT EXISTS(SELECT 1 FROM Leaderboard WHERE Username= (?))", (new_username,)).fetchone()[0] == 1 else False
+	if not taken:
 		ph = PasswordHasher()
 		try:
 			hash = c.execute("SELECT hash FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
@@ -177,8 +177,9 @@ Your Leaderboard Team
 		server.close()
 		print("Sent reset password email")
 		return HttpResponse("Done!")
-	except:
-		return HttpResponse("Error")
+	except Exception as e:
+	    print(e)
+	    return HttpResponse("Error")
 
 def newPassword(request, token):
 	conn = sqlite3.connect(database_path)
@@ -702,4 +703,4 @@ def reportUser(request):
 	return HttpResponse("Done!")
 
 def season(request):
-	return HttpResponse(json.dumps([[2022,2,7,0,0,0],[2022,2,21,0,0,0], "Season 36"]))
+	return HttpResponse(json.dumps([[2022,10,12,0,0,0],[2022,10,26,0,0,0], "Season 53"]))

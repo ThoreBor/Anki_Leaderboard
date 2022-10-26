@@ -6,7 +6,7 @@ if qtmajor > 5:
 	from .forms.pyqt6UI import reset_password
 else:
 	from .forms.pyqt5UI import reset_password
-from .api_connect import connectToAPI
+from .api_connect import postRequest
 
 class start_resetPassword(QDialog):
 	def __init__(self, parent=None):
@@ -29,8 +29,8 @@ class start_resetPassword(QDialog):
 		if not email or not username:
 			showWarning("Please enter your email address and username first.")
 			return
-		response = connectToAPI("resetPassword/", False, {"email": email, "username": username}, False, "account_forgot")
-		if response.text == "Error":
-			showWarning("Something went wrong")
-		else:
+
+		data = {"email": email, "username": username}
+		response = postRequest("api/v2/resetPassword/", data, 200)
+		if response:
 			tooltip("Email sent")

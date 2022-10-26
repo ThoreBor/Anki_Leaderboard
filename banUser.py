@@ -2,12 +2,13 @@ from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip
 from aqt import mw
 import hashlib
+from os.path import dirname, join, realpath
 
 if qtmajor > 5:
 	from .forms.pyqt6UI import banUser
 else:
 	from .forms.pyqt5UI import banUser
-from .api_connect import connectToAPI
+from .api_connect import postRequest
 
 
 class start_banUser(QDialog):
@@ -30,8 +31,8 @@ class start_banUser(QDialog):
 		config = mw.addonManager.getConfig(__name__)
 		password = hashlib.sha1(self.dialog.groupPassword.text().encode('utf-8')).hexdigest().upper()
 		toBan = self.user_clicked
-		data = {"toBan": toBan, "group": config["current_group"], "pwd": password, "authToken": config["authToken"], "user": config["username"]}
-		x = connectToAPI("banUser/", False, data, "Done!", "banUser")
-		if x.text == "Done!":
+		data = {"toBan": toBan, "group": config["current_group"], "pwd": password, "authToken": config["authToken"], "username": config["username"]}
+		response = postRequest("banUser/", data, 200)
+		if response:
 			tooltip(f"{toBan} is now banned from {config['current_group']}")
 		

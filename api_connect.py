@@ -2,21 +2,32 @@ import json
 import requests
 from aqt.utils import showWarning
 
-def connectToAPI(url, jsn, data, response, function):
-	#url = f"http://127.0.0.1:8000/{url}"
-	url = f"https://ankileaderboard.pythonanywhere.com/{url}"
+def postRequest(url, data, statusCode):
+	url = f"http://127.0.0.1:8000/api/v2/{url}"
+	#url = f"https://ankileaderboard.pythonanywhere.com/api/v2/{url}"
 	try:
-		if jsn:
-			x = requests.post(url, data=data, timeout=30).json()
+		response = requests.post(url, data=data, timeout=15)
+		
+		if response.status_code == statusCode:
+			return response
 		else:
-			x = requests.post(url, data=data, timeout=30)
-		if response:	
-			if x.text == response:
-				return x
-			else:
-				showWarning(str(x.text))
-				return x
-		else:
-			return x
+			showWarning(str(response.text))
+			return False	
 	except Exception as e:
-		showWarning(f"Timeout error [{function}] - No internet connection, or server response took too long. \n\n {str(e)}", title="Leaderboard error")
+		showWarning(f"Timeout error [{url}] - No internet connection, or server response took too long. \n\n {str(e)}", title="Leaderboard Error")
+		return False
+
+def getRequest(url):
+	url = f"http://127.0.0.1:8000/api/v2/{url}"
+	#url = f"https://ankileaderboard.pythonanywhere.com/api/v2/{url}"
+	try:
+		response = requests.get(url, timeout=15)
+		
+		if response.status_code == 200:
+			return response
+		else:
+			showWarning(str(response.text))
+			return False	
+	except Exception as e:
+		showWarning(f"Timeout error [{url}] - No internet connection, or server response took too long. \n\n {str(e)}", title="Leaderboard Error")
+		return False
