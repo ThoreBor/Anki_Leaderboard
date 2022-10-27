@@ -6,6 +6,8 @@ from os.path import dirname, join, realpath
 from aqt import mw
 from aqt.theme import theme_manager
 from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor, QAbstractItemView
+from aqt.operations import QueryOp
+from aqt.utils import showWarning
 
 if qtmajor > 5:
 	from .forms.pyqt6UI import Leaderboard
@@ -86,7 +88,7 @@ class start_main(QDialog):
 		self.dialog.League.doubleClicked.connect(lambda: self.user_info(self.dialog.League))
 		self.dialog.League.setToolTip("Double click on user for more info.")
 		self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
-		self.dialog.refreshButton.clicked.connect(self.sync)
+		self.dialog.refreshButton.clicked.connect(self.startSync)
 
 		### RESIZE ###
 
@@ -100,8 +102,8 @@ class start_main(QDialog):
 			header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeMode.Stretch)
 			header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeMode.Stretch)
 			header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeMode.Stretch)
-		
-		self.sync()
+
+		self.startSync()
 
 	def add_row(self, tab, username, cards, time, streak, month, retention):
 		rowPosition = tab.rowCount()
@@ -152,6 +154,10 @@ class start_main(QDialog):
 				pass
 			write_config("achievement", False)
 		
+	def startSync(self):
+		op = QueryOp(parent=mw, op=lambda col: self.sync(), success=self.on_success)
+		op.with_progress().run_in_background()
+
 	def sync(self):
 		streak, cards, time, cardsPast30Days, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysPercent = Stats(self.season_start, self.season_end)
 
@@ -165,12 +171,22 @@ class start_main(QDialog):
 			"month": cardsPast30Days, "country": self.config['country'].replace(" ", ""), "retention": retention,
 			"authToken": self.config["authToken"], "version": version, "updateLeague": False, "sortby": self.config["sortby"]}
 
-		self.response = postRequest("sync/", data, 200)
-		if self.response:
+		self.response = postRequest("sync/", data, 200, False)
+		if self.response.status_code == 200:
 			self.response = self.response.json()
 			self.achievement(streak)
 			self.buildLeaderboard()
 			load_league(self)
+			return None
+		else:
+			return self.response.text
+
+	def on_success(self, result):
+		if result:
+			showWarning(result)
+		else:
+			self.show()
+			self.activateWindow()
 			
 	def buildLeaderboard(self):
 

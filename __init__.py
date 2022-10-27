@@ -1,6 +1,7 @@
 from aqt import mw
 from aqt.qt import QAction, QMenu, QKeySequence
 from aqt.utils import showInfo, showWarning, tooltip, askUser
+from aqt.operations import QueryOp
 
 from os.path import dirname, join, realpath
 import os
@@ -25,7 +26,7 @@ class startup():
 
 		# Create menu
 		self.addMenu('&Leaderboard', "&Open", self.leaderboard, 'Shift+L')
-		self.addMenu('&Leaderboard', "&Sync and update the home screen leaderboard", self.backgroundSync, "Shift+S")
+		self.addMenu('&Leaderboard', "&Sync and update the home screen leaderboard", self.startBackgroundSync, "Shift+S")
 		self.addMenu('&Leaderboard', "&Config", self.invokeSetup, "Alt+C")
 		self.addMenu('&Leaderboard', "&Make a feature request or report a bug", self.github)
 		mw.addonManager.setConfigAction(__name__, self.configSetup)
@@ -48,9 +49,9 @@ class startup():
 		self.addUsernameToFriendlist()
 		self.season()
 		if config["autosync"] == True:
-			gui_hooks.reviewer_will_end.append(self.backgroundSync)
+			gui_hooks.reviewer_will_end.append(self.startBackgroundSync)
 		if config["homescreen"] == True:
-			self.backgroundSync()
+			self.startBackgroundSync()
 
 	def leaderboard(self):
 		config = mw.addonManager.getConfig(__name__)
@@ -58,10 +59,6 @@ class startup():
 			invokeSetup()
 		else:
 			mw.leaderboard = start_main(self.start, self.end, self.currentSeason)
-			mw.leaderboard.show()
-			mw.leaderboard.raise_()
-			mw.leaderboard.activateWindow()
-			return
 
 	def invokeSetup(self):
 		mw.lb_setup = start_config(self.start, self.end)
@@ -100,6 +97,10 @@ class startup():
 			friends.append(config['username'])
 			write_config("friends", friends)
 
+	def startBackgroundSync(self):
+		op = QueryOp(parent=mw, op=lambda col: self.backgroundSync(), success=self.on_success)
+		op.with_progress().run_in_background()
+
 	def backgroundSync(self):
 		config = mw.addonManager.getConfig(__name__)
 		streak, cards, time, cardsPast30Days, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysPercent = Stats(self.start, self.end)
@@ -114,10 +115,17 @@ class startup():
 			"month": cardsPast30Days, "country": config['country'].replace(" ", ""), "retention": retention,
 			"authToken": config["authToken"], "version": version, "updateLeague": False, "sortby": config["sortby"]}
 
-		self.response = postRequest("sync/", data, 200)
-		if self.response:
-			tooltip("Synced leaderboard successfully.")
+		self.response = postRequest("sync/", data, 200, False)
+		if self.response.status_code == 200:
 			write_config("homescreen_data", [])
+			return False
+		else:
+			return self.response.text
+
+	def on_success(self, result):
+		if result:
+			showWarning(result)
+		else:
 			leaderboard_on_deck_browser(self.response.json())
 
 	def season(self):

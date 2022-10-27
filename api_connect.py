@@ -2,7 +2,7 @@ import json
 import requests
 from aqt.utils import showWarning
 
-def postRequest(url, data, statusCode):
+def postRequest(url, data, statusCode, warning=True):
 	url = f"http://127.0.0.1:8000/api/v2/{url}"
 	#url = f"https://ankileaderboard.pythonanywhere.com/api/v2/{url}"
 	try:
@@ -11,10 +11,13 @@ def postRequest(url, data, statusCode):
 		if response.status_code == statusCode:
 			return response
 		else:
-			showWarning(str(response.text))
-			return False	
+			if warning:
+				showWarning(str(response.text))
+				return False
+			else:
+				return response
 	except Exception as e:
-		showWarning(f"Timeout error [{url}] - No internet connection, or server response took too long. \n\n {str(e)}", title="Leaderboard Error")
+		showWarning(f"Timeout error [{url}] - No internet connection, or server response took too long. \n\n{str(e)}", title="Leaderboard Error")
 		return False
 
 def getRequest(url):
@@ -29,5 +32,5 @@ def getRequest(url):
 			showWarning(str(response.text))
 			return False	
 	except Exception as e:
-		showWarning(f"Timeout error [{url}] - No internet connection, or server response took too long. \n\n {str(e)}", title="Leaderboard Error")
+		showWarning(f"Timeout error [{url}] - No internet connection, or server response took too long. \n\n{str(e)}", title="Leaderboard Error")
 		return False
