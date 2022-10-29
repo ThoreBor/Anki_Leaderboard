@@ -172,18 +172,21 @@ class start_main(QDialog):
 			"authToken": self.config["authToken"], "version": version, "updateLeague": False, "sortby": self.config["sortby"]}
 
 		self.response = postRequest("sync/", data, 200, False)
-		if self.response.status_code == 200:
-			self.response = self.response.json()
-			self.achievement(streak)
-			self.buildLeaderboard()
-			load_league(self)
-			return None
-		else:
-			return self.response.text
+		try:
+			if self.response.status_code == 200:
+				self.response = self.response.json()
+				self.achievement(streak)
+				self.buildLeaderboard()
+				load_league(self)
+				return False
+			else:
+				return self.response.text
+		except:
+			return self.response
 
 	def on_success(self, result):
 		if result:
-			showWarning(result)
+			showWarning(result, title="Leaderboard Error")
 		else:
 			self.show()
 			self.activateWindow()

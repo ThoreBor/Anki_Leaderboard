@@ -17,12 +17,11 @@ def load_league(self):
 
 	time_remaining = self.season_end - datetime.datetime.now()
 	tr_days = time_remaining.days
-	tr_hours = int((time_remaining.seconds) / 60 / 60)
 
 	if tr_days < 0:
 		self.dialog.time_left.setText(f"The next season is going to start soon.")
 	else:
-		self.dialog.time_left.setText(f"{tr_days} days {tr_hours} hours remaining")
+		self.dialog.time_left.setText(f"{tr_days} days remaining")
 	self.dialog.time_left.setToolTip(f"Season start: {self.season_start} \nSeason end: {self.season_end} (local time)")
 
 	### BUILD TABLE ###

@@ -116,15 +116,18 @@ class startup():
 			"authToken": config["authToken"], "version": version, "updateLeague": False, "sortby": config["sortby"]}
 
 		self.response = postRequest("sync/", data, 200, False)
-		if self.response.status_code == 200:
-			write_config("homescreen_data", [])
-			return False
-		else:
-			return self.response.text
+		try:
+			if self.response.status_code == 200:
+				write_config("homescreen_data", [])
+				return False
+			else:
+				return self.response.text
+		except:
+			return self.response
 
 	def on_success(self, result):
 		if result:
-			showWarning(result)
+			showWarning(result, title="Leaderboard Error")
 		else:
 			leaderboard_on_deck_browser(self.response.json())
 
