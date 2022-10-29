@@ -10,10 +10,12 @@ from argon2 import PasswordHasher
 import smtplib
 from email.message import EmailMessage
 import secrets
-from .config import praw_config, smtp_config
 
-database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
-#database_path = 'Leaderboard.db'
+from .config import praw_config, smtp_config
+from .checkInput import *
+
+#database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
+database_path = 'Leaderboard.db'
 
 # Authentication
 
@@ -96,8 +98,14 @@ def signUp(request):
 		response = HttpResponse("<h1>Sign-up Error</h1>This username is already taken. Please choose another one.")
 		response.status_code = 400
 		return response
-	if len(username) > 15:
-		response = HttpResponse("<h1>Sign-up Error</h1>This username is too long. The username must have less than 15 characters.")
+	if not usernameIsValid(username):
+		response = HttpResponse("<h1>Sign-up Error</h1>This username is too long. The username must have less than 15 characters and can't contain any of these characters: 🥇🥈🥉|")
+		response.status_code = 400
+		return response
+
+	# Check other input
+	if not emailIsValid(email) or not dateIsValid(syncDate):
+		response = HttpResponse("<h1>Sign-up Error</h1>Invalid input.")
 		response.status_code = 400
 		return response
 	
@@ -200,7 +208,7 @@ def changeUsername(request):
 
 	# Check if new username is valid
 	isTaken = True if c.execute("SELECT EXISTS(SELECT 1 FROM Leaderboard WHERE Username= (?))", (newUsername,)).fetchone()[0] == 1 else False
-	if len(username) > 15:
+	if not usernameIsValid(username) or not usernameIsValid(newUsername):
 		response = HttpResponse("<h1>Change Username Error</h1>This username is too long. The username must have less than 15 characters.")
 		response.status_code = 400
 		return response
@@ -346,19 +354,18 @@ def joinGroup(request):
 	pwd = request.POST.get("pwd", None)
 	authToken = request.POST.get("authToken", None)
 
-	# Get groups and add new group
-	groupList = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
-	if not groupList:
-		groups = [group]
-	else:
-		groups = json.loads(groupList)
-		if group not in groups:
-			groups.append(group)
-
 	userAuth = authUser(username, authToken)
 	if userAuth == 200:
 		groupAuth = authGroup(username, group, pwd)
 		if groupAuth == 200:
+			# Get groups and add new group
+			groupList = c.execute("SELECT groups FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+			if not groupList:
+				groups = [group]
+			else:
+				groups = json.loads(groupList)
+				if group not in groups:
+					groups.append(group)
 			# Update groups
 			c.execute("UPDATE Leaderboard SET groups = (?) WHERE Username = (?)", (json.dumps(groups), username))
 			conn.commit()
@@ -408,8 +415,8 @@ def createGroup(request):
 	# Check if group name is taken
 	isTaken = True if c.execute("SELECT EXISTS(SELECT 1 FROM Groups WHERE Group_Name = (?))", (groupName,)).fetchone()[0] == 1 else False
 	
-	if isTaken:
-		response = HttpResponse("<h1>Create Group Error</h1>This group name is already taken.")
+	if isTaken or not strIsValid(groupName, 50):
+		response = HttpResponse("<h1>Create Group Error</h1>This group name is already taken or too long.")
 		response.status_code = 400
 		return response
 	else:
@@ -477,6 +484,13 @@ def manageGroup(request):
 	newPwd = request.POST.get("newPwd", None)
 	authToken = request.POST.get("authToken", None)
 	addAdmin = request.POST.get("addAdmin", None)
+
+	# Check input
+	if not strIsValid(newPwd, 41) or not strIsValid(addAdmin, 16):
+		response = HttpResponse("<h1>Manage Group Error</h1>Invalid input.")
+		response = HttpResponse("<h1>Sign-up Error</h1>Invalid input.")
+		response.status_code = 400
+		return response
 
 	userAuth = authUser(username, authToken)
 	if userAuth == 200:
@@ -619,7 +633,7 @@ def setBio(request):
 
 	# Get data from client
 	statusMsg = request.POST.get("status", None)
-	if len(statusMsg) > 280:
+	if not strIsValid(statusMsg, 281):
 		statusMsg = None
 	username = request.POST.get("username", None)
 	authToken = request.POST.get("authToken", None)
@@ -730,20 +744,17 @@ def sync(request):
 	leagueTime = request.POST.get("leagueTime", 0)
 	leagueRetention = request.POST.get("leagueRetention", 0)
 	leagueDaysLearned = request.POST.get("leagueDaysPercent", 0)
-	updateLeague = request.POST.get("updateLeague", True)
+	updateLeague = request.POST.get("updateLeague", "True")
 	authToken = request.POST.get("authToken", None)
 	version = request.POST.get("version", None)
 	sortby = request.POST.get("sortby", "Cards")
 
-	# Check if user exists
-	doesExist = True if c.execute("SELECT EXISTS(SELECT 1 FROM Leaderboard WHERE Username= (?))", (username,)).fetchone()[0] == 1 else False
+	# Check input
+	if not syncIsValid(streak, cards, time, syncDate, month, country, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysLearned):
+		response = HttpResponse("<h1>Sync Error</h1>Invalid input.")
+		response.status_code = 400
+		return response
 
-	if doesExist:
-		sus = c.execute("SELECT suspended FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
-		if sus:
-			response =  HttpResponse(f"<h1>Account suspended</h1>This account was suspended due to the following reason:<br><br>{sus}<br><br>Please write an e-mail to leaderboard_support@protonmail.com or a message me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a>, if you think that this was a mistake.")
-			response.status_code = 403
-			return response
 
 	# Calculate xp for leagues
 
@@ -763,13 +774,19 @@ def sync(request):
 		retentionBonus = 0
 
 	xp = int(float(leagueDaysLearned) * ((6 * float(leagueTime) * 1) + (2 * int(leagueReviews) * float(retentionBonus))))
-
+	
 	# Authenticate and commit
 	auth = authUser(username, authToken)
 	if auth == 200:
+		sus = c.execute("SELECT suspended FROM Leaderboard WHERE Username = (?)", (username,)).fetchone()[0]
+		if sus:
+			response =  HttpResponse(f"<h1>Account suspended</h1>This account was suspended due to the following reason:<br><br>{sus}<br><br>Please write an e-mail to leaderboard_support@protonmail.com or a message me on <a href='https://www.reddit.com/user/Ttime5'>Reddit</a>, if you think that this was a mistake.")
+			response.status_code = 403
+			return response
+		
 		c.execute("UPDATE Leaderboard SET Streak = (?), Cards = (?), Time_Spend = (?), Sync_Date = (?), Month = (?), Country = (?), Retention = (?), Token = (?), version = (?) WHERE Username = (?) ", (streak, cards, time, syncDate, month, country, retention, authToken, version, username))
 		conn.commit()
-		if updateLeague == True:
+		if updateLeague == "True":
 			c.execute("UPDATE League SET xp = (?), time_spend = (?), reviews = (?), retention = (?), days_learned = (?) WHERE username = (?) ", (xp, leagueTime, leagueReviews, leagueRetention, leagueDaysLearned, username))
 			conn.commit()
 
