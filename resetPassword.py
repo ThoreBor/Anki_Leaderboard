@@ -31,6 +31,6 @@ class start_resetPassword(QDialog):
 			return
 
 		data = {"email": email, "username": username}
-		response = postRequest("api/v2/resetPassword/", data, 200)
+		response = postRequest("resetPassword/", data, 200)
 		if response:
 			tooltip("Email sent")
