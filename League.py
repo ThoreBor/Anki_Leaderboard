@@ -130,5 +130,12 @@ def load_league(self):
 			self.dialog.League.selectRow(i)
 			self.dialog.League.scrollToItem(userposition, QAbstractItemView.ScrollHint.PositionAtCenter)
 			self.dialog.League.clearSelection()
+
+	### HEADER ###
+	
+	for i in range(0, 6):
+		headerItem = self.dialog.League.horizontalHeaderItem(i)
+		headerItem.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
+
 	
 	write_config("medal_users", medal_users)
