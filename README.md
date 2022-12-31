@@ -4,8 +4,12 @@ This add-on ranks all of its users by the number of cards reviewed today, time s
 
 The online version of the add-on is available on [this website](https://ankileaderboard.pythonanywhere.com/).
 
-<img src="screenshots/lb_light.png" align="right" width="25%" height="25%"></img>
-<img src="screenshots/lb_dark.png" align="right" width="25%" height="25%"></img>
+<img src="screenshots/lb_light.png" width="50%" height="50%"></img>
+<img src="screenshots/lb_dark.png" width="50%" height="50%"></img>
+<img src="screenshots/league_light.png" width="50%" height="50%"></img>
+<img src="screenshots/league_dark.png" width="50%" height="50%"></img>
+<img src="screenshots/homescreen_light.png" width="50%" height="50%"></img>
+<img src="screenshots/homescreen_dark.png" width="50%" height="50%"></img>
 
 ## Installing
 You can download the newest stable release from [AnkiWeb](https://ankiweb.net/shared/info/41708974).
