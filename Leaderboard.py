@@ -75,7 +75,7 @@ class start_main(QDialog):
 			self.dialog.groups.setItemText(i, _translate("Dialog", self.config["groups"][i]))
 		self.dialog.groups.setCurrentText(self.config["current_group"])
 		self.dialog.groups.currentTextChanged.connect(lambda: self.updateTable(self.dialog.Custom_Leaderboard))
-		self.dialog.Parent.setCurrentIndex(self.config['tab'])
+		self.dialog.Parent.setCurrentIndex(self.config["tab"])
 
 		self.dialog.Global_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Global_Leaderboard))
 		self.dialog.Global_Leaderboard.setToolTip("Double click on user for more info.")
@@ -169,13 +169,13 @@ class start_main(QDialog):
 		self.streak, cards, time, cardsPast30Days, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysPercent = Stats(self.season_start, self.season_end)
 
 		if datetime.datetime.now() < self.season_end:
-			data = {'username': self.config['username'], "streak": self.streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
-			"month": cardsPast30Days, "country": self.config['country'].replace(" ", ""), "retention": retention,
+			data = {"username": self.config["username"], "streak": self.streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
+			"month": cardsPast30Days, "country": self.config["country"].replace(" ", ""), "retention": retention,
 			"leagueReviews": leagueReviews, "leagueTime": leagueTime, "leagueRetention": leagueRetention, "leagueDaysPercent": leagueDaysPercent,
 			"authToken": self.config["authToken"], "version": version, "updateLeague": True, "sortby": self.config["sortby"]}
 		else:
-			data = {'username': self.config['username'], "streak": streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
-			"month": cardsPast30Days, "country": self.config['country'].replace(" ", ""), "retention": retention,
+			data = {"username": self.config["username"], "streak": self.streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
+			"month": cardsPast30Days, "country": self.config["country"].replace(" ", ""), "retention": retention,
 			"authToken": self.config["authToken"], "version": version, "updateLeague": False, "sortby": self.config["sortby"]}
 
 		self.response = postRequest("sync/", data, 200, False)
@@ -183,13 +183,13 @@ class start_main(QDialog):
 			if self.response.status_code == 200:
 				self.response = self.response.json()
 				self.buildLeaderboard()
-				if datetime.datetime.now() < self.season_end:
-					load_league(self) # ?? some weird stuff
+				load_league(self)
 				return False
 			else:
 				return self.response.text
-		except:
-			return self.response
+		except Exception as e:
+			response = f"<h1>Something went wrong</h1>{self.response if isinstance(self.response, str) else ''}<br><br>{str(e)}"
+			return response
 
 	def on_success(self, result):
 		if result:
@@ -210,7 +210,7 @@ class start_main(QDialog):
 		self.dialog.Custom_Leaderboard.setRowCount(0)
 		self.dialog.League.setRowCount(0)
 
-		new_day = datetime.time(int(self.config['newday']),0,0)
+		new_day = datetime.time(int(self.config["newday"]),0,0)
 		time_now = datetime.datetime.now().time()
 		if time_now < new_day:
 			start_day = datetime.datetime.combine(date.today() - timedelta(days=1), new_day)
@@ -253,7 +253,7 @@ class start_main(QDialog):
 			if sync_date > start_day and username.split(" |")[0] not in self.config["hidden_users"]:
 				self.add_row(self.dialog.Global_Leaderboard, username, cards, time, streak, month, retention)
 
-				if country == self.config['country'].replace(" ", "") and country != "Country":
+				if country == self.config["country"].replace(" ", "") and country != "Country":
 					self.add_row(self.dialog.Country_Leaderboard, username, cards, time, streak, month, retention)
 
 				c_groups = [x.replace(" ", "") for x in self.config["groups"]]
@@ -262,7 +262,7 @@ class start_main(QDialog):
 					if self.config["current_group"].replace(" ", "") in groups:
 						self.add_row(self.dialog.Custom_Leaderboard, username, cards, time, streak, month, retention)
 
-				if username.split(" |")[0] in self.config['friends']:
+				if username.split(" |")[0] in self.config["friends"]:
 					self.add_row(self.dialog.Friends_Leaderboard, username, cards, time, streak, month, retention)
 
 		self.highlight(self.dialog.Global_Leaderboard)
@@ -289,17 +289,17 @@ class start_main(QDialog):
 			item = tab.item(i, 1).text().split(" |")[0]
 			if i % 2 == 0:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(self.colors['ROW_LIGHT']))
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors["ROW_LIGHT"]))
 			else:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(self.colors['ROW_DARK']))
-			if item in self.config['friends'] and tab != self.dialog.Friends_Leaderboard:
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors["ROW_DARK"]))
+			if item in self.config["friends"] and tab != self.dialog.Friends_Leaderboard:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(self.colors['FRIEND_COLOR']))
-			if item == self.config['username']:
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors["FRIEND_COLOR"]))
+			if item == self.config["username"]:
 				for j in range(tab.columnCount()):
-					tab.item(i, j).setBackground(QtGui.QColor(self.colors['USER_COLOR']))
-			if item == self.config['username'] and self.config["scroll"] == True:
+					tab.item(i, j).setBackground(QtGui.QColor(self.colors["USER_COLOR"]))
+			if item == self.config["username"] and self.config["scroll"] == True:
 				userposition = tab.item(i, 1)
 				tab.selectRow(i)
 				tab.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
@@ -307,9 +307,9 @@ class start_main(QDialog):
 
 		if tab.rowCount() >= 3:
 			for j in range(tab.columnCount()):
-				tab.item(0, j).setBackground(QtGui.QColor(self.colors['GOLD_COLOR']))
-				tab.item(1, j).setBackground(QtGui.QColor(self.colors['SILVER_COLOR']))
-				tab.item(2, j).setBackground(QtGui.QColor(self.colors['BRONZE_COLOR']))
+				tab.item(0, j).setBackground(QtGui.QColor(self.colors["GOLD_COLOR"]))
+				tab.item(1, j).setBackground(QtGui.QColor(self.colors["SILVER_COLOR"]))
+				tab.item(2, j).setBackground(QtGui.QColor(self.colors["BRONZE_COLOR"]))
 
 	def user_info(self, tab):
 		for idx in tab.selectionModel().selectedIndexes():
