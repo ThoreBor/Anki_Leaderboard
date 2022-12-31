@@ -1,14 +1,14 @@
-version = "v2.1.0"
+version = "v3.0.0"
 
 about_text = f"""
 <h2>Leaderboard {version}</h2>
 This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, 
 current streak, reviews in the past 31 days, and retention. You can also compete against friends, join groups, 
 and join a country leaderboard. You'll only see users, that synced on the same day as you.<br><br>
-In the league tab, you see everyone that synced at least once during the current season. There are four leagues
+In the league tab, you see everyone who synced at least once during the current season. There are four leagues
 (Alpha, Beta, Gamma, and Delta). A season lasts two weeks. You don't have to sync every day.
 The XP formula is:<br><b>XP = days studied percentage x ((6 x time) + (2 x reviews x retention))</b>.<br>
-You have to study at least 5 minutes per day, otherwise this day won't be counted as "studied"
+You have to study at least 5 minutes per day. Otherwise, this day won't be counted as “studied”
 (<i><a href="https://github.com/ThoreBor/Anki_Leaderboard/issues/122">See this issue for more info<a/></i>).
 At the end of each season, the top 20% will be promoted, and the last 20% will be relegated.<br><br>
 The code for the add-on is available on <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub.</a> 
@@ -23,15 +23,21 @@ You can also check the leaderboard (past 24 hours) on this <a href="https://anki
 Contact: leaderboard_support@protonmail.com, <a href="https://www.reddit.com/user/Ttime5">Reddit</a> or 
 <a href="https://github.com/ThoreBor/Anki_Leaderboard">GitHub</a>.
 <br><br>
-<b>© Thore Tyborski 2022<br>
-With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, <a href="https://github.com/zjosua">zjosua</a>, 
-<a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a> and <a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a>.<br>
+<b>© Thore Tyborski 2023<br>
+With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan</a>, 
+<a href="https://github.com/zjosua">zjosua</a>, 
+<a href="https://www.reddit.com/user/SmallFluffyIPA/">SmallFluffyIPA</a>, 
+<a href="https://github.com/AtilioA">Atílio Antônio Dadalto</a> and
+<a href="https://github.com/rodrigolanes">Rodrigo Lanes</a><br>
 Also thank you to everyone who reported bugs and suggested new features!</b>
 <h3>Change Log:</h3>
-- fixed reset password error message<br>
-- fixed homescreen group bug<br>
-- added PyQt6 support<br>
-- added option to change username<br>
-- added privacy policy<br><br>
+- rewrote API<br>
+- fixed dark mode colors<br>
+- fixed minor Anki 2.1.55 UI bugs<br>
+- fixed Anki freezing while loading leaderboard<br>
+- removed refresh option<br>
+- removed legacy support for migrating old accounts<br>
+- reduced API calls<br><br>
+
 <b>You can check out the full change log on <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/changelog.md">GitHub</a>.</b>
 """

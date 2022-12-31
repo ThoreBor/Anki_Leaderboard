@@ -1,4 +1,13 @@
 # Change Log
+## v3.0.0
+- rewrote API
+- fixed dark mode colors
+- fixed minor Anki 2.1.55 UI bugs
+- fixed Anki freezing while loading leaderboard
+- removed refresh option
+- removed legacy support for migrating old (<2.0.0) accounts
+- reduced API calls
+
 ## v2.1.0
 - fixed reset password error message
 - fixed homescreen group bug
