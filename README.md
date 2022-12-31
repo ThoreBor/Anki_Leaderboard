@@ -18,7 +18,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 © Thore Tyborski 2023 
 See also the list of [contributors](https://github.com/ThoreBor/Anki_Leaderboard/contributors) who participated in this project.
 
-<img src="screenshots/lb_light.png" align="left" width="50%" height="50%"></img>
-<img src="screenshots/lb_dark.png" align="left" width="50%" height="50%"></img>
-<img src="screenshots/homescreen_light.png" align="left" width="50%" height="50%"></img>
-<img src="screenshots/homescreen_dark.png" align="left" width="50%" height="50%"></img>
+<img src="screenshots/lb_light.png" align="left" width="40%" height="40%"></img>
+<img src="screenshots/lb_dark.png" align="left" width="40%" height="40%"></img>
+<img src="screenshots/homescreen_light.png" align="left" width="40%" height="40%"></img>
+<img src="screenshots/homescreen_dark.png" align="left" width="40%" height="40%"></img>
