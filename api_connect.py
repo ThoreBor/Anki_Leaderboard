@@ -3,8 +3,8 @@ import requests
 from aqt.utils import showWarning
 
 def postRequest(endpoint, data, statusCode, warning=True):
-	url = f"http://127.0.0.1:8000/api/v2/{endpoint}"
-	#url = f"https://ankileaderboard.pythonanywhere.com/api/v2/{endpoint}"
+	#url = f"http://127.0.0.1:8000/api/v2/{endpoint}"
+	url = f"https://ankileaderboard.pythonanywhere.com/api/v2/{endpoint}"
 	try:
 		response = requests.post(url, data=data, timeout=15)
 		
@@ -26,8 +26,8 @@ def postRequest(endpoint, data, statusCode, warning=True):
 
 
 def getRequest(endpoint):
-	url = f"http://127.0.0.1:8000/api/v2/{endpoint}"
-	#url = f"https://ankileaderboard.pythonanywhere.com/api/v2/{endpoint}"
+	#url = f"http://127.0.0.1:8000/api/v2/{endpoint}"
+	url = f"https://ankileaderboard.pythonanywhere.com/api/v2/{endpoint}"
 	try:
 		response = requests.get(url, timeout=15)
 		

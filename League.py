@@ -54,20 +54,28 @@ def load_league(self):
 			counter += 1
 
 			rowPosition = self.dialog.League.rowCount()
-			self.dialog.League.setColumnCount(6)
+			self.dialog.League.setColumnCount(7)
 			self.dialog.League.insertRow(rowPosition)
 
-			self.dialog.League.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(str(username)))
-			self.dialog.League.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(str(xp)))
-			self.dialog.League.item(rowPosition, 1).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
-			self.dialog.League.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(str(reviews)))
+			self.dialog.League.setItem(rowPosition, 0, QtWidgets.QTableWidgetItem(str(rowPosition + 1)))
+			self.dialog.League.item(rowPosition, 0).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
+
+			self.dialog.League.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(str(username)))
+			
+			self.dialog.League.setItem(rowPosition, 2, QtWidgets.QTableWidgetItem(str(xp)))
 			self.dialog.League.item(rowPosition, 2).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
-			self.dialog.League.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(str(time_spend)))
+			
+			self.dialog.League.setItem(rowPosition, 3, QtWidgets.QTableWidgetItem(str(reviews)))
 			self.dialog.League.item(rowPosition, 3).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
-			self.dialog.League.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(retention)))
+			
+			self.dialog.League.setItem(rowPosition, 4, QtWidgets.QTableWidgetItem(str(time_spend)))
 			self.dialog.League.item(rowPosition, 4).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
-			self.dialog.League.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str(days_learned)))
+			
+			self.dialog.League.setItem(rowPosition, 5, QtWidgets.QTableWidgetItem(str(retention)))
 			self.dialog.League.item(rowPosition, 5).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
+			
+			self.dialog.League.setItem(rowPosition, 6, QtWidgets.QTableWidgetItem(str(days_learned)))
+			self.dialog.League.item(rowPosition, 6).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 			if username.split(" |")[0] in self.config['friends']:
 				for j in range(self.dialog.League.columnCount()):

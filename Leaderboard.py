@@ -58,13 +58,13 @@ class start_main(QDialog):
 		self.setWindowIcon(icon)
 		
 		header1 = self.dialog.Global_Leaderboard.horizontalHeader()
-		header1.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Global_Leaderboard))
+		header1.sectionClicked.connect(lambda: self.updateTable(self.dialog.Global_Leaderboard))
 		header2 = self.dialog.Friends_Leaderboard.horizontalHeader()
-		header2.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Friends_Leaderboard))
+		header2.sectionClicked.connect(lambda: self.updateTable(self.dialog.Friends_Leaderboard))
 		header3 = self.dialog.Country_Leaderboard.horizontalHeader()
-		header3.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Country_Leaderboard))
+		header3.sectionClicked.connect(lambda: self.updateTable(self.dialog.Country_Leaderboard))
 		header4 = self.dialog.Custom_Leaderboard.horizontalHeader()
-		header4.sortIndicatorChanged.connect(lambda: self.highlight(self.dialog.Custom_Leaderboard))
+		header4.sectionClicked.connect(lambda: self.updateTable(self.dialog.Custom_Leaderboard))
 
 		tab_widget = self.dialog.Parent
 		country_tab = tab_widget.indexOf(self.dialog.tab_3)
@@ -74,7 +74,7 @@ class start_main(QDialog):
 			self.dialog.groups.addItem("")
 			self.dialog.groups.setItemText(i, _translate("Dialog", self.config["groups"][i]))
 		self.dialog.groups.setCurrentText(self.config["current_group"])
-		self.dialog.groups.currentTextChanged.connect(lambda: self.highlight(self.dialog.Custom_Leaderboard))
+		self.dialog.groups.currentTextChanged.connect(lambda: self.updateTable(self.dialog.Custom_Leaderboard))
 		self.dialog.Parent.setCurrentIndex(self.config['tab'])
 
 		self.dialog.Global_Leaderboard.doubleClicked.connect(lambda: self.user_info(self.dialog.Global_Leaderboard))
@@ -88,10 +88,10 @@ class start_main(QDialog):
 		self.dialog.League.doubleClicked.connect(lambda: self.user_info(self.dialog.League))
 		self.dialog.League.setToolTip("Double click on user for more info.")
 		self.dialog.league_label.setToolTip("Leagues (from lowest to highest): Delta, Gamma, Beta, Alpha")
-		self.dialog.refreshButton.clicked.connect(self.startSync)
 
-		### RESIZE ###
+		self.startSync()
 
+	def header(self):
 		lb_list = [self.dialog.Global_Leaderboard, self.dialog.Friends_Leaderboard, 
 		self.dialog.Country_Leaderboard, self.dialog.Custom_Leaderboard, self.dialog.League]
 		for l in lb_list:
@@ -103,38 +103,45 @@ class start_main(QDialog):
 			header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeMode.Stretch)
 			header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeMode.Stretch)
 
-		self.startSync()
+			for i in range(0, 6):
+				headerItem = l.horizontalHeaderItem(i)
+				headerItem.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 	def add_row(self, tab, username, cards, time, streak, month, retention):
 		rowPosition = tab.rowCount()
-		tab.setColumnCount(6)
+		tab.setColumnCount(7)
 		tab.insertRow(rowPosition)
 
-		tab.setItem(rowPosition , 0, QtWidgets.QTableWidgetItem(str(username)))
+		item = QtWidgets.QTableWidgetItem()
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(rowPosition + 1))
+		tab.setItem(rowPosition, 0, item)
+		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
+
+		tab.setItem(rowPosition, 1, QtWidgets.QTableWidgetItem(str(username)))
 
 		item = QtWidgets.QTableWidgetItem()
 		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(cards))
-		tab.setItem(rowPosition, 1, item)
-		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
-
-		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, float(time))
 		tab.setItem(rowPosition, 2, item)
 		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(streak))
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, float(time))
 		tab.setItem(rowPosition, 3, item)
 		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(month))
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(streak))
 		tab.setItem(rowPosition, 4, item)
 		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 		item = QtWidgets.QTableWidgetItem()
-		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, float(retention))
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(month))
 		tab.setItem(rowPosition, 5, item)
+		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
+
+		item = QtWidgets.QTableWidgetItem()
+		item.setData(QtCore.Qt.ItemDataRole.DisplayRole, float(retention))
+		tab.setItem(rowPosition, 6, item)
 		item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 	def switchGroup(self):
@@ -159,10 +166,10 @@ class start_main(QDialog):
 		op.with_progress().run_in_background()
 
 	def sync(self):
-		streak, cards, time, cardsPast30Days, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysPercent = Stats(self.season_start, self.season_end)
+		self.streak, cards, time, cardsPast30Days, retention, leagueReviews, leagueTime, leagueRetention, leagueDaysPercent = Stats(self.season_start, self.season_end)
 
 		if datetime.datetime.now() < self.season_end:
-			data = {'username': self.config['username'], "streak": streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
+			data = {'username': self.config['username'], "streak": self.streak, "cards": cards, "time": time, "syncDate": datetime.datetime.now(),
 			"month": cardsPast30Days, "country": self.config['country'].replace(" ", ""), "retention": retention,
 			"leagueReviews": leagueReviews, "leagueTime": leagueTime, "leagueRetention": leagueRetention, "leagueDaysPercent": leagueDaysPercent,
 			"authToken": self.config["authToken"], "version": version, "updateLeague": True, "sortby": self.config["sortby"]}
@@ -175,9 +182,9 @@ class start_main(QDialog):
 		try:
 			if self.response.status_code == 200:
 				self.response = self.response.json()
-				self.achievement(streak)
 				self.buildLeaderboard()
-				load_league(self)
+				if datetime.datetime.now() < self.season_end:
+					load_league(self) # ?? some weird stuff
 				return False
 			else:
 				return self.response.text
@@ -188,6 +195,8 @@ class start_main(QDialog):
 		if result:
 			showWarning(result, title="Leaderboard Error")
 		else:
+			self.header()
+			self.achievement(self.streak)
 			self.show()
 			self.activateWindow()
 			
@@ -261,11 +270,23 @@ class start_main(QDialog):
 		self.highlight(self.dialog.Country_Leaderboard)
 		self.highlight(self.dialog.Custom_Leaderboard)
 
+	def updateTable(self, tab):
+		self.updateNumbers(tab)
+		self.highlight(tab)
+
+	def updateNumbers(self, tab):
+		rows = tab.rowCount()
+		for i in range(0, rows):
+			item = QtWidgets.QTableWidgetItem()
+			item.setData(QtCore.Qt.ItemDataRole.DisplayRole, int(i + 1))
+			tab.setItem(i, 0, item)
+			item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
+
 	def highlight(self, tab):
 		if tab == self.dialog.Custom_Leaderboard:
 			self.switchGroup()
 		for i in range(tab.rowCount()):
-			item = tab.item(i, 0).text().split(" |")[0]
+			item = tab.item(i, 1).text().split(" |")[0]
 			if i % 2 == 0:
 				for j in range(tab.columnCount()):
 					tab.item(i, j).setBackground(QtGui.QColor(self.colors['ROW_LIGHT']))

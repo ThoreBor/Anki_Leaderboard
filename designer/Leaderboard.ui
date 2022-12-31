@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>712</width>
-    <height>540</height>
+    <width>828</width>
+    <height>677</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,6 +31,11 @@
          </property>
          <property name="autoFillBackground">
           <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QHeaderView::down-arrow { subcontrol-position: center left}
+QHeaderView::up-arrow { subcontrol-position: center left}
+</string>
          </property>
          <property name="lineWidth">
           <number>1</number>
@@ -56,9 +61,20 @@
          <property name="sortingEnabled">
           <bool>true</bool>
          </property>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
          <attribute name="verticalHeaderShowSortIndicator" stdset="0">
           <bool>false</bool>
          </attribute>
+         <column>
+          <property name="text">
+           <string/>
+          </property>
+         </column>
          <column>
           <property name="text">
            <string>Username</string>
@@ -106,6 +122,11 @@
          <property name="cursor" stdset="0">
           <cursorShape>WhatsThisCursor</cursorShape>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QHeaderView::down-arrow { subcontrol-position: center left}
+QHeaderView::up-arrow { subcontrol-position: center left}
+</string>
+         </property>
          <property name="sizeAdjustPolicy">
           <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
          </property>
@@ -127,6 +148,17 @@
          <property name="sortingEnabled">
           <bool>true</bool>
          </property>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string/>
+          </property>
+         </column>
          <column>
           <property name="text">
            <string>Username</string>
@@ -171,6 +203,11 @@
          <property name="cursor" stdset="0">
           <cursorShape>WhatsThisCursor</cursorShape>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QHeaderView::down-arrow { subcontrol-position: center left}
+QHeaderView::up-arrow { subcontrol-position: center left}
+</string>
+         </property>
          <property name="sizeAdjustPolicy">
           <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
          </property>
@@ -192,6 +229,17 @@
          <property name="sortingEnabled">
           <bool>true</bool>
          </property>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string/>
+          </property>
+         </column>
          <column>
           <property name="text">
            <string>Username</string>
@@ -246,6 +294,11 @@
          <property name="cursor" stdset="0">
           <cursorShape>WhatsThisCursor</cursorShape>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QHeaderView::down-arrow { subcontrol-position: center left}
+QHeaderView::up-arrow { subcontrol-position: center left}
+</string>
+         </property>
          <property name="sizeAdjustPolicy">
           <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
          </property>
@@ -267,6 +320,17 @@
          <property name="sortingEnabled">
           <bool>true</bool>
          </property>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string/>
+          </property>
+         </column>
          <column>
           <property name="text">
            <string>Username</string>
@@ -350,6 +414,11 @@
            <property name="cursor" stdset="0">
             <cursorShape>WhatsThisCursor</cursorShape>
            </property>
+           <property name="styleSheet">
+            <string notr="true">QHeaderView::down-arrow { subcontrol-position: center left}
+QHeaderView::up-arrow { subcontrol-position: center left}
+</string>
+           </property>
            <property name="sizeAdjustPolicy">
             <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
            </property>
@@ -365,6 +434,14 @@
            <property name="selectionBehavior">
             <enum>QAbstractItemView::SelectRows</enum>
            </property>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string/>
+            </property>
+           </column>
            <column>
             <property name="text">
              <string>Username</string>
@@ -401,13 +478,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="refreshButton">
-     <property name="text">
-      <string>Refresh Leaderboard</string>
-     </property>
     </widget>
    </item>
   </layout>
