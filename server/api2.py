@@ -14,8 +14,8 @@ import secrets
 from .config import praw_config, smtp_config
 from .checkInput import *
 
-#database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
-database_path = 'Leaderboard.db'
+database_path = '/home/ankileaderboard/anki_leaderboard_pythonanywhere/Leaderboard.db'
+#database_path = 'Leaderboard.db'
 
 # Authentication
 
@@ -264,7 +264,7 @@ def resetPassword(request):
 Hello {username},
 
 To reset your leaderboard account password, click this link:
-http://127.0.0.1:8000/api/v2/newPassword/{token}
+https://ankileaderboard.pythonanywhere.com/api/v2/newPassword/{token}
 Ignore this mail if you don't want to reset your password.
 
 Your Leaderboard Team
