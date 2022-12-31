@@ -4,6 +4,9 @@ This add-on ranks all of its users by the number of cards reviewed today, time s
 
 The online version of the add-on is available on [this website](https://ankileaderboard.pythonanywhere.com/).
 
+<img src="screenshots/lb_light.png" align="right" width="25%" height="25%"></img>
+<img src="screenshots/lb_dark.png" align="right" width="25%" height="25%"></img>
+
 ## Installing
 You can download the newest stable release from [AnkiWeb](https://ankiweb.net/shared/info/41708974).
 
@@ -15,5 +18,5 @@ The newest stable version can also be downloaded from GitHub. Just download the 
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/ThoreBor/Anki_Leaderboard/blob/master/LICENSE) file for details
 
-© Thore Tyborski 2022 
+© Thore Tyborski 2023 
 See also the list of [contributors](https://github.com/ThoreBor/Anki_Leaderboard/contributors) who participated in this project.
