@@ -1,13 +1,13 @@
 # Leaderboard for Anki 2.1
 
+<img src="screenshots/lb_light.png" align="right" width="40%" height="40%"></img>
+<img src="screenshots/lb_dark.png" align="right" width="40%" height="40%"></img>
+<img src="screenshots/homescreen_light.png" align="right" width="40%" height="40%"></img>
+<img src="screenshots/homescreen_dark.png" align="right" width="40%" height="40%"></img>
+
 This add-on ranks all of its users by the number of cards reviewed today, time spend studying today, current streak, reviews in the past 31 days and retention. You can also invite friends, join a group and/or country leaderboard and compete in leagues.
 
 The online version of the add-on is available on [this website](https://ankileaderboard.pythonanywhere.com/).
-
-<img src="screenshots/lb_light.png" align="left" width="50%" height="50%"></img>
-<img src="screenshots/lb_dark.png" align="left" width="50%" height="50%"></img>
-<img src="screenshots/homescreen_light.png" align="left" width="50%" height="50%"></img>
-<img src="screenshots/homescreen_dark.png" align="left" width="50%" height="50%"></img>
 
 ## Installing
 You can download the newest stable release from [AnkiWeb](https://ankiweb.net/shared/info/41708974).
