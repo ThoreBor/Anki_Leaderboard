@@ -99,7 +99,7 @@ def load_league(self):
 
 	for i in range(threshold):
 		for j in range(self.dialog.League.columnCount()):
-			item = self.dialog.League.item(i, 0).text().split(" |")[0]
+			item = self.dialog.League.item(i, 1).text().split(" |")[0]
 			if item == self.config['username'] or item == self.config['friends'] or user_league_name == "Alpha":
 				continue
 			else:
@@ -113,7 +113,7 @@ def load_league(self):
 
 		for i in range((users - threshold), users):
 			for j in range(self.dialog.League.columnCount()):
-				item = self.dialog.League.item(i, 0).text().split(" |")[0]
+				item = self.dialog.League.item(i, 1).text().split(" |")[0]
 				if item == self.config['username'] and user_league_name != "Delta":
 					self.dialog.League.item(i, j).setBackground(QtGui.QColor(self.colors['LEAGUE_BOTTOM_USER']))
 				if user_league_name == "Delta" or item == self.config['friends']:
@@ -124,9 +124,9 @@ def load_league(self):
 	### SCROLL ###
 
 	for i in range(self.dialog.League.rowCount()):
-		item = self.dialog.League.item(i, 0).text().split(" |")[0]
+		item = self.dialog.League.item(i, 1).text().split(" |")[0]
 		if item == self.config['username']:
-			userposition = self.dialog.League.item(i, 0)
+			userposition = self.dialog.League.item(i, 1)
 			self.dialog.League.selectRow(i)
 			self.dialog.League.scrollToItem(userposition, QAbstractItemView.ScrollHint.PositionAtCenter)
 			self.dialog.League.clearSelection()

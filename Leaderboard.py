@@ -300,7 +300,7 @@ class start_main(QDialog):
 				for j in range(tab.columnCount()):
 					tab.item(i, j).setBackground(QtGui.QColor(self.colors['USER_COLOR']))
 			if item == self.config['username'] and self.config["scroll"] == True:
-				userposition = tab.item(i, 0)
+				userposition = tab.item(i, 1)
 				tab.selectRow(i)
 				tab.scrollToItem(userposition, QAbstractItemView.PositionAtCenter)
 				tab.clearSelection()
@@ -314,7 +314,7 @@ class start_main(QDialog):
 	def user_info(self, tab):
 		for idx in tab.selectionModel().selectedIndexes():
 			row = idx.row()
-		user_clicked = tab.item(row, 0).text()
+		user_clicked = tab.item(row, 1).text()
 		if tab == self.dialog.Custom_Leaderboard:
 			enabled = True
 		else:
