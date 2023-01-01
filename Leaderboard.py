@@ -271,8 +271,8 @@ class start_main(QDialog):
 		self.highlight(self.dialog.Custom_Leaderboard)
 
 	def updateTable(self, tab):
-		self.updateNumbers(tab)
 		self.highlight(tab)
+		self.updateNumbers(tab)
 
 	def updateNumbers(self, tab):
 		rows = tab.rowCount()
