@@ -35,6 +35,8 @@ class startup():
 			from aqt import gui_hooks
 			gui_hooks.profile_did_open.append(self.profileHook)
 			gui_hooks.addons_dialog_will_delete_addons.append(self.deleteHook)
+			if config["autosync"] == True:
+				gui_hooks.reviewer_will_end.append(self.startBackgroundSync)
 		except:
 			if config["import_error"] == True:
 				showInfo("Because you're using an older Anki version some features of the Leaderboard add-on can't be used.", title="Leaderboard")
@@ -48,8 +50,6 @@ class startup():
 		write_config("homescreen_data", [])
 		self.addUsernameToFriendlist()
 		self.season()
-		if config["autosync"] == True:
-			gui_hooks.reviewer_will_end.append(self.startBackgroundSync)
 		if config["homescreen"] == True:
 			self.startBackgroundSync()
 
