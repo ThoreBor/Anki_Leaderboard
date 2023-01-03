@@ -1,4 +1,4 @@
-version = "v3.0.0"
+version = "v3.0.1"
 
 about_text = f"""
 <h2>Leaderboard {version}</h2>
@@ -31,13 +31,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 <a href="https://github.com/rodrigolanes">Rodrigo Lanes</a><br>
 Also thank you to everyone who reported bugs and suggested new features!</b>
 <h3>Change Log:</h3>
-- rewrote API<br>
-- fixed dark mode colors<br>
-- fixed minor Anki 2.1.55 UI bugs<br>
-- fixed Anki freezing while loading leaderboard<br>
-- removed refresh option<br>
-- removed legacy support for migrating old accounts<br>
-- reduced API calls<br><br>
+- fixed auto-sync bug<br>
+- fixed group numbering bug<br><br>
 
 <b>You can check out the full change log on <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/changelog.md">GitHub</a>.</b>
 """

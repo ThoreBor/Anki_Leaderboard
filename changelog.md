@@ -1,4 +1,8 @@
 # Change Log
+## v3.0.1
+- fixed auto-sync bug
+- fixed group numbering bug
+
 ## v3.0.0
 - rewrote API
 - fixed dark mode colors
