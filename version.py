@@ -1,4 +1,4 @@
-version = "v3.0.1"
+version = "v3.0.2"
 
 about_text = f"""
 <h2>Leaderboard {version}</h2>
@@ -31,8 +31,8 @@ With contributions from <a href="https://github.com/khonkhortisan">khonkhortisan
 <a href="https://github.com/rodrigolanes">Rodrigo Lanes</a><br>
 Also thank you to everyone who reported bugs and suggested new features!</b>
 <h3>Change Log:</h3>
-- fixed auto-sync bug<br>
-- fixed group numbering bug<br><br>
+- fixed bug when trying to open the leaderboard without being logged in<br>
+- fixed highlight bug<br><br>
 
 <b>You can check out the full change log on <a href="https://github.com/ThoreBor/Anki_Leaderboard/blob/master/changelog.md">GitHub</a>.</b>
 """

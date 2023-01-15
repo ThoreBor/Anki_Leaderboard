@@ -1,4 +1,8 @@
 # Change Log
+## v3.0.2
+- fixed bug when trying to open the leaderboard without being logged in
+- fixed highlight bug
+
 ## v3.0.1
 - fixed auto-sync bug
 - fixed group numbering bug
