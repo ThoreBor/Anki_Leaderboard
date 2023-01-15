@@ -271,9 +271,14 @@ class start_main(QDialog):
 		self.highlight(self.dialog.Custom_Leaderboard)
 
 	def updateTable(self, tab):
-		self.highlight(tab)
-		self.updateNumbers(tab)
-
+		if tab == self.dialog.Custom_Leaderboard:
+			self.switchGroup()
+			self.updateNumbers(tab)
+			self.highlight(tab)
+		else:
+			self.updateNumbers(tab)
+			self.highlight(tab)
+		
 	def updateNumbers(self, tab):
 		rows = tab.rowCount()
 		for i in range(0, rows):
@@ -283,8 +288,6 @@ class start_main(QDialog):
 			item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter)
 
 	def highlight(self, tab):
-		if tab == self.dialog.Custom_Leaderboard:
-			self.switchGroup()
 		for i in range(tab.rowCount()):
 			item = tab.item(i, 1).text().split(" |")[0]
 			if i % 2 == 0:
