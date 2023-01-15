@@ -56,7 +56,7 @@ class startup():
 	def leaderboard(self):
 		config = mw.addonManager.getConfig(__name__)
 		if config["username"] == "" or not config["authToken"]:
-			invokeSetup()
+			self.invokeSetup()
 		else:
 			mw.leaderboard = start_main(self.start, self.end, self.currentSeason)
 
