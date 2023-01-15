@@ -1,7 +1,8 @@
-build
-forms
-meta.json
-build_ui.sh
-License.txt
-todo.md
+/build
+/forms
+/meta.json
+/build_ui.sh
+/License.txt
+/todo.md
 __pycache__
+/ankiaddon.py
