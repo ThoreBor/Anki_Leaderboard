@@ -248,11 +248,11 @@ def resetPassword(request):
 	c = conn.cursor()
 	
 	# Get data from client
-	email = request.POST.get("email", "")
+	email = request.POST.get("email", "").lower()
 	username = request.POST.get("username", "")
 
 	# Check if user with email exists
-	doesExist = True if c.execute("SELECT EXISTS(SELECT 1 FROM Leaderboard WHERE Username = (?) AND email = (?))", (username, email)).fetchone()[0] == 1 else False
+	doesExist = True if c.execute("SELECT EXISTS(SELECT 1 FROM Leaderboard WHERE Username = (?) AND lower(email) = (?))", (username, email)).fetchone()[0] == 1 else False
 	
 	if doesExist:
 		# Create email reset token

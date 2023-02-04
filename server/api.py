@@ -146,14 +146,14 @@ def resetPassword(request):
 	conn = sqlite3.connect(database_path)
 	c = conn.cursor()
 	try:
-		email = request.POST.get("email", "")
+		email = request.POST.get("email", "").lower()
 		username = request.POST.get("username", "")
 		token = secrets.token_hex(nbytes=64)
 
 		# check if it exists
-		c.execute("SELECT Username FROM Leaderboard WHERE Username = (?) AND email = (?)", (username, email)).fetchone()[0]
+		c.execute("SELECT Username FROM Leaderboard WHERE Username = (?) AND lower(email) = (?)", (username, email)).fetchone()[0]
 
-		c.execute("UPDATE Leaderboard SET emailReset = (?) WHERE Username = (?) AND email = (?)", (token, username, email))
+		c.execute("UPDATE Leaderboard SET emailReset = (?) WHERE Username = (?) AND lower(email) = (?)", (token, username, email))
 		conn.commit()
 
 		msg = EmailMessage()
