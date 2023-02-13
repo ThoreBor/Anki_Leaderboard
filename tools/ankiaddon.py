@@ -1,25 +1,31 @@
 import zipfile
 import os
-from os.path import dirname, join, realpath
+from pathlib import Path
 import shutil
-from version import version
 
-# run from root
+root = Path(__file__).parents[1]
 
-# remove pycache from forms
-qt5 = join(dirname(realpath(__file__)), "forms/pyqt5UI/__pycache__")
-qt6 = join(dirname(realpath(__file__)), "forms/pyqt6UI/__pycache__")
-shutil.rmtree(qt5, ignore_errors=True)
-shutil.rmtree(qt6, ignore_errors=True)
+# create output folder
+if not os.path.exists(f"{root}/releases"):
+   os.makedirs(f"{root}/releases")
 
-# find files
-pyFiles = [file for file in os.listdir() if file.endswith('.py') and file != "ankiaddon.py"]
-jsonFiles = [file for file in os.listdir() if file.endswith('.json') and file != "meta.json"]
+# remove pycache
+shutil.rmtree(f"{root}/forms/pyqt5UI/__pycache__", ignore_errors=True)
+shutil.rmtree(f"{root}/forms/pyqt6UI/__pycache__", ignore_errors=True)
+shutil.rmtree(f"{root}/src/__pycache__", ignore_errors=True)
 
 # create .ankiaddon
-data = ["-c", f"AnkiLeaderboard_{version}.ankiaddon", "License.txt", "designer", "forms"]
-for i in pyFiles:
-   data.append(i)
-for i in jsonFiles:
-   data.append(i)
+
+data = [
+   "-c",
+   f"{root}/releases/AnkiLeaderboard.ankiaddon",
+   f"{root}/__init__.py",
+   f"{root}/config.json",
+   f"{root}/manifest.json",
+   f"{root}/License.txt",
+   f"{root}/designer",
+   f"{root}/forms",
+   f"{root}/src",
+   ]
+
 zipfile.main(data)

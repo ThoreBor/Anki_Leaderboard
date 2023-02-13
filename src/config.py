@@ -1,5 +1,5 @@
 from datetime import datetime
-from os.path import dirname, join, realpath
+from pathlib import Path
 import hashlib
 import json
 
@@ -8,10 +8,10 @@ from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip, showInfo, showWarning, askUser
 
 if qtmajor > 5:
-	from .forms.pyqt6UI import config
+	from ..forms.pyqt6UI import config
 	from PyQt6 import QtCore
 else:
-	from .forms.pyqt5UI import config
+	from ..forms.pyqt5UI import config
 	from PyQt5 import QtCore
 from .resetPassword import start_resetPassword
 from .config_manager import write_config
@@ -77,9 +77,10 @@ class start_config(QDialog):
 	def setValues(self):
 		_translate = QtCore.QCoreApplication.translate
 		config = mw.addonManager.getConfig(__name__)
+		root = Path(__file__).parents[1]
 
 		icon = QIcon()
-		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/settings.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		icon.addPixmap(QPixmap(f"{root}/designer/icons/settings.png"), QIcon.Mode.Normal, QIcon.State.Off)
 		self.setWindowIcon(icon)
 
 		self.updateLoginInfo(config["username"])

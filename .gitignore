@@ -1,7 +1,6 @@
-/build
 /forms
+/releases
 /meta.json
-/build_ui.sh
 /License.txt
 /todo.md
 __pycache__

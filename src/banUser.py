@@ -2,12 +2,12 @@ from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip
 from aqt import mw
 import hashlib
-from os.path import dirname, join, realpath
+from pathlib import Path
 
 if qtmajor > 5:
-	from .forms.pyqt6UI import banUser
+	from ..forms.pyqt6UI import banUser
 else:
-	from .forms.pyqt5UI import banUser
+	from ..forms.pyqt5UI import banUser
 from .api_connect import postRequest
 
 
@@ -22,9 +22,10 @@ class start_banUser(QDialog):
 
 	def setupUI(self):
 		self.dialog.banButton.clicked.connect(self.banUser)
+		root = Path(__file__).parents[1]
 		
 		icon = QIcon()
-		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/person.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		icon.addPixmap(QPixmap(f"{root}/designer/icons/person.png"), QIcon.Mode.Normal, QIcon.State.Off)
 		self.setWindowIcon(icon)
 
 	def banUser(self):

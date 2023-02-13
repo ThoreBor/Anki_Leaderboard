@@ -1,11 +1,11 @@
 from aqt.qt import QDialog, Qt, QIcon, QPixmap, qtmajor
 from aqt.utils import tooltip, showWarning
-from os.path import dirname, join, realpath
+from pathlib import Path
 
 if qtmajor > 5:
-	from .forms.pyqt6UI import reset_password
+	from ..forms.pyqt6UI import reset_password
 else:
-	from .forms.pyqt5UI import reset_password
+	from ..forms.pyqt5UI import reset_password
 from .api_connect import postRequest
 
 class start_resetPassword(QDialog):
@@ -18,9 +18,10 @@ class start_resetPassword(QDialog):
 
 	def setupUI(self):
 		self.dialog.resetButton.clicked.connect(self.resetPassword)
+		root = Path(__file__).parents[1]
 
 		icon = QIcon()
-		icon.addPixmap(QPixmap(join(dirname(realpath(__file__)), "designer/icons/person.png")), QIcon.Mode.Normal, QIcon.State.Off)
+		icon.addPixmap(QPixmap(f"{root}/designer/icons/person.png"), QIcon.Mode.Normal, QIcon.State.Off)
 		self.setWindowIcon(icon)
 
 	def resetPassword(self):
