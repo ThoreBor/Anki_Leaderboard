@@ -15,7 +15,7 @@ from .Leaderboard import start_main
 from .config import start_config
 from .Stats import Stats
 from .config_manager import write_config
-from .lb_on_homescreen import leaderboard_on_deck_browser
+from .homescreenLeaderboard import homescreenLeaderboard
 from .version import version
 from .api_connect import *
 
@@ -24,6 +24,7 @@ class startup():
 	def __init__(self):
 		config = mw.addonManager.getConfig(__name__)
 		self.root = Path(__file__).parents[1]
+		self.hL = homescreenLeaderboard()
 
 		# Create menu
 		self.addMenu('&Leaderboard', "&Open", self.leaderboard, 'Shift+L')
@@ -130,7 +131,7 @@ class startup():
 		if result:
 			showWarning(result, title="Leaderboard Error")
 		else:
-			leaderboard_on_deck_browser(self.response.json())
+			self.hL.leaderboard_on_deck_browser(self.response.json())
 
 	def season(self):
 		response = getRequest("season/")

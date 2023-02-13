@@ -15,7 +15,6 @@ else:
 	from PyQt5 import QtCore
 from .resetPassword import start_resetPassword
 from .config_manager import write_config
-from .lb_on_homescreen import leaderboard_on_deck_browser
 from .version import version, about_text
 from .api_connect import *
 
