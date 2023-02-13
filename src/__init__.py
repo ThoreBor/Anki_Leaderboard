@@ -3,7 +3,7 @@ from aqt.qt import QAction, QMenu, QKeySequence
 from aqt.utils import showInfo, showWarning, tooltip, askUser
 from aqt.operations import QueryOp
 
-from os.path import dirname, join, realpath
+from pathlib import Path
 import os
 import webbrowser
 import requests
@@ -23,6 +23,7 @@ from .api_connect import *
 class startup():
 	def __init__(self):
 		config = mw.addonManager.getConfig(__name__)
+		self.root = Path(__file__).parents[1]
 
 		# Create menu
 		self.addMenu('&Leaderboard', "&Open", self.leaderboard, 'Shift+L')
@@ -158,7 +159,7 @@ class startup():
 		if "41708974" in ids or "Anki_Leaderboard" in ids:
 			showInfo(showInfoDeleteAccount)
 			if askUser(askUserCreateMetaBackup):
-				meta_backup = open(join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json"), "w", encoding="utf-8")
+				meta_backup = open(f"{self.root}/leaderboard_meta_backup.json", "w", encoding="utf-8")
 				meta_backup.write(json.dumps({"config": config}))
 				meta_backup.close()
 				tooltip("Successfully created a backup")
@@ -167,11 +168,11 @@ class startup():
 		askUserRestoreFromBackup = """<h3>Leaderboard configuration backup found</h3>
 		Do you want to restore your configurations?
 		"""
-		backup_path = join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "leaderboard_meta_backup.json")
+		backup_path = f"{self.root}/leaderboard_meta_backup.json"
 		if os.path.exists(backup_path):
 			meta_backup = open(backup_path, "r", encoding="utf-8")
 			if askUser(askUserRestoreFromBackup):
-				new_meta = open(join(dirname(realpath(__file__)), "meta.json"), "w", encoding="utf-8") 
+				new_meta = open(f"{self.root}/meta.json", "w", encoding="utf-8") 
 				new_meta.write(json.dumps(json.loads(meta_backup.read())))
 				new_meta.close()
 				meta_backup.close()
