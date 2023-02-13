@@ -112,6 +112,17 @@ class homescreenLeaderboard():
 		if not self.lbList:
 			self.getData()
 
+		if config["tab"] == 0:
+			title = "<h3>Global</h3>"
+		if config["tab"] == 1:
+			title = "<h3>Friends</h3>"
+		if config["tab"] == 2:
+			title = f"<h3>{config['country']}</h3>"
+		if config["tab"] == 3:
+			title = f"<h3>{config['current_group']}</h3>"
+		if config["tab"] == 4:
+			title = "<h3>League</h3>"
+
 		if config["focus_on_user"] == True and len(self.lbList) > config["maxUsers"]:
 			for i in self.lbList:
 				if config["username"] == i[1].split(" |")[0]:
@@ -237,7 +248,7 @@ class homescreenLeaderboard():
 				</tr>
 				"""
 
-		content.stats += tableStyle + tableHeader + tableContent + "</table>"
+		content.stats += title + tableStyle + tableHeader + tableContent + "</table>"
 
 	def leaderboard_on_deck_browser(self, response):
 		config = mw.addonManager.getConfig(__name__)
