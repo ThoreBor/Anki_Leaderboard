@@ -13,6 +13,7 @@ if not os.path.exists(f"{root}/releases"):
 shutil.rmtree(f"{root}/forms/pyqt5UI/__pycache__", ignore_errors=True)
 shutil.rmtree(f"{root}/forms/pyqt6UI/__pycache__", ignore_errors=True)
 shutil.rmtree(f"{root}/src/__pycache__", ignore_errors=True)
+shutil.rmtree(f"{root}/src/streakAchievement/__pycache__", ignore_errors=True)
 
 # create .ankiaddon
 
