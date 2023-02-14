@@ -63,13 +63,13 @@ class startup():
 			mw.leaderboard = start_main(self.start, self.end, self.currentSeason)
 
 	def invokeSetup(self):
-		mw.lb_setup = start_config(self.start, self.end)
+		mw.lb_setup = start_config(self.start, self.end, self.hL)
 		mw.lb_setup.show()
 		mw.lb_setup.raise_()
 		mw.lb_setup.activateWindow()
 
 	def configSetup(self):
-		s = start_config(self.start, self.end)
+		s = start_config(self.start, self.end, self.hL)
 		if s.exec():
 			pass
 

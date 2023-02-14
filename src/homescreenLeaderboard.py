@@ -250,15 +250,20 @@ class homescreenLeaderboard():
 
 		content.stats += title + tableStyle + tableHeader + tableContent + "</table>"
 
+	def deleteLeaderboard(self):
+		gui_hooks.deck_browser_will_render_content.remove(self.on_deck_browser_will_render_content)
+		DB = DeckBrowser(mw)
+		DB.refresh()
+
 	def leaderboard_on_deck_browser(self, response):
 		config = mw.addonManager.getConfig(__name__)
 		self.data = response
 		self.lbList = config["homescreen_data"]
-		gui_hooks.deck_browser_will_render_content.remove(self.on_deck_browser_will_render_content)
+		self.deleteLeaderboard()
 		if config["homescreen"] == True:
 			gui_hooks.deck_browser_will_render_content.append(self.on_deck_browser_will_render_content)
-		DB = DeckBrowser(mw)
-		DB.refresh()
+			DB = DeckBrowser(mw)
+			DB.refresh()
 		
 
 def deckbrowser_linkHandler_wrapper(overview, url):

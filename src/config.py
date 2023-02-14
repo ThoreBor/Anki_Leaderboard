@@ -27,11 +27,12 @@ You can read it <a href="https://ankileaderboard.pythonanywhere.com/privacy/">he
 """
 
 class start_config(QDialog):
-	def __init__(self, season_start, season_end, parent=None):
+	def __init__(self, season_start, season_end, homescreenLeaderboard, parent=None):
+		QDialog.__init__(self, parent, Qt.WindowType.Window)
 		self.parent = parent
 		self.season_start = season_start
 		self.season_end = season_end
-		QDialog.__init__(self, parent, Qt.WindowType.Window)
+		self.homescreenLeaderboard = homescreenLeaderboard
 		self.dialog = config.Ui_Dialog()
 		self.dialog.setupUi(self)
 		self.setValues()
@@ -531,10 +532,12 @@ class start_config(QDialog):
 		config = mw.addonManager.getConfig(__name__)
 		if self.dialog.LB_DeckBrowser.isChecked():
 			homescreen = True
+			tooltip("Changes will apply after the next sync")
 		else:
 			homescreen = False
+			self.homescreenLeaderboard.deleteLeaderboard()
 		write_config("homescreen", homescreen)
-		tooltip("Changes will apply after the next sync")
+		
 
 	def setMaxUser(self):
 		config = mw.addonManager.getConfig(__name__)
