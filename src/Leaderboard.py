@@ -16,7 +16,7 @@ else:
 	from ..forms.pyqt5UI import Leaderboard
 	from PyQt5 import QtCore, QtGui, QtWidgets
 from .Stats import Stats
-from .Achievement import start_achievement
+from .streakAchievement.streakAchievement import streak
 from .config_manager import write_config
 from .League import load_league
 from .userInfo import start_user_info
@@ -155,10 +155,10 @@ class start_main(QDialog):
 				self.add_row(self.dialog.Custom_Leaderboard, i[0], i[1], i[2], i[3], i[4], i[5])
 		self.dialog.Custom_Leaderboard.setSortingEnabled(True)
 
-	def achievement(self, streak):		
-		achievement_streak = [7, 31, 100, 365, 500, 1000, 1500, 2000, 3000, 4000]
-		if self.config["achievement"] == True and streak in achievement_streak:
-			s = start_achievement(streak)
+	def streakAchievement(self, days):		
+		achievementStreak = [7, 31, 50, 75, 100, 150, 200, 300, 365, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 3000, 4000, 5000, 6000]
+		if self.config["achievement"] == True and days in achievementStreak:
+			s = streak(days)
 			if s.exec():
 				pass
 			write_config("achievement", False)
@@ -198,7 +198,7 @@ class start_main(QDialog):
 			showWarning(result, title="Leaderboard Error")
 		else:
 			self.header()
-			self.achievement(self.streak)
+			self.streakAchievement(self.streak)
 			self.show()
 			self.activateWindow()
 			

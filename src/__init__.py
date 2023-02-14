@@ -18,6 +18,7 @@ from .config_manager import write_config
 from .homescreenLeaderboard import homescreenLeaderboard
 from .version import version
 from .api_connect import *
+from .streakAchievement.streakAchievement import streak as strk
 
 
 class startup():
@@ -30,6 +31,7 @@ class startup():
 		self.addMenu('&Leaderboard', "&Open", self.leaderboard, 'Shift+L')
 		self.addMenu('&Leaderboard', "&Sync and update the home screen leaderboard", self.startBackgroundSync, "Shift+S")
 		self.addMenu('&Leaderboard', "&Config", self.invokeSetup, "Alt+C")
+		self.addMenu('&Leaderboard', "&Streak", self.showStreak)
 		self.addMenu('&Leaderboard', "&Make a feature request or report a bug", self.github)
 		mw.addonManager.setConfigAction(__name__, self.configSetup)
 
@@ -132,6 +134,16 @@ class startup():
 			showWarning(result, title="Leaderboard Error")
 		else:
 			self.hL.leaderboard_on_deck_browser(self.response.json())
+
+	def showStreak(self):
+		streak, _, _, _, _, _, _, _, _ = Stats(self.start, self.end)
+		if streak > 0:
+			mw.streak = strk(streak)
+			mw.streak.show()
+			mw.streak.raise_()
+			mw.streak.activateWindow()
+		else:
+			tooltip("You don't have a streak")
 
 	def season(self):
 		response = getRequest("season/")
