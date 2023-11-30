@@ -2,6 +2,7 @@ from aqt import mw
 from aqt.qt import QAction, QMenu, QKeySequence
 from aqt.utils import showInfo, showWarning, tooltip, askUser
 from aqt.operations import QueryOp
+from anki.utils import pointVersion
 
 from pathlib import Path
 import os
@@ -103,7 +104,9 @@ class startup():
 
 	def startBackgroundSync(self):
 		op = QueryOp(parent=mw, op=lambda col: self.backgroundSync(), success=self.on_success)
-		op.with_progress().run_in_background()
+		if pointVersion() >= 231000:
+			op.without_collection()
+		op.run_in_background()
 
 	def backgroundSync(self):
 		config = mw.addonManager.getConfig(__name__)
